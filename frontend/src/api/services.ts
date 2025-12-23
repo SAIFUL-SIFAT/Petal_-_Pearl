@@ -6,6 +6,9 @@ export const productApi = {
 };
 
 export const userApi = {
-    signup: (userData: any) => api.post('/users/signup', userData),
-    login: (credentials: any) => api.post('/users/login', credentials), // Placeholder
+    signup: (data: any) => api.post('/users/signup', data),
+    login: (data: any) => api.post('/users/login', data),
+    getAll: () => api.get('/users'),
+    update: (id: number, data: any) => api.patch(`/users/${id}`, data),
+    remove: (id: number) => api.delete(`/users/${id}`),
 };

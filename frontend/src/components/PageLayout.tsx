@@ -8,9 +8,10 @@ import { useCart } from '@/hooks/use-cart';
 
 interface PageLayoutProps {
     children: React.ReactNode;
+    showFooter?: boolean;
 }
 
-const PageLayout = ({ children }: PageLayoutProps) => {
+const PageLayout = ({ children, showFooter = true }: PageLayoutProps) => {
     const [isAuthOpen, setIsAuthOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const {
@@ -47,7 +48,7 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
             <main>{children}</main>
 
-            <Footer />
+            {showFooter && <Footer />}
         </div>
     );
 };

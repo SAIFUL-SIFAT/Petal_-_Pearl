@@ -7,6 +7,9 @@ import Index from "./pages/Index";
 import Ornaments from "./pages/Ornaments";
 import Collections from "./pages/Collections";
 import Profile from "./pages/Profile";
+import Dashboard from "./pages/admin/Dashboard";
+import AdminProducts from "./pages/admin/Products";
+import AdminUsers from "./pages/admin/Users";
 import NotFound from "./pages/NotFound";
 
 import { CartProvider } from "./hooks/use-cart";
@@ -27,6 +30,9 @@ const App = () => (
               <Route path="/ornaments" element={<Ornaments />} />
               <Route path="/collections" element={<Collections />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/admin/dashboard" element={<Dashboard />} />
+              <Route path="/admin/products" element={<AdminProducts />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

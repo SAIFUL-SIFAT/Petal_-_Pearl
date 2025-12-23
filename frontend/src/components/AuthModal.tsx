@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, Phone, User, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import { userApi } from '@/api/services';
 import { useAuth } from '@/context/AuthContext';
 
@@ -11,6 +12,7 @@ interface AuthModalProps {
 }
 
 const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
+  const navigate = useNavigate();
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,6 +63,11 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
           title: "Welcome back!",
           description: `Hello ${response.data.name}, you have successfully logged in.`,
         });
+
+        if (response.data.role === 'admin') {
+          navigate('/admin/dashboard');
+        }
+
         onClose();
       }
     } catch (error: any) {

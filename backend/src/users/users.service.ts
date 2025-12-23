@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -63,6 +63,33 @@ export class UsersService {
             ...userData,
             access_token: accessToken,
         };
+    }
+
+    async findAll() {
+        const users = await this.usersRepository.find();
+        return users.map(user => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { password, ...result } = user;
+            return result;
+        });
+    }
+
+    async update(id: number, updateUserDto: any) {
+        if (updateUserDto.password) {
+            updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+        }
+        await this.usersRepository.update(id, updateUserDto);
+        const updatedUser = await this.usersRepository.findOne({ where: { id } });
+        if (!updatedUser) {
+            throw new NotFoundException('User not found');
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...result } = updatedUser;
+        return result;
+    }
+
+    async remove(id: number) {
+        return this.usersRepository.delete(id);
     }
 
     async findByEmail(email: string) {
