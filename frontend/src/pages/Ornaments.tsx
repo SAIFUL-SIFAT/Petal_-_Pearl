@@ -1,11 +1,25 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ProductGrid from '@/components/ProductGrid';
-import { ornamentProducts } from '@/data/products';
 import PageLayout from '@/components/PageLayout';
 import { useCart } from '@/hooks/use-cart';
+import { productApi } from '@/api/services';
 
 const Ornaments = () => {
     const { addToCart } = useCart();
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const res = await productApi.getAll('ornament');
+                setProducts(res.data);
+            } catch (error) {
+                console.error('Failed to fetch ornaments:', error);
+            }
+        };
+        fetchProducts();
+    }, []);
 
     return (
         <PageLayout>
@@ -28,7 +42,7 @@ const Ornaments = () => {
                     <ProductGrid
                         title="All Ornaments"
                         subtitle="Sparkle with elegance"
-                        products={ornamentProducts}
+                        products={products}
                         type="ornament"
                         onAddToCart={addToCart}
                         showViewAll={false}

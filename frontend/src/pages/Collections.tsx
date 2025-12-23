@@ -1,11 +1,25 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ProductGrid from '@/components/ProductGrid';
-import { clothingProducts } from '@/data/products';
 import PageLayout from '@/components/PageLayout';
 import { useCart } from '@/hooks/use-cart';
+import { productApi } from '@/api/services';
 
 const Collections = () => {
     const { addToCart } = useCart();
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const res = await productApi.getAll('clothing');
+                setProducts(res.data);
+            } catch (error) {
+                console.error('Failed to fetch collections:', error);
+            }
+        };
+        fetchProducts();
+    }, []);
 
     return (
         <PageLayout>
@@ -28,7 +42,7 @@ const Collections = () => {
                     <ProductGrid
                         title="Premium Three-Pieces"
                         subtitle="Tradition meets modern style"
-                        products={clothingProducts}
+                        products={products}
                         type="clothing"
                         onAddToCart={addToCart}
                         showViewAll={false}
