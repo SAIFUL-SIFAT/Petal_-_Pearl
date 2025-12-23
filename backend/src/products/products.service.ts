@@ -1,0 +1,38 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Product } from './entities/product.entity';
+
+@Injectable()
+export class ProductsService {
+    constructor(
+        @InjectRepository(Product)
+        private productsRepository: Repository<Product>,
+    ) { }
+
+    findAll() {
+        return this.productsRepository.find();
+    }
+
+    count() {
+        return this.productsRepository.count();
+    }
+
+    findByType(type: 'clothing' | 'ornament') {
+        return this.productsRepository.find({ where: { type } });
+    }
+
+    findOne(id: number) {
+        return this.productsRepository.findOneBy({ id });
+    }
+
+    async create(productData: Partial<Product>) {
+        const product = this.productsRepository.create(productData);
+        return this.productsRepository.save(product);
+    }
+
+    async createMany(productsData: Partial<Product>[]) {
+        const products = this.productsRepository.create(productsData);
+        return this.productsRepository.save(products);
+    }
+}
