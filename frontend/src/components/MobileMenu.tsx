@@ -113,11 +113,43 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                   </motion.li>
                 ))}
 
+                {/* Authenticated Only Links */}
+                {isAuthenticated && (
+                  <>
+                    <motion.li
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: (menuItems.length) * 0.05 }}
+                    >
+                      <button
+                        onClick={() => handleNavClick('/profile')}
+                        className="w-full flex items-center justify-between py-4 text-foreground hover:text-accent transition-colors group border-b border-[#449c80]"
+                      >
+                        <span className="font-serif text-lg">My Profile</span>
+                        <ChevronRight size={18} className="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all" />
+                      </button>
+                    </motion.li>
+                    <motion.li
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: (menuItems.length + 1) * 0.05 }}
+                    >
+                      <button
+                        onClick={() => handleNavClick('/orders')}
+                        className="w-full flex items-center justify-between py-4 text-foreground hover:text-accent transition-colors group border-b border-[#449c80]"
+                      >
+                        <span className="font-serif text-lg">My Orders</span>
+                        <ChevronRight size={18} className="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all" />
+                      </button>
+                    </motion.li>
+                  </>
+                )}
+
                 {isAuthenticated && (
                   <motion.li
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: menuItems.length * 0.05 }}
+                    transition={{ delay: (menuItems.length + 2) * 0.05 }}
                   >
                     <button
                       onClick={() => {

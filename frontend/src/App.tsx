@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Ornaments from "./pages/Ornaments";
 import Collections from "./pages/Collections";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 import { CartProvider } from "./hooks/use-cart";
@@ -25,6 +26,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/ornaments" element={<Ornaments />} />
               <Route path="/collections" element={<Collections />} />
+              <Route path="/profile" element={<Profile />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

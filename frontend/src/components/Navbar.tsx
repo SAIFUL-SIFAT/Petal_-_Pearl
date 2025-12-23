@@ -80,9 +80,11 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
             <div className="flex items-center">
               {isAuthenticated ? (
                 <div className="flex items-center gap-4">
-                  <span className={`text-sm hidden md:block ${isScrolled ? 'text-foreground' : 'text-cream'}`}>
-                    Hello, <span className="font-semibold text-accent">{user?.name}</span>
-                  </span>
+                  <Link to="/profile" className="hover:opacity-80 transition-opacity">
+                    <span className={`text-sm hidden md:block ${isScrolled ? 'text-foreground' : 'text-cream'}`}>
+                      Hello, <span className="font-semibold text-accent">{user?.name}</span>
+                    </span>
+                  </Link>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
