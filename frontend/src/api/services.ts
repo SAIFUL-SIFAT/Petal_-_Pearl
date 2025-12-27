@@ -15,3 +15,11 @@ export const userApi = {
     update: (id: number, data: any) => api.patch(`/users/${id}`, data),
     remove: (id: number) => api.delete(`/users/${id}`),
 };
+
+export const orderApi = {
+    create: (data: any) => api.post('/orders', data),
+    getAll: () => api.get('/orders'),
+    getByUser: (userId: number) => api.get(`/orders/user/${userId}`),
+    getById: (id: number) => api.get(`/orders/${id}`),
+    updateStatus: (id: number, status: string) => api.patch(`/orders/${id}/status`, { status }),
+};

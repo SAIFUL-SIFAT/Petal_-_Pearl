@@ -95,4 +95,10 @@ export class UsersService {
     async findByEmail(email: string) {
         return this.usersRepository.findOne({ where: { email } });
     }
+
+    async count() {
+        return this.usersRepository.count({
+            where: { role: 'user' }
+        });
+    }
 }

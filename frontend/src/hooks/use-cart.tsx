@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Product } from '@/components/ProductCard';
 import { useToast } from '@/hooks/use-toast';
 
@@ -8,6 +9,7 @@ export interface CartItem extends Product {
 
 interface CartContextType {
     cartItems: CartItem[];
+    items: CartItem[]; // Alias for easier access
     cartCount: number;
     isCartOpen: boolean;
     setIsCartOpen: (open: boolean) => void;
@@ -24,6 +26,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const { toast } = useToast();
+    const navigate = useNavigate();
 
     const addToCart = useCallback((product: Product) => {
         setCartItems((prevItems) => {
@@ -67,12 +70,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const handleCheckout = useCallback(() => {
-        toast({
-            title: "Proceeding to checkout",
-            description: "Redirecting to secure checkout...",
-        });
         setIsCartOpen(false);
-    }, [toast]);
+        navigate('/checkout');
+    }, [navigate]);
 
     const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -80,6 +80,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         <CartContext.Provider
             value={{
                 cartItems,
+                items: cartItems, // Alias
                 cartCount,
                 isCartOpen,
                 setIsCartOpen,

@@ -1,14 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/AdminLayout';
 import { motion } from 'framer-motion';
-import {
-    TrendingUp,
-    Users,
-    Package,
-    DollarSign,
-    ArrowUpRight,
-    ArrowDownRight
-} from 'lucide-react';
+import { TrendingUp, Users, Package, DollarSign, ArrowUpRight, ArrowDownRight, ShoppingBag } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import api from '@/api/axios';
 
 const StatCard = ({ title, value, icon, trend, trendValue }: any) => (
     <motion.div
@@ -31,6 +26,41 @@ const StatCard = ({ title, value, icon, trend, trendValue }: any) => (
 );
 
 const Dashboard = () => {
+    const [stats, setStats] = useState({
+        products: 0,
+        users: 0,
+        sales: 0,
+        orders: 0,
+        earnings: 0,
+        chartData: []
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await api.get('/dashboard/stats');
+                setStats(response.data);
+            } catch (error) {
+                console.error("Failed to fetch dashboard stats", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStats();
+    }, []);
+
+    // Skeleton loader if needed, but for now simple loading text or default structure
+    if (loading) {
+        return (
+            <AdminLayout>
+                <div className="flex h-[80vh] items-center justify-center text-accent animate-pulse">
+                    Loading Dashboard...
+                </div>
+            </AdminLayout>
+        );
+    }
+
     return (
         <AdminLayout>
             <div className="mb-10">
@@ -41,63 +71,88 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 <StatCard
                     title="Total Revenue"
-                    value="৳458,200"
+                    value={`$${stats.earnings.toLocaleString()}`}
                     icon={<DollarSign size={24} />}
                     trend="up"
                     trendValue="+12.5%"
                 />
                 <StatCard
                     title="Active Users"
-                    value="1,240"
+                    value={stats.users.toLocaleString()}
                     icon={<Users size={24} />}
                     trend="up"
                     trendValue="+5.2%"
                 />
                 <StatCard
-                    title="Pending Orders"
-                    value="48"
+                    title="Total Orders"
+                    value={stats.orders.toLocaleString()}
                     icon={<Package size={24} />}
-                    trend="down"
-                    trendValue="-2.4%"
+                    trend="up"
+                    trendValue="+2.4%"
                 />
                 <StatCard
-                    title="Avg. Order Value"
-                    value="৳9,540"
-                    icon={<TrendingUp size={24} />}
+                    title="Total Products"
+                    value={stats.products.toLocaleString()}
+                    icon={<ShoppingBag size={24} />} // Changed icon for variety
                     trend="up"
                     trendValue="+8.1%"
                 />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Recent Orders Placeholder */}
-                <div className="bg-[#032218] p-8 rounded-2xl border border-[#449c80]/20 shadow-xl">
-                    <h3 className="font-serif text-2xl mb-6">Recent Sales</h3>
-                    <div className="space-y-6">
-                        {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="flex items-center justify-between border-b border-[#449c80]/10 pb-4 last:border-0 last:pb-0">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold">
-                                        {String.fromCharCode(64 + i)}
-                                    </div>
-                                    <div>
-                                        <p className="font-medium">Customer {i}</p>
-                                        <p className="text-xs text-muted-foreground">2 hours ago</p>
-                                    </div>
-                                </div>
-                                <p className="font-bold text-accent">+৳12,500</p>
-                            </div>
-                        ))}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Sales Chart */}
+                <div className="lg:col-span-2 bg-[#032218] p-8 rounded-2xl border border-[#449c80]/20 shadow-xl">
+                    <h3 className="font-serif text-2xl mb-6">Revenue Overview</h3>
+                    <div className="h-[300px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={stats.chartData}>
+                                <defs>
+                                    <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#d4af37" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#d4af37" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#449c80" opacity={0.1} vertical={false} />
+                                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#02140f', borderColor: '#449c80', borderRadius: '12px', color: '#fff' }}
+                                    itemStyle={{ color: '#d4af37' }}
+                                />
+                                <Area type="monotone" dataKey="sales" stroke="#d4af37" strokeWidth={3} fillOpacity={1} fill="url(#colorSales)" />
+                            </AreaChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
 
-                {/* Growth Chart Placeholder */}
-                <div className="bg-[#032218] p-8 rounded-2xl border border-border/50 flex flex-col items-center justify-center text-center">
-                    <div className="p-4 bg-accent/5 rounded-full mb-4">
-                        <TrendingUp size={48} className="text-accent/40" />
+                {/* Recent Info / Other Charts Placeholder */}
+                <div className="bg-[#032218] p-8 rounded-2xl border border-[#449c80]/20 shadow-xl">
+                    <h3 className="font-serif text-2xl mb-6">Performance</h3>
+                    <div className="space-y-6">
+                        <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">Target Sales</span>
+                                <span className="font-bold text-accent">85%</span>
+                            </div>
+                            <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-full bg-accent w-[85%] rounded-full" />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">Server Load</span>
+                                <span className="font-bold text-green-400">24%</span>
+                            </div>
+                            <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-full bg-green-400 w-[24%] rounded-full" />
+                            </div>
+                        </div>
+                        <div className="mt-8 pt-8 border-t border-[#449c80]/10">
+                            <p className="text-sm text-muted-foreground">
+                                Detailed reports for product performance and user retention will be available in the next update.
+                            </p>
+                        </div>
                     </div>
-                    <h3 className="font-serif text-2xl mb-2 text-foreground/80">Growth Analytics</h3>
-                    <p className="text-muted-foreground max-w-xs">Interactive charts and deeper insights will appear here as more data is collected.</p>
                 </div>
             </div>
         </AdminLayout>
