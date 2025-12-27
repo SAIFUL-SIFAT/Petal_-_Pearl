@@ -96,7 +96,7 @@ npm run dev
 
 - **Frontend**: http://localhost:8080
 - **Backend API**: http://localhost:3000
-- **Admin Panel**: http://localhost:8080/admin/dashboard
+
 
 ## 📁 Project Structure
 
