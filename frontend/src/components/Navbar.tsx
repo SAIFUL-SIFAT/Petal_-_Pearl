@@ -53,11 +53,11 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
               className="flex flex-col items-center cursor-pointer"
               whileHover={{ scale: 1.02 }}
             >
-              <h1 className={`font-serif text-2xl sm:text-3xl tracking-[0.15em] font-semibold transition-colors duration-300 ${isScrolled ? 'text-foreground' : 'text-cream'
+              <h1 className={`font-serif text-xl sm:text-2xl md:text-3xl tracking-[0.1em] sm:tracking-[0.15em] font-semibold transition-colors duration-300 ${isScrolled ? 'text-foreground' : 'text-cream'
                 }`}>
                 PETAL & PEARL
               </h1>
-              <span className={`text-[10px] tracking-[0.3em] uppercase transition-colors duration-300 ${isScrolled ? 'text-accent' : 'text-gold-light'
+              <span className={`text-[8px] sm:text-[10px] tracking-[0.2em] sm:tracking-[0.3em] uppercase transition-colors duration-300 ${isScrolled ? 'text-accent' : 'text-gold-light'
                 }`}>
                 Elegance Redefined
               </span>
@@ -65,7 +65,7 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
           </Link>
 
           {/* Right - Icons */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1 sm:gap-4">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
@@ -73,15 +73,15 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
               className={`p-2 transition-colors duration-300 hidden sm:block ${isScrolled ? 'text-foreground hover:text-accent' : 'text-cream hover:text-gold'
                 }`}
             >
-              <Search size={22} />
+              <Search size={20} className="sm:w-[22px] sm:h-[22px]" />
             </motion.button>
 
             {/* Auth / Profile */}
             <div className="flex items-center">
               {isAuthenticated ? (
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <Link to="/profile" className="hover:opacity-80 transition-opacity">
-                    <span className={`text-sm hidden md:block ${isScrolled ? 'text-foreground' : 'text-cream'}`}>
+                    <span className={`text-sm hidden lg:block ${isScrolled ? 'text-foreground' : 'text-cream'}`}>
                       Hello, <span className="font-semibold text-accent">{user?.name}</span>
                     </span>
                   </Link>
@@ -89,7 +89,7 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={logout}
-                    className="text-xs uppercase tracking-widest px-4 py-2 border border-accent/30 text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300 rounded-full"
+                    className="text-[10px] sm:text-xs uppercase tracking-widest px-3 sm:px-4 py-1.5 sm:py-2 border border-accent/30 text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300 rounded-full"
                   >
                     Logout
                   </motion.button>
@@ -102,7 +102,7 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
                   className={`p-2 transition-colors duration-300 ${isScrolled ? 'text-foreground hover:text-accent' : 'text-cream hover:text-gold'
                     }`}
                 >
-                  <User size={22} />
+                  <User size={20} className="sm:w-[22px] sm:h-[22px]" />
                 </motion.button>
               )}
             </div>

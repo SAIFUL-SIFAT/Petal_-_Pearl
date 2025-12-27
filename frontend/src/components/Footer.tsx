@@ -24,25 +24,25 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className="font-serif text-3xl mb-3">Join Our World</h3>
-              <p className="text-foreground/70 max-w-md">
+              <h3 className="font-serif text-2xl sm:text-3xl mb-3">Join Our World</h3>
+              <p className="text-foreground/70 max-w-md text-sm sm:text-base">
                 Subscribe to receive exclusive offers, new arrivals, and styling tips.
               </p>
             </div>
-            <form onSubmit={handleSubscribe} className="flex gap-3">
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 required
-                className="flex-1 px-4 py-3 bg-secondary/30 border border-secondary/50 rounded-lg text-foreground placeholder:text-foreground/50 focus:outline-none focus:border-accent transition-colors"
+                className="flex-1 px-4 py-3 bg-secondary/30 border border-secondary/50 rounded-lg text-foreground placeholder:text-foreground/50 focus:outline-none focus:border-accent transition-colors text-sm sm:text-base"
               />
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 type="submit"
-                className="px-6 py-3 bg-accent text-accent-foreground rounded-lg font-medium flex items-center gap-2 hover:bg-gold-light transition-colors"
+                className="px-6 py-3 bg-accent text-accent-foreground rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gold-light transition-colors text-sm sm:text-base"
               >
                 Subscribe
                 <ArrowRight size={18} />

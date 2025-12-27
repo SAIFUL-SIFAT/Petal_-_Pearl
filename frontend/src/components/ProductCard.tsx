@@ -70,9 +70,9 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
         {/* Action Buttons */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 20 }}
+          animate={{ opacity: isHovered ? 1 : 1, x: isHovered ? 0 : 0 }}
           transition={{ duration: 0.3 }}
-          className="absolute top-3 right-3 flex flex-col gap-2"
+          className="absolute top-2 sm:top-3 right-2 sm:right-3 flex flex-col gap-2"
         >
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -81,19 +81,19 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
               e.stopPropagation();
               setIsWishlisted(!isWishlisted);
             }}
-            className={`p-2 rounded-full backdrop-blur-sm transition-colors ${isWishlisted
+            className={`p-1.5 sm:p-2 rounded-full backdrop-blur-sm transition-colors ${isWishlisted
               ? 'bg-destructive text-destructive-foreground'
               : 'bg-background/80 text-foreground hover:bg-background'
               }`}
           >
-            <Heart size={18} fill={isWishlisted ? 'currentColor' : 'none'} />
+            <Heart size={16} className="sm:w-[18px] sm:h-[18px]" fill={isWishlisted ? 'currentColor' : 'none'} />
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="p-2 bg-background/80 rounded-full backdrop-blur-sm text-foreground hover:bg-background transition-colors"
+            className="p-1.5 sm:p-2 bg-background/80 rounded-full backdrop-blur-sm text-foreground hover:bg-background transition-colors"
           >
-            <Eye size={18} />
+            <Eye size={16} className="sm:w-[18px] sm:h-[18px]" />
           </motion.button>
         </motion.div>
 
@@ -101,11 +101,10 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
         <motion.button
           initial={{ y: '100%' }}
           animate={{ y: isHovered ? 0 : '100%' }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="absolute bottom-0 w-full bg-[#1e1b0f]/90 backdrop-blur-md text-foreground py-3 sm:py-4 flex items-center justify-center gap-2 font-medium uppercase tracking-wider text-[10px] sm:text-xs md:text-sm hover:text-[#bfa045] transition-colors lg:opacity-0 lg:group-hover:opacity-100 sm:translate-y-0 translate-y-0"
           onClick={() => onAddToCart(product)}
-          className="absolute bottom-0 w-full bg-[#1e1b0f] backdrop-blur-sm text-foreground py-4 flex items-center justify-center gap-2 font-medium uppercase tracking-wider text-sm hover:text-[#bfa045] transition-colors"
         >
-          <ShoppingBag size={18} />
+          <ShoppingBag size={16} className="sm:w-[18px] sm:h-[18px]" />
           Quick Add
         </motion.button>
       </div>

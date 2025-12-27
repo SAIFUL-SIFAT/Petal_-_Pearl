@@ -124,14 +124,14 @@ const AdminUsers = () => {
 
     return (
         <AdminLayout>
-            <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="mb-8 sm:mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
                 <div>
-                    <h1 className="font-serif text-4xl font-bold mb-2">User Management</h1>
-                    <p className="text-muted-foreground">Manage accounts, roles, and access credentials.</p>
+                    <h1 className="font-serif text-2xl sm:text-4xl font-bold mb-2">User Management</h1>
+                    <p className="text-muted-foreground text-sm sm:text-base">Manage accounts, roles, and access credentials.</p>
                 </div>
                 <button
                     onClick={() => handleOpenModal()}
-                    className="flex items-center gap-2 bg-accent text-accent-foreground px-6 py-3 rounded-xl font-bold hover:bg-gold transition-all shadow-lg shadow-accent/20"
+                    className="flex items-center justify-center gap-2 bg-accent text-accent-foreground px-4 sm:px-6 py-3 rounded-xl font-bold hover:bg-gold transition-all shadow-lg shadow-accent/20 text-sm sm:text-base"
                 >
                     <UserPlus size={20} />
                     Add New User
@@ -157,15 +157,15 @@ const AdminUsers = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-[#02140f] border-b border-[#449c80]/20">
-                                <th className="p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">User</th>
-                                <th className="p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Contact</th>
-                                <th className="p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Role</th>
-                                <th className="p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Joined</th>
-                                <th className="p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground text-right">Actions</th>
+                            <tr className="bg-[#02140f] border-b border-[#449c80]/20 whitespace-nowrap">
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">User</th>
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Contact</th>
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Role</th>
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Joined</th>
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-[#449c80]/10">
+                        <tbody className="divide-y divide-[#449c80]/10 whitespace-nowrap">
                             {loading ? (
                                 [1, 2, 3].map(i => (
                                     <tr key={i} className="animate-pulse">
@@ -175,18 +175,18 @@ const AdminUsers = () => {
                             ) : filteredUsers.length > 0 ? (
                                 filteredUsers.map((user) => (
                                     <tr key={user.id} className="hover:bg-[#449c80]/5 transition-colors group">
-                                        <td className="p-6">
+                                        <td className="p-4 sm:p-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent">
-                                                    <User size={20} />
+                                                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent flex-shrink-0">
+                                                    <User size={18} className="sm:w-5 sm:h-5" />
                                                 </div>
-                                                <div>
-                                                    <p className="font-bold text-foreground">{user.name}</p>
+                                                <div className="min-w-0">
+                                                    <p className="font-bold text-foreground truncate max-w-[120px] sm:max-w-none">{user.name}</p>
                                                     <p className="text-xs text-muted-foreground lowercase">ID: #{user.id}</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="p-6">
+                                        <td className="p-4 sm:p-6">
                                             <div className="space-y-1">
                                                 <div className="flex items-center gap-2 text-sm">
                                                     <Mail size={14} className="text-accent/60" />
@@ -198,28 +198,28 @@ const AdminUsers = () => {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="p-6">
-                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-accent/10 text-accent border border-accent/20`}>
+                                        <td className="p-4 sm:p-6">
+                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-accent/10 text-accent border border-accent/20`}>
                                                 <User size={12} />
                                                 {user.role}
                                             </span>
                                         </td>
-                                        <td className="p-6 text-sm text-muted-foreground">
+                                        <td className="p-4 sm:p-6 text-sm text-muted-foreground">
                                             {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
                                         </td>
-                                        <td className="p-6 text-right">
-                                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <td className="p-4 sm:p-6 text-right">
+                                            <div className="flex justify-end gap-1 sm:gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => handleOpenModal(user)}
-                                                    className="p-2 hover:bg-accent/10 text-accent rounded-lg transition-colors border border-transparent hover:border-accent/20"
+                                                    className="p-1.5 sm:p-2 hover:bg-accent/10 text-accent rounded-lg transition-colors border border-transparent hover:border-accent/20"
                                                 >
-                                                    <Edit2 size={18} />
+                                                    <Edit2 size={16} className="sm:w-[18px] sm:h-[18px]" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(user.id)}
-                                                    className="p-2 hover:bg-red-500/10 text-red-400 rounded-lg transition-colors border border-transparent hover:border-red-500/20"
+                                                    className="p-1.5 sm:p-2 hover:bg-red-500/10 text-red-400 rounded-lg transition-colors border border-transparent hover:border-red-500/20"
                                                 >
-                                                    <Trash2 size={18} />
+                                                    <Trash2 size={16} className="sm:w-[18px] sm:h-[18px]" />
                                                 </button>
                                             </div>
                                         </td>
@@ -255,79 +255,82 @@ const AdminUsers = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="fixed inset-0 m-auto w-full max-w-lg h-fit bg-[#032218] rounded-3xl border border-[#449c80]/30 shadow-2xl z-[61] overflow-hidden"
+                            className="fixed inset-4 m-auto w-[calc(100vw-32px)] sm:w-full sm:max-w-lg h-fit bg-[#032218] rounded-3xl border border-[#449c80]/30 shadow-2xl z-[61] overflow-hidden"
                         >
-                            <div className="p-8 border-b border-[#449c80]/20 flex justify-between items-center bg-[#02140f]">
-                                <h2 className="font-serif text-2xl font-bold">
+                            <div className="p-6 sm:p-8 border-b border-[#449c80]/20 flex justify-between items-center bg-[#02140f]">
+                                <h2 className="font-serif text-xl sm:text-2xl font-bold">
                                     {editingUser ? 'Edit User' : 'Create New User'}
                                 </h2>
-                                <button onClick={() => setIsModalOpen(false)} className="hover:rotate-90 transition-transform">
+                                <button onClick={() => setIsModalOpen(false)} className="hover:rotate-90 transition-transform p-1">
                                     <X size={24} className="text-muted-foreground" />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="p-8 space-y-5">
+                            <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-accent">Full Name</label>
+                                    <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Full Name</label>
                                     <input
                                         type="text"
                                         required
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all"
+                                        className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base"
                                         placeholder="John Doe"
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-widest text-accent">Email</label>
+                                        <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Email</label>
                                         <input
                                             type="email"
                                             required
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all"
+                                            className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base"
                                             placeholder="john@example.com"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-widest text-accent">Phone</label>
+                                        <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Phone</label>
                                         <input
                                             type="tel"
                                             value={formData.phone}
                                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                            className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all"
+                                            className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base"
                                             placeholder="017XXX..."
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-accent">
-                                        {editingUser ? 'New Password (Leave blank to keep current)' : 'Password'}
+                                    <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">
+                                        {editingUser ? 'New Password' : 'Password'}
                                     </label>
+                                    <p className="text-[10px] text-muted-foreground mb-1">
+                                        {editingUser && "(Leave blank to keep current)"}
+                                    </p>
                                     <input
                                         type="password"
                                         required={!editingUser}
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                        className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all"
+                                        className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base"
                                     />
                                 </div>
 
 
-                                <div className="pt-4 flex gap-4">
+                                <div className="pt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
                                     <button
                                         type="button"
                                         onClick={() => setIsModalOpen(false)}
-                                        className="flex-1 py-4 border border-[#449c80]/30 rounded-xl font-bold hover:bg-[#449c80]/10 transition-all"
+                                        className="flex-1 py-3 sm:py-4 border border-[#449c80]/30 rounded-xl font-bold hover:bg-[#449c80]/10 transition-all text-sm sm:text-base order-2 sm:order-1"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex-1 py-4 bg-accent text-accent-foreground rounded-xl font-bold hover:bg-gold transition-all shadow-lg shadow-accent/20"
+                                        className="flex-1 py-3 sm:py-4 bg-accent text-accent-foreground rounded-xl font-bold hover:bg-gold transition-all shadow-lg shadow-accent/20 text-sm sm:text-base order-1 sm:order-2"
                                     >
                                         {editingUser ? 'Save Changes' : 'Create Account'}
                                     </button>

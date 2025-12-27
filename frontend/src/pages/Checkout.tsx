@@ -16,7 +16,7 @@ const Checkout = () => {
     const [formData, setFormData] = useState({
         customerName: user?.name || '',
         customerEmail: user?.email || '',
-        customerPhone: '',
+        customerPhone: user?.phone || '',
         shippingAddress: '',
         paymentMethod: 'cash_on_delivery',
     });
@@ -90,29 +90,29 @@ const Checkout = () => {
     }
 
     return (
-        <div className="min-h-screen bg-background py-12 px-4">
+        <div className="min-h-screen bg-background py-8 sm:py-12 px-4">
             <div className="max-w-6xl mx-auto">
                 <button
                     onClick={() => navigate(-1)}
-                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
+                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 sm:mb-8 transition-colors"
                 >
                     <ArrowLeft size={20} />
                     Back
                 </button>
 
-                <h1 className="font-serif text-4xl mb-8">Checkout</h1>
+                <h1 className="font-serif text-3xl sm:text-4xl mb-6 sm:mb-8">Checkout</h1>
 
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Checkout Form */}
                     <div className="lg:col-span-2">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Customer Information */}
-                            <div className="bg-card p-6 rounded-2xl border border-border">
-                                <h2 className="font-serif text-2xl mb-4 flex items-center gap-2">
-                                    <User size={24} className="text-accent" />
+                            <div className="bg-card p-4 sm:p-6 rounded-2xl border border-border">
+                                <h2 className="font-serif text-xl sm:text-2xl mb-4 flex items-center gap-2">
+                                    <User size={22} className="text-accent sm:w-6 sm:h-6" />
                                     Customer Information
                                 </h2>
-                                <div className="grid md:grid-cols-2 gap-4">
+                                <div className="grid sm:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium mb-2">Full Name</label>
                                         <input
@@ -135,7 +135,7 @@ const Checkout = () => {
                                             className="w-full bg-background border border-border rounded-xl py-3 px-4 focus:border-accent outline-none transition-all"
                                         />
                                     </div>
-                                    <div className="md:col-span-2">
+                                    <div className="sm:col-span-2">
                                         <label className="block text-sm font-medium mb-2">Phone Number</label>
                                         <input
                                             type="tel"
@@ -150,9 +150,9 @@ const Checkout = () => {
                             </div>
 
                             {/* Shipping Address */}
-                            <div className="bg-card p-6 rounded-2xl border border-border">
-                                <h2 className="font-serif text-2xl mb-4 flex items-center gap-2">
-                                    <MapPin size={24} className="text-accent" />
+                            <div className="bg-card p-4 sm:p-6 rounded-2xl border border-border">
+                                <h2 className="font-serif text-xl sm:text-2xl mb-4 flex items-center gap-2">
+                                    <MapPin size={22} className="text-accent sm:w-6 sm:h-6" />
                                     Shipping Address
                                 </h2>
                                 <textarea
@@ -162,21 +162,21 @@ const Checkout = () => {
                                     required
                                     rows={4}
                                     placeholder="Enter your complete shipping address"
-                                    className="w-full bg-background border border-border rounded-xl py-3 px-4 focus:border-accent outline-none transition-all resize-none"
+                                    className="w-full bg-background border border-border rounded-xl py-3 px-4 focus:border-accent outline-none transition-all resize-none text-sm sm:text-base"
                                 />
                             </div>
 
                             {/* Payment Method */}
-                            <div className="bg-card p-6 rounded-2xl border border-border">
-                                <h2 className="font-serif text-2xl mb-4 flex items-center gap-2">
-                                    <CreditCard size={24} className="text-accent" />
+                            <div className="bg-card p-4 sm:p-6 rounded-2xl border border-border">
+                                <h2 className="font-serif text-xl sm:text-2xl mb-4 flex items-center gap-2">
+                                    <CreditCard size={22} className="text-accent sm:w-6 sm:h-6" />
                                     Payment Method
                                 </h2>
                                 <select
                                     name="paymentMethod"
                                     value={formData.paymentMethod}
                                     onChange={handleInputChange}
-                                    className="w-full bg-background border border-border rounded-xl py-3 px-4 focus:border-accent outline-none transition-all"
+                                    className="w-full bg-background border border-border rounded-xl py-3 px-4 focus:border-accent outline-none transition-all text-sm sm:text-base"
                                 >
                                     <option value="cash_on_delivery">Cash on Delivery</option>
                                     <option value="bkash">bKash</option>
@@ -190,7 +190,7 @@ const Checkout = () => {
                                 disabled={isProcessing}
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
-                                className="w-full btn-luxury bg-accent text-accent-foreground py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full btn-luxury bg-accent text-accent-foreground py-3 sm:py-4 text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isProcessing ? 'Processing...' : 'Place Order'}
                             </motion.button>
@@ -199,35 +199,35 @@ const Checkout = () => {
 
                     {/* Order Summary */}
                     <div className="lg:col-span-1">
-                        <div className="bg-card p-6 rounded-2xl border border-border sticky top-24">
-                            <h2 className="font-serif text-2xl mb-4">Order Summary</h2>
+                        <div className="bg-card p-4 sm:p-6 rounded-2xl border border-border sticky top-24">
+                            <h2 className="font-serif text-xl sm:text-2xl mb-4">Order Summary</h2>
                             <div className="space-y-4 mb-6">
                                 {items.map((item) => (
                                     <div key={item.id} className="flex gap-3">
-                                        <div className="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                                        <div className="w-14 sm:w-16 h-18 sm:h-20 rounded-lg overflow-hidden flex-shrink-0">
                                             <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="text-sm font-medium line-clamp-1">{item.name}</p>
-                                            <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
-                                            <p className="text-sm text-accent font-semibold">৳{(item.price * item.quantity).toLocaleString()}</p>
+                                            <p className="text-xs sm:text-sm font-medium line-clamp-1">{item.name}</p>
+                                            <p className="text-[10px] sm:text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                                            <p className="text-sm sm:text-sm text-accent font-semibold">৳{(item.price * item.quantity).toLocaleString()}</p>
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
                             <div className="space-y-2 border-t border-border pt-4">
-                                <div className="flex justify-between text-sm">
+                                <div className="flex justify-between text-xs sm:text-sm">
                                     <span className="text-muted-foreground">Subtotal</span>
                                     <span>৳{subtotal.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
+                                <div className="flex justify-between text-xs sm:text-sm">
                                     <span className="text-muted-foreground">Shipping</span>
                                     <span className={shippingFee === 0 ? 'text-accent' : ''}>
                                         {shippingFee === 0 ? 'Free' : `৳${shippingFee}`}
                                     </span>
                                 </div>
-                                <div className="flex justify-between font-semibold text-lg pt-2 border-t border-border">
+                                <div className="flex justify-between font-semibold text-base sm:text-lg pt-2 border-t border-border">
                                     <span>Total</span>
                                     <span className="text-accent">৳{total.toLocaleString()}</span>
                                 </div>

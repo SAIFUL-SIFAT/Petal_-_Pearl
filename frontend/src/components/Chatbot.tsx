@@ -102,6 +102,34 @@ const quickReplies: QuickReply[] = [
 ];
 
 const Chatbot = () => {
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    // Check if user is admin on component mount and when storage changes
+    useEffect(() => {
+        const checkAdminStatus = () => {
+            const userType = localStorage.getItem("userType");
+            setIsAdmin(userType === "admin");
+        };
+
+        // Check initially
+        checkAdminStatus();
+
+        // Listen for storage changes (in case user logs in/out in another tab)
+        const handleStorageChange = () => {
+            checkAdminStatus();
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        // Also check on any localStorage changes in the same tab
+        const interval = setInterval(checkAdminStatus, 1000);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            clearInterval(interval);
+        };
+    }, []);
+
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -168,6 +196,11 @@ const Chatbot = () => {
         handleSendMessage(keywords[0]);
     };
 
+    // Don't render anything if user is admin
+    if (isAdmin) {
+        return null;
+    }
+
     return (
         <>
             {/* Chat Button */}
@@ -196,7 +229,7 @@ const Chatbot = () => {
                         initial={{ opacity: 0, y: 100, scale: 0.8 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 100, scale: 0.8 }}
-                        className="fixed bottom-6 right-6 z-50 w-[380px] h-[600px] bg-card rounded-2xl shadow-2xl border border-border flex flex-col overflow-hidden"
+                        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-32px)] sm:w-[380px] h-[70vh] sm:h-[600px] bg-card rounded-2xl shadow-2xl border border-border flex flex-col overflow-hidden"
                     >
                         {/* Header */}
                         <div className="p-4 flex items-center justify-between" style={{ backgroundColor: '#795e1a', color: '#ffffff' }}>

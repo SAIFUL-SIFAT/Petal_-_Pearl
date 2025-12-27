@@ -63,15 +63,15 @@ const Dashboard = () => {
 
     return (
         <AdminLayout>
-            <div className="mb-10">
-                <h1 className="font-serif text-4xl font-bold mb-2">System Overview</h1>
-                <p className="text-muted-foreground">Welcome back, here's what's happening with Petal & Pearl today.</p>
+            <div className="mb-8 sm:mb-10">
+                <h1 className="font-serif text-2xl sm:text-4xl font-bold mb-2">System Overview</h1>
+                <p className="text-muted-foreground text-sm sm:text-base">Welcome back, here's what's happening with Petal & Pearl today.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
                 <StatCard
                     title="Total Revenue"
-                    value={`$${stats.earnings.toLocaleString()}`}
+                    value={`৳${stats.earnings.toLocaleString()}`}
                     icon={<DollarSign size={24} />}
                     trend="up"
                     trendValue="+12.5%"
@@ -114,7 +114,7 @@ const Dashboard = () => {
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#449c80" opacity={0.1} vertical={false} />
                                 <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `৳${value}`} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#02140f', borderColor: '#449c80', borderRadius: '12px', color: '#fff' }}
                                     itemStyle={{ color: '#d4af37' }}

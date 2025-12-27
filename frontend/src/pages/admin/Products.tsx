@@ -135,14 +135,14 @@ const AdminProducts = () => {
 
     return (
         <AdminLayout>
-            <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="mb-8 sm:mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
                 <div>
-                    <h1 className="font-serif text-4xl font-bold mb-2">Product Management</h1>
-                    <p className="text-muted-foreground">Manage inventory, prices, and product details.</p>
+                    <h1 className="font-serif text-2xl sm:text-4xl font-bold mb-2">Product Management</h1>
+                    <p className="text-muted-foreground text-sm sm:text-base">Manage inventory, prices, and product details.</p>
                 </div>
                 <button
                     onClick={() => handleOpenModal()}
-                    className="flex items-center gap-2 bg-accent text-accent-foreground px-6 py-3 rounded-xl font-bold hover:bg-gold transition-all shadow-lg shadow-accent/20"
+                    className="flex items-center justify-center gap-2 bg-accent text-accent-foreground px-4 sm:px-6 py-3 rounded-xl font-bold hover:bg-gold transition-all shadow-lg shadow-accent/20 text-sm sm:text-base"
                 >
                     <Plus size={20} />
                     Add New Product
@@ -168,15 +168,15 @@ const AdminProducts = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-[#02140f] border-b border-[#449c80]/20">
-                                <th className="p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Product</th>
-                                <th className="p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Category/Type</th>
-                                <th className="p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Price</th>
-                                <th className="p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
-                                <th className="p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground text-right">Actions</th>
+                            <tr className="bg-[#02140f] border-b border-[#449c80]/20 whitespace-nowrap">
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Product</th>
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Category/Type</th>
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Price</th>
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-[#449c80]/10">
+                        <tbody className="divide-y divide-[#449c80]/10 whitespace-nowrap">
                             {loading ? (
                                 [1, 2, 3].map(i => (
                                     <tr key={i} className="animate-pulse">
@@ -186,18 +186,18 @@ const AdminProducts = () => {
                             ) : filteredProducts.length > 0 ? (
                                 filteredProducts.map((product) => (
                                     <tr key={product.id} className="hover:bg-[#449c80]/5 transition-colors group">
-                                        <td className="p-6">
+                                        <td className="p-4 sm:p-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-lg bg-accent/20 overflow-hidden flex-shrink-0">
+                                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-accent/20 overflow-hidden flex-shrink-0">
                                                     <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                                                 </div>
-                                                <div>
-                                                    <p className="font-bold text-foreground">{product.name}</p>
+                                                <div className="min-w-0">
+                                                    <p className="font-bold text-foreground truncate max-w-[150px] sm:max-w-none">{product.name}</p>
                                                     <p className="text-xs text-muted-foreground">ID: #{product.id}</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="p-6">
+                                        <td className="p-4 sm:p-6">
                                             <div className="space-y-1">
                                                 <div className="flex items-center gap-2 text-sm font-medium">
                                                     <Tag size={14} className="text-accent/60" />
@@ -208,17 +208,17 @@ const AdminProducts = () => {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="p-6">
+                                        <td className="p-4 sm:p-6">
                                             <div className="text-sm font-bold text-accent">
-                                                ${product.price}
+                                                ৳{product.price.toLocaleString()}
                                                 {product.originalPrice && (
                                                     <span className="text-xs text-muted-foreground line-through ml-2">
-                                                        ${product.originalPrice}
+                                                        ৳{product.originalPrice.toLocaleString()}
                                                     </span>
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="p-6">
+                                        <td className="p-4 sm:p-6">
                                             <div className="flex gap-2">
                                                 {product.isNew && (
                                                     <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-[10px] font-bold uppercase rounded-md border border-blue-500/30">New</span>
@@ -231,19 +231,19 @@ const AdminProducts = () => {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="p-6 text-right">
-                                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <td className="p-4 sm:p-6 text-right">
+                                            <div className="flex justify-end gap-1 sm:gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => handleOpenModal(product)}
-                                                    className="p-2 hover:bg-accent/10 text-accent rounded-lg transition-colors border border-transparent hover:border-accent/20"
+                                                    className="p-1.5 sm:p-2 hover:bg-accent/10 text-accent rounded-lg transition-colors border border-transparent hover:border-accent/20"
                                                 >
-                                                    <Edit2 size={18} />
+                                                    <Edit2 size={16} className="sm:w-[18px] sm:h-[18px]" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(product.id)}
-                                                    className="p-2 hover:bg-red-500/10 text-red-400 rounded-lg transition-colors border border-transparent hover:border-red-500/20"
+                                                    className="p-1.5 sm:p-2 hover:bg-red-500/10 text-red-400 rounded-lg transition-colors border border-transparent hover:border-red-500/20"
                                                 >
-                                                    <Trash2 size={18} />
+                                                    <Trash2 size={16} className="sm:w-[18px] sm:h-[18px]" />
                                                 </button>
                                             </div>
                                         </td>
@@ -279,51 +279,51 @@ const AdminProducts = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="fixed inset-0 m-auto w-full max-w-2xl h-fit max-h-[90vh] overflow-y-auto bg-[#032218] rounded-3xl border border-[#449c80]/30 shadow-2xl z-[61]"
+                            className="fixed inset-4 m-auto w-[calc(100vw-32px)] sm:w-full sm:max-w-2xl h-fit max-h-[90vh] overflow-y-auto bg-[#032218] rounded-3xl border border-[#449c80]/30 shadow-2xl z-[61]"
                         >
-                            <div className="p-8 border-b border-[#449c80]/20 flex justify-between items-center bg-[#02140f] sticky top-0 z-10">
-                                <h2 className="font-serif text-2xl font-bold">
+                            <div className="p-6 sm:p-8 border-b border-[#449c80]/20 flex justify-between items-center bg-[#02140f] sticky top-0 z-10">
+                                <h2 className="font-serif text-xl sm:text-2xl font-bold">
                                     {editingProduct ? 'Edit Product' : 'Add New Product'}
                                 </h2>
-                                <button onClick={() => setIsModalOpen(false)} className="hover:rotate-90 transition-transform">
+                                <button onClick={() => setIsModalOpen(false)} className="hover:rotate-90 transition-transform p-1">
                                     <X size={24} className="text-muted-foreground" />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="p-8 space-y-6">
-                                <div className="grid md:grid-cols-2 gap-6">
+                            <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {/* Left Column */}
                                     <div className="space-y-4">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold uppercase tracking-widest text-accent">Product Name</label>
+                                            <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Product Name</label>
                                             <input
                                                 type="text"
                                                 required
                                                 value={formData.name}
                                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all"
+                                                className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base"
                                                 placeholder="Elegant Silk Saree"
                                             />
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold uppercase tracking-widest text-accent">Category</label>
+                                            <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Category</label>
                                             <input
                                                 type="text"
                                                 required
                                                 value={formData.category}
                                                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                                className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all"
+                                                className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base"
                                                 placeholder="Jamdani, Necklace, etc."
                                             />
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold uppercase tracking-widest text-accent">Type</label>
+                                            <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Type</label>
                                             <select
                                                 value={formData.type}
                                                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                                className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-foreground appearance-none"
+                                                className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-foreground appearance-none text-sm sm:text-base"
                                             >
                                                 <option value="clothing">Clothing</option>
                                                 <option value="ornament">Ornament</option>
@@ -332,7 +332,7 @@ const AdminProducts = () => {
 
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase tracking-widest text-accent">Price ($)</label>
+                                                <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Price (৳)</label>
                                                 <input
                                                     type="number"
                                                     required
@@ -340,20 +340,20 @@ const AdminProducts = () => {
                                                     step="0.01"
                                                     value={formData.price}
                                                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                                    className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all"
+                                                    className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base"
                                                     placeholder="0.00"
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase tracking-widest text-accent">Orig. Price ($)</label>
+                                                <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Orig. Price (৳)</label>
                                                 <input
                                                     type="number"
                                                     min="0"
                                                     step="0.01"
                                                     value={formData.originalPrice}
                                                     onChange={(e) => setFormData({ ...formData, originalPrice: e.target.value })}
-                                                    className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all"
-                                                    placeholder="Optional"
+                                                    className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base"
+                                                    placeholder="Opt."
                                                 />
                                             </div>
                                         </div>
@@ -362,17 +362,15 @@ const AdminProducts = () => {
                                     {/* Right Column */}
                                     <div className="space-y-4">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold uppercase tracking-widest text-accent">Image URL</label>
-                                            <div className="flex gap-2">
-                                                <input
-                                                    type="url"
-                                                    required
-                                                    value={formData.image}
-                                                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                                                    className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all"
-                                                    placeholder="https://..."
-                                                />
-                                            </div>
+                                            <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Image URL</label>
+                                            <input
+                                                type="url"
+                                                required
+                                                value={formData.image}
+                                                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                                                className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base"
+                                                placeholder="https://..."
+                                            />
                                             {/* Image Preview */}
                                             <div className="aspect-video w-full bg-[#02140f] rounded-xl border border-[#449c80]/30 overflow-hidden flex items-center justify-center mt-2 group relative">
                                                 {formData.image ? (
@@ -380,16 +378,16 @@ const AdminProducts = () => {
                                                 ) : (
                                                     <div className="text-muted-foreground flex flex-col items-center gap-2">
                                                         <ImageIcon size={32} className="opacity-50" />
-                                                        <span className="text-xs">No image preview</span>
+                                                        <span className="text-[10px]">No image preview</span>
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
 
-                                        <div className="flex gap-6 pt-4">
+                                        <div className="flex flex-col gap-4 pt-2">
                                             <label className="flex items-center gap-3 cursor-pointer group">
-                                                <div className={`w-6 h-6 rounded border border-accent flex items-center justify-center transition-colors ${formData.isNew ? 'bg-accent' : 'bg-transparent'}`}>
-                                                    {formData.isNew && <Check size={16} className="text-primary" />}
+                                                <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded border border-accent flex items-center justify-center transition-colors ${formData.isNew ? 'bg-accent' : 'bg-transparent'}`}>
+                                                    {formData.isNew && <Check size={14} className="text-primary" />}
                                                 </div>
                                                 <input
                                                     type="checkbox"
@@ -397,12 +395,12 @@ const AdminProducts = () => {
                                                     onChange={(e) => setFormData({ ...formData, isNew: e.target.checked })}
                                                     className="hidden"
                                                 />
-                                                <span className="text-sm font-medium group-hover:text-accent transition-colors">Mark as New Release</span>
+                                                <span className="text-xs sm:text-sm font-medium group-hover:text-accent transition-colors">Mark as New Release</span>
                                             </label>
 
                                             <label className="flex items-center gap-3 cursor-pointer group">
-                                                <div className={`w-6 h-6 rounded border border-accent flex items-center justify-center transition-colors ${formData.isSale ? 'bg-accent' : 'bg-transparent'}`}>
-                                                    {formData.isSale && <Check size={16} className="text-primary" />}
+                                                <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded border border-accent flex items-center justify-center transition-colors ${formData.isSale ? 'bg-accent' : 'bg-transparent'}`}>
+                                                    {formData.isSale && <Check size={14} className="text-primary" />}
                                                 </div>
                                                 <input
                                                     type="checkbox"
@@ -410,23 +408,23 @@ const AdminProducts = () => {
                                                     onChange={(e) => setFormData({ ...formData, isSale: e.target.checked })}
                                                     className="hidden"
                                                 />
-                                                <span className="text-sm font-medium group-hover:text-accent transition-colors">Mark as On Sale</span>
+                                                <span className="text-xs sm:text-sm font-medium group-hover:text-accent transition-colors">Mark as On Sale</span>
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="pt-6 flex gap-4 border-t border-[#449c80]/20">
+                                <div className="pt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 border-t border-[#449c80]/20">
                                     <button
                                         type="button"
                                         onClick={() => setIsModalOpen(false)}
-                                        className="flex-1 py-4 border border-[#449c80]/30 rounded-xl font-bold hover:bg-[#449c80]/10 transition-all"
+                                        className="flex-1 py-3 sm:py-4 border border-[#449c80]/30 rounded-xl font-bold hover:bg-[#449c80]/10 transition-all text-sm sm:text-base"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex-1 py-4 bg-accent text-accent-foreground rounded-xl font-bold hover:bg-gold transition-all shadow-lg shadow-accent/20"
+                                        className="flex-1 py-3 sm:py-4 bg-accent text-accent-foreground rounded-xl font-bold hover:bg-gold transition-all shadow-lg shadow-accent/20 text-sm sm:text-base"
                                     >
                                         {editingProduct ? 'Save Changes' : 'Create Product'}
                                     </button>
