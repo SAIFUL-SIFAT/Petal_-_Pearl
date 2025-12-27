@@ -1,73 +1,196 @@
-# Welcome to your Lovable project
+# Petal & Pearl - E-Commerce Platform
 
-## Project info
+A modern, full-stack e-commerce platform for clothing and ornaments built with React, TypeScript, and NestJS.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🚀 Features
 
-## How can I edit this code?
+### Customer Features
+- 🛍️ Browse products by category (Clothing & Ornaments)
+- 🛒 Shopping cart with real-time updates
+- 💳 Complete checkout flow with multiple payment methods
+- 📦 Order tracking and history
+- 💬 AI-powered chatbot for customer support
+- 👤 User authentication and profile management
+- 📱 Fully responsive design
 
-There are several ways of editing your application.
+### Admin Features
+- 📊 Real-time dashboard with analytics
+- 📦 Product management (CRUD operations)
+- 👥 User management
+- 📈 Revenue and sales tracking
+- 🔒 Role-based access control
 
-**Use Lovable**
+## 🛠️ Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### Frontend
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui + Radix UI
+- **Animations**: Framer Motion
+- **State Management**: React Context + TanStack Query
+- **Routing**: React Router v6
+- **Form Handling**: React Hook Form + Zod
 
-Changes made via Lovable will be committed automatically to this repo.
+### Backend
+- **Framework**: NestJS
+- **Database**: PostgreSQL
+- **ORM**: TypeORM
+- **Authentication**: JWT + Passport
+- **Validation**: class-validator
+- **Security**: Helmet, CORS
 
-**Use your preferred IDE**
+## 📋 Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js 18+ and npm
+- PostgreSQL 12+
+- Git
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🔧 Installation
 
-Follow these steps:
+### 1. Clone the repository
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+git clone https://github.com/SAIFUL-SIFAT/Petal_-_Pearl.git
+cd Petal_-_Pearl
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 2. Backend Setup
 
-# Step 3: Install the necessary dependencies.
-npm i
+```bash
+cd backend
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Install dependencies
+npm install
+
+# Create .env file
+cp .env.example .env
+
+# Update .env with your database credentials
+# DB_HOST=localhost
+# DB_PORT=5432
+# DB_USERNAME=postgres
+# DB_PASSWORD=your_password
+# DB_NAME=petal_&_pearl
+# JWT_SECRET=your_secret_key
+# FRONTEND_URL=http://localhost:8080
+
+# Start the backend server
+npm run start:dev
+```
+
+The backend will run on `http://localhost:3000`
+
+### 3. Frontend Setup
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Create .env file
+echo "VITE_API_URL=http://localhost:3000" > .env
+
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The frontend will run on `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📁 Project Structure
 
-**Use GitHub Codespaces**
+```
+petal-pearl-boutique/
+├── backend/
+│   ├── src/
+│   │   ├── orders/          # Order management
+│   │   ├── products/        # Product CRUD
+│   │   ├── users/           # User authentication
+│   │   ├── app.module.ts    # Main module
+│   │   └── main.ts          # Entry point
+│   └── package.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/      # Reusable components
+│   │   ├── pages/           # Page components
+│   │   ├── hooks/           # Custom hooks
+│   │   ├── context/         # React contexts
+│   │   ├── api/             # API services
+│   │   └── App.tsx          # Root component
+│   └── package.json
+│
+└── README.md
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔐 Environment Variables
 
-## What technologies are used for this project?
+### Backend (.env)
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=your_password
+DB_NAME=petal_&_pearl
+DB_SYNC=true
+PORT=3000
+FRONTEND_URL=http://localhost:8080
+JWT_SECRET=your_secret_key
+```
 
-This project is built with:
+### Frontend (.env)
+```env
+VITE_API_URL=http://localhost:3000
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🚀 Deployment
 
-## How can I deploy this project?
+### Backend Deployment
+1. Set `DB_SYNC=false` in production
+2. Use environment variables for all sensitive data
+3. Enable HTTPS
+4. Configure proper CORS settings
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Frontend Deployment
+1. Build the production bundle:
+   ```bash
+   npm run build
+   ```
+2. Deploy the `dist` folder to your hosting service
+3. Update `VITE_API_URL` to your production API URL
 
-## Can I connect a custom domain to my Lovable project?
+## 📝 Available Scripts
 
-Yes, you can!
+### Backend
+- `npm run start:dev` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run start:prod` - Start production server
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Frontend
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 👨‍💻 Author
+
+**Saiful Sifat**
+- GitHub: [@SAIFUL-SIFAT](https://github.com/SAIFUL-SIFAT)
+
+## 🙏 Acknowledgments
+
+- shadcn/ui for the beautiful UI components
+- NestJS for the robust backend framework
+- React team for the amazing frontend library
