@@ -8,7 +8,8 @@ import {
     CreditCard,
     LogOut,
     Menu,
-    X
+    X,
+    Home
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -42,6 +43,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         { name: 'Users', path: '/admin/users', icon: <Users size={20} /> },
         { name: 'Orders', path: '/admin/orders', icon: <ShoppingCart size={20} /> },
         { name: 'Payments', path: '/admin/payments', icon: <CreditCard size={20} /> },
+        { name: 'Home', path: '/', icon: <Home size={20} /> },
     ];
 
     const handleLogout = () => {

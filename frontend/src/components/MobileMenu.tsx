@@ -14,6 +14,7 @@ const menuItems = [
   { name: 'Ornaments', href: '/ornaments' },
   { name: 'New Arrivals', href: '/collections' },
   { name: 'Sale', href: '/collections' },
+  { name: 'Favorites', href: '/favorites' },
   { name: 'About Us', href: '/#about' },
   { name: 'Contact', href: '/#contact' },
 ];

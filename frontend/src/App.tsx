@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Ornaments from "./pages/Ornaments";
 import Collections from "./pages/Collections";
 import Profile from "./pages/Profile";
+import Favorites from "./pages/Favorites";
 import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
@@ -18,6 +19,8 @@ import Chatbot from "./components/Chatbot";
 
 import { CartProvider } from "./hooks/use-cart";
 import { AuthProvider } from "./context/AuthContext";
+import { WishlistProvider } from "./context/WishlistContext";
+import { QuickViewProvider } from "./context/QuickViewContext";
 
 const queryClient = new QueryClient();
 
@@ -26,28 +29,33 @@ const App = () => (
     <BrowserRouter>
       <CartProvider>
         <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <Chatbot />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/ornaments" element={<Ornaments />} />
-              <Route path="/collections" element={<Collections />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/orders" element={<Orders />} />
+          <WishlistProvider>
+            <QuickViewProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <Chatbot />
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/ornaments" element={<Ornaments />} />
+                  <Route path="/collections" element={<Collections />} />
+                  <Route path="/favorites" element={<Favorites />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/orders" element={<Orders />} />
 
-              <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-                <Route path="/admin/dashboard" element={<Dashboard />} />
-                <Route path="/admin/products" element={<AdminProducts />} />
-                <Route path="/admin/users" element={<AdminUsers />} />
-              </Route>
+                  <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+                    <Route path="/admin/dashboard" element={<Dashboard />} />
+                    <Route path="/admin/products" element={<AdminProducts />} />
+                    <Route path="/admin/users" element={<AdminUsers />} />
+                  </Route>
 
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </TooltipProvider>
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </TooltipProvider>
+            </QuickViewProvider>
+          </WishlistProvider>
         </AuthProvider>
       </CartProvider>
     </BrowserRouter>

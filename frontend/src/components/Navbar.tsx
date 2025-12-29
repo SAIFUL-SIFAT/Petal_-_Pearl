@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, User, Search, Menu, X } from 'lucide-react';
+import { ShoppingBag, User, Search, Menu, X, LayoutDashboard } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 
@@ -80,6 +80,18 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
             <div className="flex items-center">
               {isAuthenticated ? (
                 <div className="flex items-center gap-2 sm:gap-4">
+                  {user?.role === 'admin' && (
+                    <Link to="/admin/dashboard" className="hidden lg:block">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`text-[10px] sm:text-xs uppercase tracking-widest px-3 sm:px-4 py-1.5 sm:py-2 border border-accent/30 flex items-center gap-2 transition-all duration-300 rounded-full ${isScrolled ? 'text-accent hover:bg-accent hover:text-accent-foreground' : 'text-cream hover:bg-gold hover:text-black border-gold/30'}`}
+                      >
+                        <LayoutDashboard size={14} />
+                        Admin
+                      </motion.button>
+                    </Link>
+                  )}
                   <Link to="/profile" className="hover:opacity-80 transition-opacity">
                     <span className={`text-sm hidden lg:block ${isScrolled ? 'text-foreground' : 'text-cream'}`}>
                       Hello, <span className="font-semibold text-accent">{user?.name}</span>

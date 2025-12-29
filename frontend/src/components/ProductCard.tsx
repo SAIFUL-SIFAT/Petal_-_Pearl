@@ -2,6 +2,9 @@ import { motion } from 'framer-motion';
 import { ShoppingBag, Heart, Eye } from 'lucide-react';
 import { useState } from 'react';
 
+import { useWishlist } from '@/context/WishlistContext';
+import { useQuickView } from '@/context/QuickViewContext';
+
 export interface Product {
   id: number;
   name: string;
@@ -22,7 +25,9 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { openQuickView } = useQuickView();
+  const isWishlisted = isInWishlist(product.id);
 
   return (
     <motion.div
@@ -79,7 +84,7 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
             whileTap={{ scale: 0.9 }}
             onClick={(e) => {
               e.stopPropagation();
-              setIsWishlisted(!isWishlisted);
+              isWishlisted ? removeFromWishlist(product.id) : addToWishlist(product);
             }}
             className={`p-1.5 sm:p-2 rounded-full backdrop-blur-sm transition-colors ${isWishlisted
               ? 'bg-destructive text-destructive-foreground'
@@ -91,6 +96,10 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              openQuickView(product);
+            }}
             className="p-1.5 sm:p-2 bg-background/80 rounded-full backdrop-blur-sm text-foreground hover:bg-background transition-colors"
           >
             <Eye size={16} className="sm:w-[18px] sm:h-[18px]" />

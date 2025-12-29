@@ -7,7 +7,11 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
-    const { user, isAuthenticated } = useAuth();
+    const { user, isAuthenticated, isLoading } = useAuth();
+
+    if (isLoading) {
+        return null; // Or a loading spinner
+    }
 
     if (!isAuthenticated) {
         // Redirect to home if not logged in (assuming login modal is accessible there)

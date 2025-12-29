@@ -3,7 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import PageLayout from '@/components/PageLayout';
 import { motion } from 'framer-motion';
 import { User, Mail, Phone, Calendar, Shield, Package } from 'lucide-react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 
 const Profile = () => {
     const { user, isAuthenticated } = useAuth();
@@ -79,9 +79,9 @@ const Profile = () => {
                                         Quick Actions
                                     </h3>
                                     <div className="flex flex-wrap gap-4">
-                                        <button className="px-6 py-3 bg-background border border-border rounded-xl hover:border-accent hover:text-accent transition-all flex items-center gap-2">
+                                        <Link to="/orders" className="px-6 py-3 bg-background border border-border rounded-xl hover:border-accent hover:text-accent transition-all flex items-center gap-2">
                                             <Package size={18} /> View My Orders
-                                        </button>
+                                        </Link>
                                         <button className="px-6 py-3 bg-background border border-border rounded-xl hover:border-accent hover:text-accent transition-all flex items-center gap-2">
                                             <Shield size={18} /> Privacy Settings
                                         </button>

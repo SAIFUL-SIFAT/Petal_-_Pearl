@@ -132,12 +132,12 @@ const Footer = () => {
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3 text-foreground/70">
                 <MapPin size={18} className="flex-shrink-0 mt-0.5" />
-                <span>House 45, Road 12, Gulshan-2<br />Dhaka 1212, Bangladesh</span>
+                <span>208,BDDL PARK<br />Dhaka 1217, Bangladesh</span>
               </li>
               <li>
-                <a href="tel:+8801XXXXXXXXX" className="flex items-center gap-3 text-foreground/70 hover:text-accent transition-colors">
+                <a href="tel:+8801758761248" className="flex items-center gap-3 text-foreground/70 hover:text-accent transition-colors">
                   <Phone size={18} />
-                  <span>+880 1XXX-XXXXXX</span>
+                  <span>+880 1758761248</span>
                 </a>
               </li>
               <li>
