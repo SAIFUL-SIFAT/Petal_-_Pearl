@@ -17,6 +17,9 @@ export class Product {
     @Column()
     image: string;
 
+    @Column({ type: 'text', nullable: true })
+    description: string;
+
     @Column()
     category: string;
 
@@ -28,4 +31,7 @@ export class Product {
 
     @Column({ type: 'enum', enum: ['clothing', 'ornament'] })
     type: 'clothing' | 'ornament';
+
+    @Column({ default: 0 })
+    stock: number;
 }

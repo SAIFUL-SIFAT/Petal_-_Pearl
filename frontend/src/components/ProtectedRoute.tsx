@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import AdminNotifications from './AdminNotifications';
 
 interface ProtectedRouteProps {
     allowedRoles?: string[];
@@ -23,7 +24,12 @@ const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
         return <Navigate to="/" replace />;
     }
 
-    return <Outlet />;
+    return (
+        <>
+            {user?.role === 'admin' && <AdminNotifications />}
+            <Outlet />
+        </>
+    );
 };
 
 export default ProtectedRoute;

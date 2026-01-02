@@ -35,8 +35,10 @@ const AdminProducts = () => {
         price: '',
         originalPrice: '',
         image: '',
+        description: '',
         category: '',
         type: 'clothing',
+        stock: '0',
         isNew: false,
         isSale: false
     });
@@ -101,8 +103,10 @@ const AdminProducts = () => {
                 price: product.price,
                 originalPrice: product.originalPrice || '',
                 image: product.image,
+                description: product.description || '',
                 category: product.category,
                 type: product.type,
+                stock: (product.stock || 0).toString(),
                 isNew: product.isNew,
                 isSale: product.isSale
             });
@@ -115,8 +119,10 @@ const AdminProducts = () => {
                 price: '',
                 originalPrice: '',
                 image: '',
+                description: '',
                 category: '',
                 type: 'clothing',
+                stock: '0',
                 isNew: false,
                 isSale: false
             });
@@ -160,6 +166,7 @@ const AdminProducts = () => {
                 image: imageUrl,
                 price: parseFloat(formData.price),
                 originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
+                stock: parseInt(formData.stock) || 0,
             };
 
             if (editingProduct) {
@@ -195,9 +202,12 @@ const AdminProducts = () => {
         }
     };
 
+    const [filterType, setFilterType] = useState<'all' | 'clothing' | 'ornament'>('all');
+
     const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchTerm.toLowerCase())
+        (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (filterType === 'all' || product.type === filterType)
     );
 
     return (
@@ -216,9 +226,9 @@ const AdminProducts = () => {
                 </button>
             </div>
 
-            {/* Search */}
-            <div className="bg-[#032218] p-4 rounded-2xl border border-[#449c80]/20 mb-8">
-                <div className="relative">
+            {/* Search and Filters */}
+            <div className="bg-[#032218] p-4 rounded-2xl border border-[#449c80]/20 mb-8 flex flex-col md:flex-row gap-4">
+                <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
                     <input
                         type="text"
@@ -227,6 +237,20 @@ const AdminProducts = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full bg-[#02140f] border border-[#449c80]/20 rounded-xl py-3 pl-12 pr-4 focus:border-accent outline-none transition-all"
                     />
+                </div>
+                <div className="flex gap-2">
+                    {['all', 'clothing', 'ornament'].map((type) => (
+                        <button
+                            key={type}
+                            onClick={() => setFilterType(type as any)}
+                            className={`px-4 py-2 rounded-xl text-sm font-bold capitalize transition-all border ${filterType === type
+                                ? 'bg-accent text-accent-foreground border-accent'
+                                : 'bg-[#02140f] text-muted-foreground border-[#449c80]/20 hover:border-accent/50'
+                                }`}
+                        >
+                            {type}
+                        </button>
+                    ))}
                 </div>
             </div>
 
@@ -239,6 +263,7 @@ const AdminProducts = () => {
                                 <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Product</th>
                                 <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Category/Type</th>
                                 <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Price</th>
+                                <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Stock</th>
                                 <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
                                 <th className="p-4 sm:p-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground text-right">Actions</th>
                             </tr>
@@ -283,6 +308,14 @@ const AdminProducts = () => {
                                                         ৳{product.originalPrice.toLocaleString()}
                                                     </span>
                                                 )}
+                                            </div>
+                                        </td>
+                                        <td className="p-4 sm:p-6">
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full ${product.stock > 10 ? 'bg-green-500' : product.stock > 0 ? 'bg-yellow-500' : 'bg-red-500'}`} />
+                                                <span className={`font-mono font-bold ${product.stock === 0 ? 'text-red-400' : 'text-foreground'}`}>
+                                                    {product.stock || 0}
+                                                </span>
                                             </div>
                                         </td>
                                         <td className="p-4 sm:p-6">
@@ -397,6 +430,16 @@ const AdminProducts = () => {
                                             </select>
                                         </div>
 
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Description</label>
+                                            <textarea
+                                                value={formData.description}
+                                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                                className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base min-h-[100px] resize-none"
+                                                placeholder=" detailed product description..."
+                                            />
+                                        </div>
+
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Price (৳)</label>
@@ -421,6 +464,22 @@ const AdminProducts = () => {
                                                     onChange={(e) => setFormData({ ...formData, originalPrice: e.target.value })}
                                                     className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 px-4 outline-none focus:border-accent transition-all text-sm sm:text-base"
                                                     placeholder="Opt."
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent">Inventory Count (Stock)</label>
+                                            <div className="relative">
+                                                <Package size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-accent/50" />
+                                                <input
+                                                    type="number"
+                                                    required
+                                                    min="0"
+                                                    value={formData.stock}
+                                                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                                                    className="w-full bg-[#02140f] border border-[#449c80]/30 rounded-xl py-3 pl-12 pr-4 outline-none focus:border-accent transition-all text-sm sm:text-base font-mono"
+                                                    placeholder="0"
                                                 />
                                             </div>
                                         </div>

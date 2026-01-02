@@ -9,10 +9,13 @@ import {
     LogOut,
     Menu,
     X,
-    Home
+    Home,
+    Bell
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { notificationApi } from '@/api/services';
 
 interface AdminLayoutProps {
     children: React.ReactNode;
@@ -22,6 +25,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     const { user, logout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
+    const { toast } = useToast();
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(window.innerWidth > 1024);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
@@ -37,12 +41,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+
     const menuItems = [
         { name: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
         { name: 'Products', path: '/admin/products', icon: <Package size={20} /> },
+        { name: 'Inventory', path: '/admin/inventory', icon: <Package size={20} /> },
         { name: 'Users', path: '/admin/users', icon: <Users size={20} /> },
-        { name: 'Orders', path: '/admin/orders', icon: <ShoppingCart size={20} /> },
-        { name: 'Payments', path: '/admin/payments', icon: <CreditCard size={20} /> },
+        { name: 'Orders & Payments', path: '/admin/orders', icon: <ShoppingCart size={20} /> },
+        // { name: 'Payments', path: '/admin/payments', icon: <CreditCard size={20} /> },
         { name: 'Home', path: '/', icon: <Home size={20} /> },
     ];
 

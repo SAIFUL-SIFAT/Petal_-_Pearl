@@ -11,7 +11,9 @@ import Favorites from "./pages/Favorites";
 import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
+import AdminInventory from "./pages/admin/Inventory";
 import AdminUsers from "./pages/admin/Users";
+import AdminOrders from "./pages/admin/Orders";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Orders from "./pages/Orders";
@@ -27,8 +29,8 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <CartProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <CartProvider>
           <WishlistProvider>
             <QuickViewProvider>
               <TooltipProvider>
@@ -39,15 +41,19 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/ornaments" element={<Ornaments />} />
                   <Route path="/collections" element={<Collections />} />
-                  <Route path="/favorites" element={<Favorites />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route path="/orders" element={<Orders />} />
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/favorites" element={<Favorites />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/orders" element={<Orders />} />
+                  </Route>
 
                   <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                     <Route path="/admin/dashboard" element={<Dashboard />} />
                     <Route path="/admin/products" element={<AdminProducts />} />
+                    <Route path="/admin/inventory" element={<AdminInventory />} />
                     <Route path="/admin/users" element={<AdminUsers />} />
+                    <Route path="/admin/orders" element={<AdminOrders />} />
                   </Route>
 
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
@@ -56,8 +62,8 @@ const App = () => (
               </TooltipProvider>
             </QuickViewProvider>
           </WishlistProvider>
-        </AuthProvider>
-      </CartProvider>
+        </CartProvider>
+      </AuthProvider>
     </BrowserRouter>
   </QueryClientProvider>
 );

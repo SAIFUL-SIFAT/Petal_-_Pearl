@@ -26,7 +26,13 @@ export class Order {
     totalAmount: number;
 
     @Column({ default: 'pending' })
-    status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+    status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+
+    @Column({ default: 'pending' })
+    paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+
+    @Column({ type: 'varchar', nullable: true })
+    transactionId: string | null;
 
     @Column()
     shippingAddress: string;
@@ -41,7 +47,7 @@ export class Order {
     customerPhone: string;
 
     @Column({ nullable: true })
-    paymentMethod: string;
+    paymentMethod: 'cash_on_delivery' | 'bkash' | 'nagad' | 'bank_transfer';
 
     @CreateDateColumn()
     createdAt: Date;

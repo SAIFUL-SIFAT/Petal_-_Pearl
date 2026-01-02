@@ -41,6 +41,10 @@ export class CreateOrderDto {
     @IsString()
     customerPhone: string;
 
+    @IsNotEmpty()
     @IsString()
-    paymentMethod: string;
+    paymentMethod: 'cash_on_delivery' | 'bkash' | 'nagad' | 'bank_transfer';
+
+    @IsString()
+    transactionId?: string;
 }

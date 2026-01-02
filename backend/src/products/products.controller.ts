@@ -44,7 +44,7 @@ export class ProductsController {
             fileSize: 5 * 1024 * 1024, // 5MB
         }
     }))
-    uploadFile(@UploadedFile() file: Express.Multer.File) {
+    uploadFile(@UploadedFile() file: any) {
         if (!file) {
             throw new Error('File upload failed');
         }

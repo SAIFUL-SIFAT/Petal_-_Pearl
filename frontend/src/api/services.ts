@@ -29,4 +29,10 @@ export const orderApi = {
     getByUser: (userId: number) => api.get(`/orders/user/${userId}`),
     getById: (id: number) => api.get(`/orders/${id}`),
     updateStatus: (id: number, status: string) => api.patch(`/orders/${id}/status`, { status }),
+    updatePaymentStatus: (id: number, paymentStatus: string) => api.patch(`/orders/${id}/payment-status`, { paymentStatus }),
+};
+
+export const notificationApi = {
+    getUnread: () => api.get('/notifications/unread'),
+    markAsRead: (id: number) => api.patch(`/notifications/${id}/read`),
 };

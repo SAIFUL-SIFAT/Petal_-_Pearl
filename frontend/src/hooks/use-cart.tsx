@@ -46,7 +46,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             description: `${product.name} has been added to your bag.`,
         });
 
-        setTimeout(() => setIsCartOpen(true), 300);
+
     }, [toast]);
 
     const updateQuantity = useCallback((id: number, quantity: number) => {

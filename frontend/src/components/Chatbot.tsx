@@ -101,8 +101,11 @@ const quickReplies: QuickReply[] = [
     { label: '🕐 Opening Hours', keywords: ['hours'] },
 ];
 
+import { useLocation } from 'react-router-dom';
+
 const Chatbot = () => {
     const [isAdmin, setIsAdmin] = useState(false);
+    const location = useLocation();
 
     // Check if user is admin on component mount and when storage changes
     useEffect(() => {
@@ -196,8 +199,8 @@ const Chatbot = () => {
         handleSendMessage(keywords[0]);
     };
 
-    // Don't render anything if user is admin
-    if (isAdmin) {
+    // Don't render anything if user is admin or on admin route
+    if (isAdmin || location.pathname.startsWith('/admin')) {
         return null;
     }
 

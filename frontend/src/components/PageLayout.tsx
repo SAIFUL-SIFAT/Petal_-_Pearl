@@ -4,6 +4,8 @@ import MobileMenu from './MobileMenu';
 import AuthModal from './AuthModal';
 import CartSidebar from './CartSidebar';
 import Footer from './Footer';
+import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/hooks/use-cart';
 
 interface PageLayoutProps {
@@ -14,6 +16,8 @@ interface PageLayoutProps {
 const PageLayout = ({ children, showFooter = true }: PageLayoutProps) => {
     const [isAuthOpen, setIsAuthOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { isAuthenticated } = useAuth();
+    const { toast } = useToast();
     const {
         cartItems,
         cartCount,
@@ -23,6 +27,19 @@ const PageLayout = ({ children, showFooter = true }: PageLayoutProps) => {
         removeItem,
         handleCheckout
     } = useCart();
+
+    const handleCheckoutClick = () => {
+        if (!isAuthenticated) {
+            setIsAuthOpen(true);
+            toast({
+                title: "Login Required",
+                description: "Please login to place an order.",
+                variant: "destructive",
+            });
+            return;
+        }
+        handleCheckout();
+    };
 
     return (
         <div className="min-h-screen bg-background">
@@ -43,7 +60,7 @@ const PageLayout = ({ children, showFooter = true }: PageLayoutProps) => {
                 items={cartItems}
                 onUpdateQuantity={updateQuantity}
                 onRemoveItem={removeItem}
-                onCheckout={handleCheckout}
+                onCheckout={handleCheckoutClick}
             />
 
             <main>{children}</main>

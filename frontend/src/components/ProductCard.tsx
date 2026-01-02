@@ -12,6 +12,8 @@ export interface Product {
   originalPrice?: number;
   image: string;
   category: string;
+  type?: 'clothing' | 'ornament';
+  description?: string;
   isNew?: boolean;
   isSale?: boolean;
 }
