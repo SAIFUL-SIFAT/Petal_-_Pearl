@@ -2,36 +2,36 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('products')
 export class Product {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({ name: 'id' })
     id: number;
 
-    @Column()
+    @Column({ name: 'name' })
     name: string;
 
-    @Column('decimal', { precision: 10, scale: 2 })
+    @Column('decimal', { name: 'price', precision: 10, scale: 2 })
     price: number;
 
-    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    @Column('decimal', { name: 'originalPrice', precision: 10, scale: 2, nullable: true })
     originalPrice?: number;
 
-    @Column()
+    @Column({ name: 'image' })
     image: string;
 
-    @Column({ type: 'text', nullable: true })
+    @Column({ name: 'description', type: 'text', nullable: true })
     description: string;
 
-    @Column()
+    @Column({ name: 'category' })
     category: string;
 
-    @Column({ default: false })
+    @Column({ name: 'isNew', default: false })
     isNew: boolean;
 
-    @Column({ default: false })
+    @Column({ name: 'isSale', default: false })
     isSale: boolean;
 
-    @Column({ type: 'enum', enum: ['clothing', 'ornament'] })
+    @Column({ name: 'type', type: 'enum', enum: ['clothing', 'ornament'] })
     type: 'clothing' | 'ornament';
 
-    @Column({ default: 0 })
+    @Column({ name: 'stock', default: 0 })
     stock: number;
 }

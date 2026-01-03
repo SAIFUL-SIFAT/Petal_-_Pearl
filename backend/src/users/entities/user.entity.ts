@@ -2,24 +2,24 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeor
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({ name: 'id' })
     id: number;
 
-    @Column()
+    @Column({ name: 'name' })
     name: string;
 
-    @Column({ unique: true })
+    @Column({ name: 'email', unique: true })
     email: string;
 
-    @Column({ nullable: true })
+    @Column({ name: 'phone', nullable: true })
     phone: string;
 
-    @Column()
+    @Column({ name: 'password' })
     password: string;
 
-    @Column({ default: 'user' })
+    @Column({ name: 'role', default: 'user' })
     role: 'user' | 'admin';
 
-    @CreateDateColumn()
+    @CreateDateColumn({ name: 'createdAt' })
     createdAt: Date;
 }

@@ -27,7 +27,12 @@ async function bootstrap() {
   app.use(helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   }));
-  const frontendUrl = process.env.FRONTEND_URL;
+
+  const frontendUrl = process.env.FRONTEND_URL?.replace(/\/$/, '') || '';
+
+  console.log('Backend starting...');
+  console.log('Allowed Frontend Origin:', frontendUrl);
+
   app.enableCors({
     origin: [
       frontendUrl,
