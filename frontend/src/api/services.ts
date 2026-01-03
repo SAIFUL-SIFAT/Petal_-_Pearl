@@ -17,7 +17,7 @@ export const productApi = {
 
 export const userApi = {
     signup: (data: any) => api.post('/users/signup', data),
-    login: (data: any) => api.post('/users/login', data),
+    login: (data: any) => api.post('/auth/login', data),
     getAll: () => api.get('/users'),
     update: (id: number, data: any) => api.patch(`/users/${id}`, data),
     remove: (id: number) => api.delete(`/users/${id}`),

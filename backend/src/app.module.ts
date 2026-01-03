@@ -84,6 +84,7 @@ import { Product } from './products/entities/product.entity';
 import { User } from './users/entities/user.entity';
 import { Order } from './orders/entities/order.entity';
 import { Notification } from './notifications/entities/notification.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -137,6 +138,7 @@ import { Notification } from './notifications/entities/notification.entity';
       serveRoot: '/',
     }),
 
+    AuthModule,
     ProductsModule,
     UsersModule,
     OrdersModule,

@@ -1,7 +1,6 @@
 import { Injectable, ConflictException, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -11,7 +10,6 @@ export class UsersService {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
-        private jwtService: JwtService,
     ) { }
 
     async create(createUserDto: CreateUserDto) {
@@ -41,29 +39,7 @@ export class UsersService {
         return result;
     }
 
-    async login(loginDto: any) {
-        const { email, password } = loginDto;
-        const user = await this.usersRepository.findOne({ where: { email } });
 
-        if (!user) {
-            throw new UnauthorizedException('Invalid credentials');
-        }
-
-        const isPasswordMatching = await bcrypt.compare(password, user.password);
-        if (!isPasswordMatching) {
-            throw new UnauthorizedException('Invalid credentials');
-        }
-
-        const payload = { sub: user.id, email: user.email };
-        const accessToken = this.jwtService.sign(payload);
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password: _, ...userData } = user;
-        return {
-            ...userData,
-            access_token: accessToken,
-        };
-    }
 
     async findAll() {
         const users = await this.usersRepository.find();
