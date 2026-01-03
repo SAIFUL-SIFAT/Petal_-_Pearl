@@ -17,9 +17,16 @@ async function seed() {
     const connection = await createConnection({
         type: 'postgres',
         url: dbUrl,
+        ...(dbUrl ? {} : {
+            host: process.env.DB_HOST || 'localhost',
+            port: parseInt(process.env.DB_PORT || '5432'),
+            username: process.env.DB_USERNAME || 'postgres',
+            password: process.env.DB_PASSWORD || 'postgres123',
+            database: process.env.DB_NAME || 'petal_pearl',
+        }),
         entities: [Product, User, Notification, Order],
         synchronize: true,
-        ssl: dbUrl ? { rejectUnauthorized: false } : false,
+        ssl: (dbUrl || process.env.DB_SSL === 'true') ? { rejectUnauthorized: false } : false,
     });
 
     console.log(' Connected to database');
@@ -29,22 +36,24 @@ async function seed() {
 
     // 1. Seed Admin User
     const adminEmail = 'admin@petalpearl.com';
-    const existingAdmin = await userRepo.findOne({ where: { email: adminEmail } });
+    let admin = await userRepo.findOne({ where: { email: adminEmail } });
+    const hashedPassword = await bcrypt.hash('admin123', 10);
 
-    if (!existingAdmin) {
-        const hashedPassword = await bcrypt.hash('admin123', 10);
-        const admin = userRepo.create({
+    if (!admin) {
+        admin = userRepo.create({
             name: 'Petal & Pearl Admin',
             email: adminEmail,
             role: 'admin',
             password: hashedPassword,
             phone: '01758761248',
         });
-        await userRepo.save(admin);
         console.log('Admin user created: admin@petalpearl.com / admin123');
     } else {
-        console.log('ℹ Admin user already exists');
+        admin.password = hashedPassword;
+        admin.role = 'admin'; // Ensure role is admin
+        console.log('ℹ Admin user updated with new password: admin@petalpearl.com / admin123');
     }
+    await userRepo.save(admin);
 
     // 2. Seed Initial Products
     const count = await productRepo.count();

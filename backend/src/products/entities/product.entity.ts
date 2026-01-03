@@ -2,36 +2,51 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('products')
 export class Product {
-    @PrimaryGeneratedColumn({ name: 'id' })
+    @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ name: 'name' })
+    @Column()
     name: string;
 
-    @Column('decimal', { name: 'price', precision: 10, scale: 2 })
+    @Column('decimal', {
+        precision: 10,
+        scale: 2,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value),
+        },
+    })
     price: number;
 
-    @Column('decimal', { name: 'originalPrice', precision: 10, scale: 2, nullable: true })
+    @Column('decimal', {
+        precision: 10,
+        scale: 2,
+        nullable: true,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value),
+        },
+    })
     originalPrice?: number;
 
-    @Column({ name: 'image' })
+    @Column()
     image: string;
 
-    @Column({ name: 'description', type: 'text', nullable: true })
+    @Column({ type: 'text', nullable: true })
     description: string;
 
-    @Column({ name: 'category' })
+    @Column()
     category: string;
 
-    @Column({ name: 'isNew', default: false })
+    @Column({ default: false })
     isNew: boolean;
 
-    @Column({ name: 'isSale', default: false })
+    @Column({ default: false })
     isSale: boolean;
 
-    @Column({ name: 'type', type: 'enum', enum: ['clothing', 'ornament'] })
+    @Column({ type: 'enum', enum: ['clothing', 'ornament'] })
     type: 'clothing' | 'ornament';
 
-    @Column({ name: 'stock', default: 0 })
+    @Column({ default: 0 })
     stock: number;
 }
