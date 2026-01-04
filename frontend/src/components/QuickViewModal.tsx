@@ -68,6 +68,7 @@ const QuickViewModal = ({ isOpen, onClose, product, onAddToCart }: QuickViewModa
                                     <img
                                         src={product.image}
                                         alt={product.name}
+                                        crossOrigin="anonymous"
                                         className="w-full h-full object-cover"
                                     />
                                 </div>

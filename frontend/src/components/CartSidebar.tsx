@@ -106,6 +106,7 @@ const CartSidebar = ({
                           <img
                             src={item.image}
                             alt={item.name}
+                            crossOrigin="anonymous"
                             className="w-full h-full object-cover"
                           />
                         </div>

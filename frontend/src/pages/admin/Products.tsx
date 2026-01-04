@@ -281,7 +281,7 @@ const AdminProducts = () => {
                                         <td className="p-4 sm:p-6">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-accent/20 overflow-hidden flex-shrink-0">
-                                                    <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                                                    <img src={product.image} alt={product.name} crossOrigin="anonymous" className="w-full h-full object-cover" />
                                                 </div>
                                                 <div className="min-w-0">
                                                     <p className="font-bold text-foreground truncate max-w-[150px] sm:max-w-none">{product.name}</p>
@@ -531,7 +531,7 @@ const AdminProducts = () => {
                                             {/* Image Preview */}
                                             <div className="aspect-video w-full bg-[#02140f] rounded-xl border border-[#449c80]/30 overflow-hidden flex items-center justify-center mt-2 group relative">
                                                 {imagePreview ? (
-                                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                                    <img src={imagePreview} alt="Preview" crossOrigin="anonymous" className="w-full h-full object-cover" />
                                                 ) : (
                                                     <div className="text-muted-foreground flex flex-col items-center gap-2">
                                                         <ImageIcon size={32} className="opacity-50" />

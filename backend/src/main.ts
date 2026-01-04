@@ -18,11 +18,16 @@ async function bootstrap() {
   // Serve static files from public directory
   app.useStaticAssets(join(__dirname, '..', 'public'), {
     prefix: '/',
+    setHeaders: (res) => {
+      res.set('Access-Control-Allow-Origin', '*');
+      res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+    }
   });
 
   // Security
   app.use(helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
+    contentSecurityPolicy: false, // Disable CSP for now to prevent blockages, or configure it properly
   }));
 
   const allowedOrigins = [

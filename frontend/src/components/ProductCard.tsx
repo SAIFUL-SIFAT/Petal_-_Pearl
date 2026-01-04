@@ -50,6 +50,7 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
           transition={{ duration: 0.6, ease: "easeOut" }}
           src={product.image}
           alt={product.name}
+          crossOrigin="anonymous"
           className="h-full w-full object-cover"
         />
 

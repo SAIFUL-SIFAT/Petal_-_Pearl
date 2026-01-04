@@ -134,11 +134,6 @@ import { AuthModule } from './auth/auth.module';
       },
     }),
 
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-      serveRoot: '/',
-    }),
-
     AuthModule,
     ProductsModule,
     UsersModule,
