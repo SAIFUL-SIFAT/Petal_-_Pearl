@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config'; // Added ConfigService
 import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -8,11 +9,15 @@ import { AuthController } from './auth.controller';
 
 @Module({
     imports: [
-        UsersModule,
+        forwardRef(() => UsersModule),
         PassportModule,
-        JwtModule.register({
-            secret: process.env.JWT_SECRET || 'super-secret-key-petal-pearl',
-            signOptions: { expiresIn: '1d' },
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => ({
+                secret: config.get<string>('JWT_SECRET') || 'super-secret-key-petal-pearl',
+                signOptions: { expiresIn: '1d' },
+            }),
         }),
     ],
     controllers: [AuthController],
