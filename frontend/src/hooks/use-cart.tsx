@@ -32,30 +32,54 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setCartItems((prevItems) => {
             const existingItem = prevItems.find((item) => item.id === product.id);
             if (existingItem) {
+                if (existingItem.quantity >= product.stock) {
+                    toast({
+                        title: "Limit reached",
+                        description: `Only ${product.stock} items available in stock.`,
+                        variant: "destructive"
+                    });
+                    return prevItems;
+                }
                 return prevItems.map((item) =>
                     item.id === product.id
                         ? { ...item, quantity: item.quantity + 1 }
                         : item
                 );
             }
+            if (product.stock <= 0) {
+                toast({
+                    title: "Out of stock",
+                    description: "This product is currently unavailable.",
+                    variant: "destructive"
+                });
+                return prevItems;
+            }
+            toast({
+                title: "Added to bag!",
+                description: `${product.name} has been added to your bag.`,
+            });
             return [...prevItems, { ...product, quantity: 1 }];
         });
-
-        toast({
-            title: "Added to bag!",
-            description: `${product.name} has been added to your bag.`,
-        });
-
-
     }, [toast]);
 
     const updateQuantity = useCallback((id: number, quantity: number) => {
         setCartItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === id ? { ...item, quantity } : item
-            )
+            prevItems.map((item) => {
+                if (item.id === id) {
+                    if (quantity > item.stock) {
+                        toast({
+                            title: "Stock limit",
+                            description: `Only ${item.stock} items available.`,
+                            variant: "destructive"
+                        });
+                        return item;
+                    }
+                    return { ...item, quantity };
+                }
+                return item;
+            })
         );
-    }, []);
+    }, [toast]);
 
     const removeItem = useCallback((id: number) => {
         setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));

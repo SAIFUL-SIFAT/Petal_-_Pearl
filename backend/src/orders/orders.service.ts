@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { Order } from './entities/order.entity';
+import { Product } from '../products/entities/product.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { SteadfastService } from '../steadfast/steadfast.service';
-
 import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
@@ -12,39 +12,73 @@ export class OrdersService {
     constructor(
         @InjectRepository(Order)
         private ordersRepository: Repository<Order>,
+        @InjectRepository(Product)
+        private productsRepository: Repository<Product>,
         private notificationsService: NotificationsService,
         private steadfastService: SteadfastService,
-
+        private dataSource: DataSource,
     ) { }
 
     async create(createOrderDto: CreateOrderDto, userId: number) {
-        // Calculate total amount
-        const totalAmount = createOrderDto.items.reduce(
-            (sum, item) => sum + (item.price * item.quantity),
-            0
-        );
+        const queryRunner = this.dataSource.createQueryRunner();
 
-        // Determine initial status based on payment method
-        const status = createOrderDto.paymentMethod === 'cash_on_delivery' ? 'confirmed' : 'pending';
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
 
-        const order = this.ordersRepository.create({
-            ...createOrderDto,
-            userId,
-            totalAmount,
-            status,
-            paymentStatus: 'pending',
-            transactionId: createOrderDto.transactionId || null,
-        });
+        try {
+            // Calculate total amount and check stock
+            let totalAmount = 0;
 
-        const savedOrder = await this.ordersRepository.save(order);
+            for (const item of createOrderDto.items) {
+                // Fetch product with pessimistic write lock to avoid race conditions
+                const product = await queryRunner.manager.findOne(Product, {
+                    where: { id: item.productId },
+                    lock: { mode: 'pessimistic_write' },
+                });
 
-        // Create notification for admin
-        await this.notificationsService.create({
-            message: `New order #${savedOrder.id} placed by ${savedOrder.customerName}`,
-            orderId: savedOrder.id,
-        });
+                if (!product) {
+                    throw new BadRequestException(`Product with ID ${item.productId} not found`);
+                }
 
-        return savedOrder;
+                if (product.stock < item.quantity) {
+                    throw new BadRequestException(`Insufficient stock for product: ${product.name}. Available: ${product.stock}`);
+                }
+
+                // Decrement stock
+                product.stock -= item.quantity;
+                await queryRunner.manager.save(product);
+
+                totalAmount += item.price * item.quantity;
+            }
+
+            // Determine initial status based on payment method
+            const status = createOrderDto.paymentMethod === 'cash_on_delivery' ? 'confirmed' : 'pending';
+
+            const order = queryRunner.manager.create(Order, {
+                ...createOrderDto,
+                userId,
+                totalAmount,
+                status,
+                paymentStatus: 'pending',
+                transactionId: createOrderDto.transactionId || null,
+            });
+
+            const savedOrder = await queryRunner.manager.save(order);
+
+            // Create notification for admin
+            await this.notificationsService.create({
+                message: `New order #${savedOrder.id} placed by ${savedOrder.customerName}`,
+                orderId: savedOrder.id,
+            });
+
+            await queryRunner.commitTransaction();
+            return savedOrder;
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+            throw err;
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     async findAll() {

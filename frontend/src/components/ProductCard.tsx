@@ -16,6 +16,7 @@ export interface Product {
   description?: string;
   isNew?: boolean;
   isSale?: boolean;
+  stock: number;
 }
 
 interface ProductCardProps {
@@ -30,6 +31,7 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { openQuickView } = useQuickView();
   const isWishlisted = isInWishlist(product.id);
+  const isOutOfStock = product.stock <= 0;
 
   return (
     <motion.div
@@ -51,7 +53,7 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
           src={product.image}
           alt={product.name}
           crossOrigin="anonymous"
-          className="h-full w-full object-cover"
+          className={`h-full w-full object-cover ${isOutOfStock ? 'grayscale opacity-70' : ''}`}
         />
 
         {/* Overlay */}
@@ -63,15 +65,23 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {product.isNew && (
-            <span className="px-3 py-1 bg-accent text-accent-foreground text-[10px] uppercase tracking-widest font-semibold rounded">
-              New
+          {isOutOfStock ? (
+            <span className="px-3 py-1 bg-neutral-800 text-white text-[10px] uppercase tracking-widest font-semibold rounded">
+              Sold Out
             </span>
-          )}
-          {product.isSale && (
-            <span className="px-3 py-1 bg-destructive text-destructive-foreground text-[10px] uppercase tracking-widest font-semibold rounded">
-              Sale
-            </span>
+          ) : (
+            <>
+              {product.isNew && (
+                <span className="px-3 py-1 bg-accent text-accent-foreground text-[10px] uppercase tracking-widest font-semibold rounded">
+                  New
+                </span>
+              )}
+              {product.isSale && (
+                <span className="px-3 py-1 bg-destructive text-destructive-foreground text-[10px] uppercase tracking-widest font-semibold rounded">
+                  Sale
+                </span>
+              )}
+            </>
           )}
         </div>
 
@@ -110,15 +120,17 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
         </motion.div>
 
         {/* Quick Add Button */}
-        <motion.button
-          initial={{ y: '100%' }}
-          animate={{ y: isHovered ? 0 : '100%' }}
-          className="absolute bottom-0 w-full bg-[#1e1b0f]/90 backdrop-blur-md text-foreground py-3 sm:py-4 flex items-center justify-center gap-2 font-medium uppercase tracking-wider text-[10px] sm:text-xs md:text-sm hover:text-[#bfa045] transition-colors lg:opacity-0 lg:group-hover:opacity-100 sm:translate-y-0 translate-y-0"
-          onClick={() => onAddToCart(product)}
-        >
-          <ShoppingBag size={16} className="sm:w-[18px] sm:h-[18px]" />
-          Quick Add
-        </motion.button>
+        {!isOutOfStock && (
+          <motion.button
+            initial={{ y: '100%' }}
+            animate={{ y: isHovered ? 0 : '100%' }}
+            className="absolute bottom-0 w-full bg-[#1e1b0f]/90 backdrop-blur-md text-foreground py-3 sm:py-4 flex items-center justify-center gap-2 font-medium uppercase tracking-wider text-[10px] sm:text-xs md:text-sm hover:text-[#bfa045] transition-colors lg:opacity-0 lg:group-hover:opacity-100 sm:translate-y-0 translate-y-0"
+            onClick={() => onAddToCart(product)}
+          >
+            <ShoppingBag size={16} className="sm:w-[18px] sm:h-[18px]" />
+            Quick Add
+          </motion.button>
+        )}
       </div>
 
       {/* Product Info */}
@@ -129,12 +141,21 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
         <h3 className="font-serif text-lg text-foreground mb-2 line-clamp-1">
           {product.name}
         </h3>
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-2 mb-2">
           <span className="text-accent font-semibold">৳ {product.price.toLocaleString()}</span>
           {product.originalPrice && (
             <span className="text-muted-foreground line-through text-sm">
               ৳ {product.originalPrice.toLocaleString()}
             </span>
+          )}
+        </div>
+        <div className="text-[10px] uppercase tracking-wider font-medium">
+          {isOutOfStock ? (
+            <span className="text-destructive">Out of Stock</span>
+          ) : product.stock <= 5 ? (
+            <span className="text-amber-500">Only {product.stock} left in stock!</span>
+          ) : (
+            <span className="text-green-400">{product.stock} available</span>
           )}
         </div>
       </div>

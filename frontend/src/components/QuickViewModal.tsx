@@ -89,6 +89,18 @@ const QuickViewModal = ({ isOpen, onClose, product, onAddToCart }: QuickViewModa
                                         )}
                                     </div>
 
+                                    <div className="mb-6">
+                                        <div className="text-[10px] uppercase tracking-wider font-medium">
+                                            {product.stock <= 0 ? (
+                                                <span className="text-destructive">Out of Stock</span>
+                                            ) : product.stock <= 5 ? (
+                                                <span className="text-amber-500">Only {product.stock} left in stock!</span>
+                                            ) : (
+                                                <span className="text-green-400">In Stock ({product.stock} available)</span>
+                                            )}
+                                        </div>
+                                    </div>
+
                                     <p className="text-muted-foreground leading-relaxed mb-8 flex-1 whitespace-pre-wrap break-words">
                                         {product.description || `Experience luxury with our ${product.name}, meticulously crafted to bring out your inner elegance. Perfect for special occasions or adding a touch of sophistication to your daily wear.`}
                                     </p>
@@ -98,10 +110,14 @@ const QuickViewModal = ({ isOpen, onClose, product, onAddToCart }: QuickViewModa
                                             onAddToCart(product);
                                             onClose();
                                         }}
-                                        className="w-full bg-accent text-accent-foreground py-4 rounded-xl font-bold uppercase tracking-wider hover:bg-[#a68b3d] transition-colors flex items-center justify-center gap-2 mb-4"
+                                        disabled={product.stock <= 0}
+                                        className={`w-full py-4 rounded-xl font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 mb-4 ${product.stock <= 0
+                                            ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed'
+                                            : 'bg-accent text-accent-foreground hover:bg-[#a68b3d]'
+                                            }`}
                                     >
                                         <ShoppingBag size={20} />
-                                        Add to Cart
+                                        {product.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
                                     </button>
                                 </div>
                             </div>
