@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useCallback, ReactNode } fr
 import { useNavigate } from 'react-router-dom';
 import { Product } from '@/components/ProductCard';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
+import { cartApi } from '@/api/services';
 
 export interface CartItem extends Product {
     quantity: number;
@@ -27,6 +29,49 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const { toast } = useToast();
     const navigate = useNavigate();
+    const { user, isAuthenticated } = useAuth();
+
+    // Load cart from backend on mount
+    React.useEffect(() => {
+        const loadCart = async () => {
+            if (isAuthenticated && user?.id) {
+                try {
+                    const res = await cartApi.getByUser(user.id);
+                    if (res.data && res.data.items && res.data.items.length > 0) {
+                        setCartItems(res.data.items);
+                    }
+                } catch (error) {
+                    console.error("Failed to load cart:", error);
+                }
+            }
+        };
+        loadCart();
+    }, [isAuthenticated, user?.id]);
+
+    // Sync cart to backend when it changes
+    React.useEffect(() => {
+        const syncCart = async () => {
+            if (isAuthenticated && user?.id) {
+                try {
+                    // map to essential data to avoid cycles or bloat
+                    const itemsToSync = cartItems.map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        price: item.price,
+                        image: item.image,
+                        quantity: item.quantity,
+                        stock: item.stock,
+                        category: item.category
+                    }));
+                    await cartApi.update(user.id, itemsToSync);
+                } catch (error) {
+                    console.error("Failed to sync cart:", error);
+                }
+            }
+        };
+        const timer = setTimeout(syncCart, 2000); // Debounce sync
+        return () => clearTimeout(timer);
+    }, [cartItems, isAuthenticated, user?.id]);
 
     const addToCart = useCallback((product: Product) => {
         setCartItems((prevItems) => {

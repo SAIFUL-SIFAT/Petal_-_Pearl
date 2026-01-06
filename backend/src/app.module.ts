@@ -79,11 +79,14 @@ import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { CartsModule } from './carts/carts.module';
+import { RecoveryModule } from './recovery/recovery.module';
 
 import { Product } from './products/entities/product.entity';
 import { User } from './users/entities/user.entity';
 import { Order } from './orders/entities/order.entity';
 import { Notification } from './notifications/entities/notification.entity';
+import { Cart } from './carts/entities/cart.entity';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -96,7 +99,7 @@ import { AuthModule } from './auth/auth.module';
           : '.env',
     }),
 
-    // ✅ DATABASE CONFIG GOES HERE
+    //  DATABASE CONFIG GOES HERE
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -119,8 +122,8 @@ import { AuthModule } from './auth/auth.module';
             password: configService.get<string>('DB_PASSWORD', 'postgres123'),
             database: configService.get<string>('DB_NAME', 'petal_pearl'),
           }),
-          entities: [Product, User, Order, Notification],
-          schema: 'public', // ✅ Explicitly force public schema for Neon DB
+          entities: [Product, User, Order, Notification, Cart],
+          schema: 'public', //  Explicitly force public schema for Neon DB
           synchronize: true, // Set to true to ensure tables are created in Neon during test
           ssl: nodeEnv === 'production' || !!dbUrl,
           extra: {
@@ -139,6 +142,8 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     OrdersModule,
     NotificationsModule,
+    CartsModule,
+    RecoveryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

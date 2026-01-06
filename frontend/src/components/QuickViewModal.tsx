@@ -19,7 +19,7 @@ const QuickViewModal = ({ isOpen, onClose, product, onAddToCart }: QuickViewModa
             const fetchRelated = async () => {
                 try {
                     // Fetch products of the same type/category
-                    const response = await productApi.getAll((product.type as any) || undefined);
+                    const response = await productApi.getAll({ type: product.type });
                     // Filter out current product and take 4
                     const related = response.data
                         .filter((p: Product) => p.id !== product.id)

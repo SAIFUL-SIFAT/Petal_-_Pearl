@@ -10,19 +10,83 @@ export class ProductsService {
         private productsRepository: Repository<Product>,
     ) { }
 
-    findAll(type?: 'clothing' | 'ornament', search?: string) {
-        if (search) {
-            return this.productsRepository.find({
-                where: [
-                    { ...(type ? { type } : {}), name: ILike(`%${search}%`) },
-                    { ...(type ? { type } : {}), category: ILike(`%${search}%`) }
-                ]
-            });
+    async findAll(query: {
+        type?: 'clothing' | 'ornament';
+        search?: string;
+        material?: string;
+        occasion?: string;
+        color?: string;
+        minPrice?: number;
+        maxPrice?: number;
+    }) {
+        const { type, search, material, occasion, color, minPrice, maxPrice } = query;
+
+        const queryBuilder = this.productsRepository.createQueryBuilder('product');
+
+        if (type) {
+            queryBuilder.andWhere('product.type = :type', { type });
         }
 
-        return this.productsRepository.find({
-            where: type ? { type } : {}
-        });
+        if (material) {
+            queryBuilder.andWhere('product.material = :material', { material });
+        }
+
+        if (occasion) {
+            queryBuilder.andWhere('product.occasion = :occasion', { occasion });
+        }
+
+        if (color) {
+            queryBuilder.andWhere('product.color = :color', { color });
+        }
+
+        if (minPrice) {
+            queryBuilder.andWhere('product.price >= :minPrice', { minPrice });
+        }
+
+        if (maxPrice) {
+            queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
+        }
+
+        if (search) {
+            queryBuilder.andWhere(
+                '(product.name ILIKE :search OR product.category ILIKE :search OR product.description ILIKE :search OR :search = ANY(product.tags))',
+                { search: `%${search}%` }
+            );
+        }
+
+        return queryBuilder.getMany();
+    }
+
+    async getFilterMetadata() {
+        const materials = await this.productsRepository
+            .createQueryBuilder('product')
+            .select('DISTINCT product.material', 'material')
+            .where('product.material IS NOT NULL')
+            .getRawMany();
+
+        const occasions = await this.productsRepository
+            .createQueryBuilder('product')
+            .select('DISTINCT product.occasion', 'occasion')
+            .where('product.occasion IS NOT NULL')
+            .getRawMany();
+
+        const colors = await this.productsRepository
+            .createQueryBuilder('product')
+            .select('DISTINCT product.color', 'color')
+            .where('product.color IS NOT NULL')
+            .getRawMany();
+
+        const categories = await this.productsRepository
+            .createQueryBuilder('product')
+            .select('DISTINCT product.category', 'category')
+            .getRawMany();
+
+        return {
+            materials: materials.map(m => m.material),
+            occasions: occasions.map(o => o.occasion),
+            colors: colors.map(c => c.color),
+            categories: categories.map(c => c.category),
+        };
     }
 
     count() {

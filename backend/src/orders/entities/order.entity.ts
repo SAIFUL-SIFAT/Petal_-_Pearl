@@ -6,12 +6,12 @@ export class Order {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    userId: number;
+    @Column({ nullable: true })
+    userId: number | null;
 
-    @ManyToOne(() => User, { onDelete: 'CASCADE' })
+    @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
     @JoinColumn({ name: 'userId' })
-    user: User;
+    user: User | null;
 
     @Column('jsonb')
     items: Array<{

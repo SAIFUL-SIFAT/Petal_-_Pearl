@@ -9,9 +9,11 @@ import { useAuth } from '@/context/AuthContext';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  showGuestOption?: boolean;
+  onContinueAsGuest?: () => void;
 }
 
-const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
+const AuthModal = ({ isOpen, onClose, showGuestOption = false, onContinueAsGuest }: AuthModalProps) => {
   const navigate = useNavigate();
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
   const [showPassword, setShowPassword] = useState(false);
@@ -283,6 +285,24 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                     </p>
                   )}
                 </div>
+
+                {showGuestOption && (
+                  <div className="pt-4 border-t border-border mt-4">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        if (onContinueAsGuest) onContinueAsGuest();
+                      }}
+                      className="w-full py-3 border border-accent text-accent rounded-lg font-bold tracking-widest uppercase text-xs hover:bg-accent/5 transition-colors"
+                    >
+                      Continue as Guest
+                    </button>
+                    <p className="text-[10px] text-center text-muted-foreground mt-2">
+                      No account needed to place an order
+                    </p>
+                  </div>
+                )}
               </form>
             </motion.div>
           </div>

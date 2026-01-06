@@ -12,18 +12,23 @@ const Index = () => {
   const { addToCart } = useCart();
   const [clothing, setClothing] = useState([]);
   const [ornaments, setOrnaments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setIsLoading(true);
         const [clothingRes, ornamentsRes] = await Promise.all([
-          productApi.getAll('clothing'),
-          productApi.getAll('ornament'),
+          productApi.getAll({ type: 'clothing' }),
+          productApi.getAll({ type: 'ornament' }),
         ]);
-        setClothing(clothingRes.data);
-        setOrnaments(ornamentsRes.data);
+
+        if (clothingRes?.data) setClothing(clothingRes.data);
+        if (ornamentsRes?.data) setOrnaments(ornamentsRes.data);
       } catch (error) {
         console.error('Failed to fetch products:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -47,13 +52,15 @@ const Index = () => {
         onAddToCart={addToCart}
       />
 
-      <ProductCarousel
-        title="New Arrivals"
-        subtitle="Just In"
-        products={clothing}
-        type="clothing"
-        onAddToCart={addToCart}
-      />
+      {clothing.length > 0 && (
+        <ProductCarousel
+          title="New Arrivals"
+          subtitle="Just In"
+          products={clothing}
+          type="clothing"
+          onAddToCart={addToCart}
+        />
+      )}
 
       {/* About Section */}
       <AboutSection />
@@ -67,13 +74,15 @@ const Index = () => {
         onAddToCart={addToCart}
       />
 
-      <ProductCarousel
-        title="Trending Pieces"
-        subtitle="Most Loved"
-        products={ornaments}
-        type="ornament"
-        onAddToCart={addToCart}
-      />
+      {ornaments.length > 0 && (
+        <ProductCarousel
+          title="Trending Pieces"
+          subtitle="Most Loved"
+          products={ornaments}
+          type="ornament"
+          onAddToCart={addToCart}
+        />
+      )}
     </PageLayout>
   );
 };

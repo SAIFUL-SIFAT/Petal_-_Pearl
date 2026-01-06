@@ -19,7 +19,7 @@ export class OrdersService {
         private dataSource: DataSource,
     ) { }
 
-    async create(createOrderDto: CreateOrderDto, userId: number) {
+    async create(createOrderDto: CreateOrderDto, userId?: number | null) {
         const queryRunner = this.dataSource.createQueryRunner();
 
         await queryRunner.connect();

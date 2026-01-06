@@ -23,7 +23,7 @@ const Inventory = () => {
     const fetchInventory = async () => {
         try {
             setLoading(true);
-            const response = await productApi.getAll();
+            const response = await productApi.getAll({});
             setProducts(response.data);
         } catch (error) {
             toast({
@@ -187,8 +187,8 @@ const Inventory = () => {
                                         <td className="p-4 sm:p-6">
                                             <div className="flex items-center gap-3">
                                                 <div className={`w-3 h-3 rounded-full ${product.stock > 10 ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)]' :
-                                                        product.stock > 0 ? 'bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.4)]' :
-                                                            'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.4)]'
+                                                    product.stock > 0 ? 'bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.4)]' :
+                                                        'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.4)]'
                                                     }`} />
                                                 <span className={`text-xl font-mono font-bold ${product.stock === 0 ? 'text-red-400' : 'text-foreground'
                                                     }`}>

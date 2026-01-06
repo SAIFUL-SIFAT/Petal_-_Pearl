@@ -41,10 +41,10 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/ornaments" element={<Ornaments />} />
                   <Route path="/collections" element={<Collections />} />
+                  <Route path="/checkout" element={<Checkout />} />
                   <Route element={<ProtectedRoute />}>
                     <Route path="/favorites" element={<Favorites />} />
                     <Route path="/profile" element={<Profile />} />
-                    <Route path="/checkout" element={<Checkout />} />
                     <Route path="/orders" element={<Orders />} />
                   </Route>
 

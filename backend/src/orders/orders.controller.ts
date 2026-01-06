@@ -9,7 +9,7 @@ export class OrdersController {
     @Post()
     create(@Body() body: any) {
         // Extract userId before DTO validation
-        const userId = body.userId || 1;
+        const userId = body.userId || null;
 
         // Remove userId from body to pass DTO validation
         const { userId: _, ...createOrderDto } = body;

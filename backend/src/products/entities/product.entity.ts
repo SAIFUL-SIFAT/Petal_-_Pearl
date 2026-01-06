@@ -49,4 +49,16 @@ export class Product {
 
     @Column({ default: 0 })
     stock: number;
+
+    @Column({ nullable: true })
+    material: string;
+
+    @Column({ nullable: true })
+    occasion: string;
+
+    @Column({ nullable: true })
+    color: string;
+
+    @Column({ type: 'text', array: true, nullable: true })
+    tags: string[];
 }

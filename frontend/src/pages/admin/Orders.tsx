@@ -12,12 +12,14 @@ import {
     User,
     CreditCard,
     Package,
-    ShieldCheck,
-    AlertCircle,
     CheckCircle,
     Phone,
-    MapPin
+    MapPin,
+    Printer,
+    ShieldCheck,
+    AlertCircle
 } from 'lucide-react';
+import ThermalReceipt from '@/components/ThermalReceipt';
 import { orderApi } from '@/api/services';
 import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -107,6 +109,10 @@ const AdminOrders = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handlePrint = () => {
+        window.print();
     };
 
     const getStatusStyle = (status: string) => {
@@ -251,10 +257,22 @@ const AdminOrders = () => {
                                     <h2 className="font-serif text-2xl font-bold">In-depth Order Review</h2>
                                     <p className="text-xs text-accent font-mono uppercase tracking-widest">#{selectedOrder.id} • {selectedOrder.paymentMethod.replace(/_/g, ' ')}</p>
                                 </div>
-                                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-white/5 rounded-full transition-colors">
-                                    <XCircle size={24} className="text-muted-foreground" />
-                                </button>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={handlePrint}
+                                        className="flex items-center gap-2 bg-white/5 hover:bg-white/10 text-foreground px-4 py-2 rounded-xl text-xs font-bold transition-all border border-white/10"
+                                    >
+                                        <Printer size={16} className="text-accent" />
+                                        Print Receipt
+                                    </button>
+                                    <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+                                        <XCircle size={24} className="text-muted-foreground" />
+                                    </button>
+                                </div>
                             </div>
+
+                            {/* Printable Receipt Content */}
+                            <ThermalReceipt order={selectedOrder} />
 
                             <div className="p-6 sm:p-8 space-y-8">
                                 {/* Payment Details (NEW) */}

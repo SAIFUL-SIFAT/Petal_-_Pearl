@@ -197,7 +197,7 @@ const Checkout = () => {
                     quantity: item.quantity,
                     image: item.image,
                 })),
-                userId: user?.id || 1,
+                userId: user?.id || null,
             };
 
             await api.post('/orders', orderData);
@@ -210,7 +210,7 @@ const Checkout = () => {
             });
 
             clearCart();
-            navigate('/orders');
+            navigate(user ? '/orders' : '/');
         } catch (error: any) {
             toast({
                 title: "Order Failed",

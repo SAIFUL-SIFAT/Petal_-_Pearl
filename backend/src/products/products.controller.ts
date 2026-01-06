@@ -14,8 +14,29 @@ export class ProductsController {
     ) { }
 
     @Get()
-    findAll(@Query('type') type?: 'clothing' | 'ornament', @Query('q') q?: string) {
-        return this.productsService.findAll(type, q);
+    findAll(
+        @Query('type') type?: 'clothing' | 'ornament',
+        @Query('q') q?: string,
+        @Query('material') material?: string,
+        @Query('occasion') occasion?: string,
+        @Query('color') color?: string,
+        @Query('minPrice') minPrice?: string,
+        @Query('maxPrice') maxPrice?: string,
+    ) {
+        return this.productsService.findAll({
+            type,
+            search: q,
+            material,
+            occasion,
+            color,
+            minPrice: minPrice ? parseFloat(minPrice) : undefined,
+            maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
+        });
+    }
+
+    @Get('filters/metadata')
+    getFilterMetadata() {
+        return this.productsService.getFilterMetadata();
     }
 
     @Get(':id')

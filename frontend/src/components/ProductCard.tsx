@@ -17,6 +17,10 @@ export interface Product {
   isNew?: boolean;
   isSale?: boolean;
   stock: number;
+  material?: string;
+  occasion?: string;
+  color?: string;
+  tags?: string[];
 }
 
 interface ProductCardProps {

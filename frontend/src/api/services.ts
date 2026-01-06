@@ -1,7 +1,8 @@
 import api from './axios';
 
 export const productApi = {
-    getAll: (type?: string, search?: string) => api.get('/products', { params: { type, q: search } }),
+    getAll: (params?: any) => api.get('/products', { params }),
+    getFilterMetadata: () => api.get('/products/filters/metadata'),
     getById: (id: number) => api.get(`/products/${id}`),
     create: (data: any) => api.post('/products', data),
     update: (id: number, data: any) => api.patch(`/products/${id}`, data),
@@ -36,4 +37,9 @@ export const orderApi = {
 export const notificationApi = {
     getUnread: () => api.get('/notifications/unread'),
     markAsRead: (id: number) => api.patch(`/notifications/${id}/read`),
+};
+
+export const cartApi = {
+    getByUser: (userId: number) => api.get(`/carts/${userId}`),
+    update: (userId: number, items: any[]) => api.post(`/carts/${userId}`, { items }),
 };

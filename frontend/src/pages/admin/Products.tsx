@@ -40,13 +40,17 @@ const AdminProducts = () => {
         type: 'clothing',
         stock: '0',
         isNew: false,
-        isSale: false
+        isSale: false,
+        material: '',
+        occasion: '',
+        color: '',
+        tags: ''
     });
 
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const response = await productApi.getAll();
+            const response = await productApi.getAll({});
             setProducts(response.data);
         } catch (error) {
             toast({
@@ -108,7 +112,11 @@ const AdminProducts = () => {
                 type: product.type,
                 stock: (product.stock || 0).toString(),
                 isNew: product.isNew,
-                isSale: product.isSale
+                isSale: product.isSale,
+                material: product.material || '',
+                occasion: product.occasion || '',
+                color: product.color || '',
+                tags: (product.tags || []).join(', ')
             });
             setImagePreview(product.image);
             setSelectedFile(null);
@@ -124,7 +132,11 @@ const AdminProducts = () => {
                 type: 'clothing',
                 stock: '0',
                 isNew: false,
-                isSale: false
+                isSale: false,
+                material: '',
+                occasion: '',
+                color: '',
+                tags: ''
             });
             setImagePreview('');
             setSelectedFile(null);

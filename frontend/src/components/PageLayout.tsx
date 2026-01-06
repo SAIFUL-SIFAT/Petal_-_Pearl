@@ -16,6 +16,7 @@ interface PageLayoutProps {
 const PageLayout = ({ children, showFooter = true }: PageLayoutProps) => {
     const [isAuthOpen, setIsAuthOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [showGuestInAuth, setShowGuestInAuth] = useState(false);
     const { isAuthenticated } = useAuth();
     const { toast } = useToast();
     const {
@@ -30,12 +31,8 @@ const PageLayout = ({ children, showFooter = true }: PageLayoutProps) => {
 
     const handleCheckoutClick = () => {
         if (!isAuthenticated) {
+            setShowGuestInAuth(true);
             setIsAuthOpen(true);
-            toast({
-                title: "Login Required",
-                description: "Please login to place an order.",
-                variant: "destructive",
-            });
             return;
         }
         handleCheckout();
@@ -52,7 +49,15 @@ const PageLayout = ({ children, showFooter = true }: PageLayoutProps) => {
 
             <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
-            <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+            <AuthModal
+                isOpen={isAuthOpen}
+                onClose={() => {
+                    setIsAuthOpen(false);
+                    setShowGuestInAuth(false);
+                }}
+                showGuestOption={showGuestInAuth}
+                onContinueAsGuest={handleCheckout}
+            />
 
             <CartSidebar
                 isOpen={isCartOpen}
