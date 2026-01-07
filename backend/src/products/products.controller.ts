@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, Post, Body, Patch, Delete, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { extname, join } from 'path';
 import { ProductsService } from './products.service';
 import { ConfigService } from '@nestjs/config';
 import type { Request } from 'express';
@@ -53,7 +53,7 @@ export class ProductsController {
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
-            destination: './public/assets',
+            destination: join(process.cwd(), 'public', 'assets'),
             filename: (req, file, callback) => {
                 const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
                 const ext = extname(file.originalname);

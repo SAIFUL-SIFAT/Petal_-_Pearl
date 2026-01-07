@@ -10,13 +10,23 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // Trust proxy for accurate req.protocol and req.get('host') in deployed environments
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
+  // Ensure static directories exist
+  const publicPath = join(process.cwd(), 'public');
+  const assetsPath = join(publicPath, 'assets');
+  if (!existsSync(publicPath)) mkdirSync(publicPath, { recursive: true });
+  if (!existsSync(assetsPath)) mkdirSync(assetsPath, { recursive: true });
+
   // Serve static files from public directory
-  app.useStaticAssets(join(__dirname, '..', 'public'), {
+  app.useStaticAssets(publicPath, {
     prefix: '/',
     setHeaders: (res) => {
       res.set('Access-Control-Allow-Origin', '*');
@@ -27,7 +37,7 @@ async function bootstrap() {
   // Security
   app.use(helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
-    contentSecurityPolicy: false, // Disable CSP for now to prevent blockages, or configure it properly
+    contentSecurityPolicy: false,
   }));
 
   const allowedOrigins = [

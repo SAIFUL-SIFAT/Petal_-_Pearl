@@ -137,6 +137,10 @@ import { AuthModule } from './auth/auth.module';
       },
     }),
 
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
+      serveRoot: '/',
+    }),
     AuthModule,
     ProductsModule,
     UsersModule,

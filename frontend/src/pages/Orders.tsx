@@ -345,7 +345,12 @@ const Orders = () => {
                                 <div className="flex gap-4 mb-4">
                                     {order.items.slice(0, 5).map((item, idx) => (
                                         <div key={idx} className="w-16 h-20 rounded-xl overflow-hidden border border-white/5 ring-1 ring-white/10">
-                                            <img src={item.image} alt={item.name} crossOrigin="anonymous" className="w-full h-full object-cover" />
+                                            <img
+                                                src={item.image?.startsWith('http') ? item.image : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${item.image}`}
+                                                alt={item.name}
+                                                crossOrigin="anonymous"
+                                                className="w-full h-full object-cover"
+                                            />
                                         </div>
                                     ))}
                                     {order.items.length > 5 && (
@@ -400,7 +405,12 @@ const Orders = () => {
                                                         {order.items.map((item, idx) => (
                                                             <div key={idx} className="flex gap-4 bg-white/5 p-3 rounded-2xl border border-white/5 items-center">
                                                                 <div className="w-12 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                                                                    <img src={item.image} alt={item.name} crossOrigin="anonymous" className="w-full h-full object-cover" />
+                                                                    <img
+                                                                        src={item.image?.startsWith('http') ? item.image : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${item.image}`}
+                                                                        alt={item.name}
+                                                                        crossOrigin="anonymous"
+                                                                        className="w-full h-full object-cover"
+                                                                    />
                                                                 </div>
                                                                 <div className="flex-1 min-w-0">
                                                                     <p className="text-sm font-bold truncate">{item.name}</p>

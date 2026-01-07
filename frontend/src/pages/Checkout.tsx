@@ -420,7 +420,11 @@ const Checkout = () => {
                                 {items.map((item) => (
                                     <div key={item.id} className="flex gap-4 group">
                                         <div className="w-16 h-20 rounded-xl overflow-hidden flex-shrink-0 border border-white/5 group-hover:border-accent/40 transition-colors">
-                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                            <img
+                                                src={item.image?.startsWith('http') ? item.image : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${item.image}`}
+                                                alt={item.name}
+                                                className="w-full h-full object-cover"
+                                            />
                                         </div>
                                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                                             <p className="text-sm font-bold line-clamp-1 group-hover:text-accent transition-colors">{item.name}</p>

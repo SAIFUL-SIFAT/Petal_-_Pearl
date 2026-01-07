@@ -53,7 +53,7 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
         <motion.img
           animate={{ scale: isHovered ? 1.1 : 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          src={product.image}
+          src={product.image?.startsWith('http') ? product.image : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.image}`}
           alt={product.name}
           crossOrigin="anonymous"
           className={`h-full w-full object-cover ${isOutOfStock ? 'grayscale opacity-70' : ''}`}
