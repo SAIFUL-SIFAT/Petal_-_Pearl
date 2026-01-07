@@ -46,4 +46,9 @@ export class OrdersController {
     confirmOrder(@Param('id') id: string) {
         return this.ordersService.confirmOrder(+id);
     }
+
+    @Post(':id/sync-status')
+    syncStatus(@Param('id') id: string) {
+        return this.ordersService.syncStatus(+id);
+    }
 }

@@ -71,28 +71,28 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
                 <StatCard
                     title="Total Revenue"
-                    value={`৳${stats.earnings.toLocaleString()}`}
+                    value={`৳${(stats.earnings || 0).toLocaleString()}`}
                     icon={<DollarSign size={24} />}
                     trend="up"
                     trendValue="+12.5%"
                 />
                 <StatCard
                     title="Active Users"
-                    value={stats.users.toLocaleString()}
+                    value={(stats.users || 0).toLocaleString()}
                     icon={<Users size={24} />}
                     trend="up"
                     trendValue="+5.2%"
                 />
                 <StatCard
                     title="Total Orders"
-                    value={stats.orders.toLocaleString()}
+                    value={(stats.orders || 0).toLocaleString()}
                     icon={<Package size={24} />}
                     trend="up"
                     trendValue="+2.4%"
                 />
                 <StatCard
                     title="Total Products"
-                    value={stats.products.toLocaleString()}
+                    value={(stats.products || 0).toLocaleString()}
                     icon={<ShoppingBag size={24} />} // Changed icon for variety
                     trend="up"
                     trendValue="+8.1%"

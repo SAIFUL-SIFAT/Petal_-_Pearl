@@ -135,11 +135,36 @@ export class OrdersService {
         const steadfastResponse = await this.steadfastService.createParcel(order);
 
         order.courier = 'steadfast';
-        order.courierConsignmentId = steadfastResponse.consignment_id;
-        order.courierStatus = 'created';
+        order.courierConsignmentId = steadfastResponse.consignment.consignment_id;
+        order.courierStatus = steadfastResponse.consignment.status; // Should be 'in_review'
         order.status = 'confirmed';
 
         return this.ordersRepository.save(order);
+    }
+
+    async syncStatus(orderId: number) {
+        const order = await this.ordersRepository.findOne({ where: { id: orderId } });
+        if (!order || order.courier !== 'steadfast' || !order.courierConsignmentId) {
+            return order;
+        }
+
+        try {
+            const res = await this.steadfastService.getStatusByCid(order.courierConsignmentId);
+            if (res.status === 200) {
+                order.courierStatus = res.delivery_status;
+                // Map statuses
+                if (res.delivery_status === 'delivered') {
+                    order.status = 'delivered';
+                    order.paymentStatus = 'paid';
+                } else if (res.delivery_status === 'cancelled') {
+                    order.status = 'cancelled';
+                }
+                return await this.ordersRepository.save(order);
+            }
+        } catch (error) {
+            console.error(`Failed to sync status for order ${order.id}:`, error.message);
+        }
+        return order;
     }
 
 }

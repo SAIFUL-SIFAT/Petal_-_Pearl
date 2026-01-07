@@ -56,8 +56,8 @@ const ProductGrid = ({
 
         {/* Product Grid */}
         {type === 'ornament' ? (
-          // Masonry Grid for Ornaments
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+          // Fixed Grid for Ornaments (was Masonry)
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {products.map((product, index) => (
               <ProductCard
                 key={product.id}

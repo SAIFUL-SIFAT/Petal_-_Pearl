@@ -3,28 +3,28 @@ import { createPortal } from 'react-dom';
 import { useEffect, useState } from 'react';
 
 interface ThermalReceiptProps {
-    order: any;
-    autoPrint?: boolean;
+  order: any;
+  autoPrint?: boolean;
 }
 
 const ThermalReceipt = ({ order, autoPrint = false }: ThermalReceiptProps) => {
-    const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-    useEffect(() => {
-        setMounted(true);
+  useEffect(() => {
+    setMounted(true);
 
-        if (autoPrint) {
-            setTimeout(() => window.print(), 500);
-        }
-    }, [autoPrint]);
+    if (autoPrint) {
+      setTimeout(() => window.print(), 500);
+    }
+  }, [autoPrint]);
 
-    if (!mounted || !order) return null;
+  if (!mounted || !order) return null;
 
-    return createPortal(
-        <div id="thermal-root">
-            <style
-                dangerouslySetInnerHTML={{
-                    __html: `
+  return createPortal(
+    <div id="thermal-root">
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
 /* ===========================
    GLOBAL RESET
 =========================== */
@@ -99,80 +99,95 @@ const ThermalReceipt = ({ order, autoPrint = false }: ThermalReceiptProps) => {
   }
 }
           `,
-                }}
-            />
+        }}
+      />
 
-            <div id="thermal-receipt">
-                {/* HEADER */}
-                <div className="center bold">PETAL & PEARL</div>
-                <div className="center small">
-                    House 23, Road 10<br />
-                    Banani, Dhaka<br />
-                    Tel: 017-XXXXXXX
-                </div>
+      <div id="thermal-receipt">
+        {/* HEADER */}
+        <div className="center bold">PETAL & PEARL</div>
+        <div className="center small">
+          House 23, Road 10<br />
+          Banani, Dhaka<br />
+          Tel: 017-XXXXXXX
+        </div>
 
-                <div className="divider">--------------------------</div>
+        <div className="divider">--------------------------</div>
 
-                <div className="center bold">CASH RECEIPT</div>
+        <div className="center bold">CASH RECEIPT</div>
 
-                <div className="divider">--------------------------</div>
+        <div className="divider">--------------------------</div>
 
-                {/* META */}
-                <div className="row">
-                    <span>Order</span>
-                    <span>#{order.id}</span>
-                </div>
-                <div className="row">
-                    <span>Date</span>
-                    <span>{format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm')}</span>
-                </div>
+        {/* META */}
+        <div className="row">
+          <span>Order</span>
+          <span>#{order.id}</span>
+        </div>
+        <div className="row">
+          <span>Date</span>
+          <span>
+            {(() => {
+              try {
+                return order.createdAt ? format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm') : 'N/A';
+              } catch (e) {
+                return 'Invalid Date';
+              }
+            })()}
+          </span>
+        </div>
 
-                <div className="divider">--------------------------</div>
+        <div className="divider">--------------------------</div>
 
-                {/* ITEMS */}
-                <div className="row bold">
-                    <span>Item</span>
-                    <span>Price</span>
-                </div>
+        {/* ITEMS */}
+        <div className="row bold">
+          <span>Item</span>
+          <span>Price</span>
+        </div>
 
-                {order.items.map((item: any, i: number) => (
-                    <div key={i}>
-                        <div className="row">
-                            <span>{item.name}</span>
-                            <span>{(item.price * item.quantity).toFixed(1)}</span>
-                        </div>
-                        <div className="small">
-                            {item.quantity} × {item.price.toFixed(1)}
-                        </div>
-                    </div>
-                ))}
-
-                <div className="divider">--------------------------</div>
-
-                {/* TOTAL */}
-                <div className="row total">
-                    <span>Total</span>
-                    <span>৳ {order.totalAmount.toFixed(1)}</span>
-                </div>
-
-                <div className="row">
-                    <span>Payment</span>
-                    <span>{order.paymentMethod.replace(/_/g, ' ')}</span>
-                </div>
-
-                <div className="divider">--------------------------</div>
-
-                {/* FOOTER */}
-                <div className="center small">
-                    THANK YOU FOR SHOPPING
-                </div>
-                <div className="center small">
-                    www.petalandpearl.com
-                </div>
+        {order.items && Array.isArray(order.items) && order.items.length > 0 ? (
+          order.items.map((item: any, i: number) => item && (
+            <div key={i}>
+              <div className="row">
+                <span>{item.name || 'Unknown'}</span>
+                <span>{((Number(item.price) || 0) * (Number(item.quantity) || 0)).toFixed(1)}</span>
+              </div>
+              <div className="small">
+                {item.quantity || 0} × {(Number(item.price) || 0).toFixed(1)}
+              </div>
             </div>
-        </div>,
-        document.body
-    );
+          ))
+        ) : (
+          <div className="row">
+            <span>No items</span>
+            <span>0</span>
+          </div>
+        )}
+
+        <div className="divider">--------------------------</div>
+
+        {/* TOTAL */}
+        <div className="row total">
+          <span>Total</span>
+          <span>৳ {(order.totalAmount || 0).toFixed(1)}</span>
+        </div>
+
+        <div className="row">
+          <span>Payment</span>
+          <span>{order.paymentMethod?.replace(/_/g, ' ') || 'N/A'}</span>
+        </div>
+
+        <div className="divider">--------------------------</div>
+
+        {/* FOOTER */}
+        <div className="center small">
+          THANK YOU FOR SHOPPING
+        </div>
+        <div className="center small">
+          www.petalandpearl.com
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
 };
 
 export default ThermalReceipt;

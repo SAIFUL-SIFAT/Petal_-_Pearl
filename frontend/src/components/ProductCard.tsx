@@ -45,8 +45,7 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
       transition={{ duration: 0.6, delay: index * 0.1 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`group relative overflow-hidden bg-card rounded-lg ${type === 'ornament' ? 'break-inside-avoid mb-4' : ''
-        }`}
+      className="group relative overflow-hidden bg-card rounded-lg"
       style={{ boxShadow: 'var(--shadow-soft)' }}
     >
       {/* Image Container */}

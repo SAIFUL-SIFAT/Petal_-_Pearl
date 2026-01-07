@@ -193,12 +193,20 @@ const AdminOrders = () => {
                                         <td className="p-4 sm:p-6">
                                             <div>
                                                 <p className="font-bold text-foreground">{order.customerName}</p>
-                                                <p className="text-[10px] text-muted-foreground uppercase">{order.paymentMethod.replace(/_/g, ' ')}</p>
+                                                <p className="text-[10px] text-muted-foreground uppercase">{order.paymentMethod?.replace(/_/g, ' ') || 'N/A'}</p>
                                             </div>
                                         </td>
                                         <td className="p-4 sm:p-6">
-                                            <p className="font-bold text-foreground">৳{order.totalAmount.toLocaleString()}</p>
-                                            <p className="text-[10px] text-muted-foreground">{format(new Date(order.createdAt), 'MMM dd, h:mm a')}</p>
+                                            <p className="font-bold text-foreground">৳{(Number(order.totalAmount) || 0).toLocaleString()}</p>
+                                            <p className="text-[10px] text-muted-foreground">
+                                                {(() => {
+                                                    try {
+                                                        return order.createdAt ? format(new Date(order.createdAt), 'MMM dd, h:mm a') : 'N/A';
+                                                    } catch (e) {
+                                                        return 'Invalid Date';
+                                                    }
+                                                })()}
+                                            </p>
                                         </td>
                                         <td className="p-4 sm:p-6">
                                             <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${getPaymentStatusStyle(order.paymentStatus)}`}>
@@ -255,7 +263,7 @@ const AdminOrders = () => {
                             <div className="p-6 sm:p-8 border-b border-[#449c80]/20 flex justify-between items-center bg-[#02140f] sticky top-0">
                                 <div>
                                     <h2 className="font-serif text-2xl font-bold">In-depth Order Review</h2>
-                                    <p className="text-xs text-accent font-mono uppercase tracking-widest">#{selectedOrder.id} • {selectedOrder.paymentMethod.replace(/_/g, ' ')}</p>
+                                    <p className="text-xs text-accent font-mono uppercase tracking-widest">#{selectedOrder.id} • {selectedOrder.paymentMethod?.replace(/_/g, ' ') || 'N/A'}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <button
@@ -322,9 +330,30 @@ const AdminOrders = () => {
                                             <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl space-y-2">
                                                 <div className="flex justify-between items-center">
                                                     <p className="text-[10px] text-emerald-500 font-bold uppercase">Steadfast Logistics</p>
-                                                    <span className="text-[10px] px-2 py-0.5 bg-emerald-500 text-white rounded-full uppercase">
-                                                        {selectedOrder.courierStatus}
-                                                    </span>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] px-2 py-0.5 bg-emerald-500 text-white rounded-full uppercase">
+                                                            {selectedOrder.courierStatus}
+                                                        </span>
+                                                        <button
+                                                            onClick={async () => {
+                                                                try {
+                                                                    setLoading(true);
+                                                                    await orderApi.syncStatus(selectedOrder.id);
+                                                                    toast({ title: "Status Synced", description: "Courier status updated from Steadfast" });
+                                                                    await fetchOrders();
+                                                                } catch (error) {
+                                                                    toast({ title: "Sync Failed", variant: "destructive", description: "Could not sync with Steadfast" });
+                                                                } finally {
+                                                                    setLoading(false);
+                                                                }
+                                                            }}
+                                                            disabled={loading}
+                                                            className="p-1 hover:bg-emerald-500/20 rounded-full transition-colors"
+                                                            title="Sync Status"
+                                                        >
+                                                            <Clock size={12} className={loading ? "animate-spin" : ""} />
+                                                        </button>
+                                                    </div>
                                                 </div>
                                                 <p className="text-xs text-muted-foreground">Consignment ID:</p>
                                                 <p className="font-mono text-sm font-bold text-foreground">{selectedOrder.courierConsignmentId}</p>
@@ -398,20 +427,26 @@ const AdminOrders = () => {
                                 <div className="space-y-4">
                                     <h3 className="text-sm font-bold uppercase tracking-widest text-accent/70 px-1">Manifest of Acquisition</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        {selectedOrder.items.map((item: any, id: number) => (
-                                            <div key={id} className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10 hover:border-accent/30 transition-colors">
-                                                <div className="w-16 h-20 rounded-xl bg-accent/20 overflow-hidden flex-shrink-0">
-                                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="font-bold text-sm truncate">{item.name}</p>
-                                                    <div className="flex justify-between items-center mt-2">
-                                                        <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
-                                                        <p className="text-sm font-bold text-accent">৳{(item.price * item.quantity).toLocaleString()}</p>
+                                        {selectedOrder.items && Array.isArray(selectedOrder.items) && selectedOrder.items.length > 0 ? (
+                                            selectedOrder.items.map((item: any, id: number) => item && (
+                                                <div key={id} className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10 hover:border-accent/30 transition-colors">
+                                                    <div className="w-16 h-20 rounded-xl bg-accent/20 overflow-hidden flex-shrink-0">
+                                                        <img src={item.image || '/placeholder.png'} alt={item.name || 'Product'} className="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="font-bold text-sm truncate">{item.name || 'Unknown Item'}</p>
+                                                        <div className="flex justify-between items-center mt-2">
+                                                            <p className="text-xs text-muted-foreground">Qty: {item.quantity || 0}</p>
+                                                            <p className="text-sm font-bold text-accent">৳{((Number(item.price) || 0) * (Number(item.quantity) || 0)).toLocaleString()}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                            ))
+                                        ) : (
+                                            <div className="col-span-2 text-center text-muted-foreground p-4">
+                                                No items found for this order
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
                                 </div>
 
@@ -420,8 +455,8 @@ const AdminOrders = () => {
                                     <div className="flex justify-between items-center bg-accent/10 p-5 rounded-2xl border border-accent/20">
                                         <span className="font-serif text-xl">Cumulative Total</span>
                                         <div className="text-right">
-                                            <span className="text-3xl font-bold text-accent">৳{selectedOrder.totalAmount.toLocaleString()}</span>
-                                            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Settlement Method: {selectedOrder.paymentMethod.replace(/_/g, ' ')}</p>
+                                            <span className="text-3xl font-bold text-accent">৳{(selectedOrder.totalAmount || 0).toLocaleString()}</span>
+                                            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Settlement Method: {selectedOrder.paymentMethod?.replace(/_/g, ' ') || 'N/A'}</p>
                                         </div>
                                     </div>
                                 </div>

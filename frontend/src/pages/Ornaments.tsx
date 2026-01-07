@@ -144,7 +144,7 @@ const Ornaments = () => {
                     </AnimatePresence>
 
                     {isLoading ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
                             {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                                 <div key={i} className="aspect-square bg-muted animate-pulse rounded-2xl" />
                             ))}
