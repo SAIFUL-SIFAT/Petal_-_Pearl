@@ -1,9 +1,8 @@
 import { Controller, Get, Param, Query, Post, Body, Patch, Delete, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname, join } from 'path';
 import { ProductsService } from './products.service';
 import { ConfigService } from '@nestjs/config';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import type { Request } from 'express';
 
 import { CreateProductDto } from './dto/create-product.dto';
@@ -11,7 +10,8 @@ import { CreateProductDto } from './dto/create-product.dto';
 export class ProductsController {
     constructor(
         private readonly productsService: ProductsService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly cloudinaryService: CloudinaryService
     ) { }
 
     @Get()
@@ -52,15 +52,6 @@ export class ProductsController {
 
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', {
-        storage: diskStorage({
-            destination: join(process.cwd(), 'public', 'assets'),
-            filename: (req, file, callback) => {
-                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-                const ext = extname(file.originalname);
-                const filename = `product-${uniqueSuffix}${ext}`;
-                callback(null, filename);
-            }
-        }),
         fileFilter: (req, file, callback) => {
             if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
                 return callback(new Error('Only image files are allowed!'), false);
@@ -71,20 +62,21 @@ export class ProductsController {
             fileSize: 5 * 1024 * 1024, // 5MB
         }
     }))
-    uploadFile(@UploadedFile() file: any, @Req() req: Request) {
+    async uploadFile(@UploadedFile() file: any) {
         if (!file) {
             throw new Error('File upload failed');
         }
 
-        const protocol = req.protocol;
-        const host = req.get('host');
-        const baseUrl = this.configService.get('BACKEND_URL') || `${protocol}://${host}`;
-
-        return {
-            filename: file.filename,
-            path: `/assets/${file.filename}`,
-            url: `${baseUrl}/assets/${file.filename}`
-        };
+        try {
+            const result = await this.cloudinaryService.uploadFile(file);
+            return {
+                filename: result.public_id,
+                path: result.secure_url,
+                url: result.secure_url
+            };
+        } catch (error) {
+            throw new Error(`Cloudinary upload failed: ${error.message}`);
+        }
     }
 
     @Patch(':id')
