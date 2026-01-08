@@ -6,7 +6,7 @@ export type CloudinaryResponse = UploadApiResponse | UploadApiErrorResponse;
 
 @Injectable()
 export class CloudinaryService {
-    uploadFile(file: Express.Multer.File): Promise<CloudinaryResponse> {
+    uploadFile(file: any): Promise<CloudinaryResponse> {
         return new Promise<CloudinaryResponse>((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
                 {
