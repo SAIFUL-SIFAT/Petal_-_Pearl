@@ -54,9 +54,9 @@ All payments are secure and encrypted.`,
 
     'contact, support, help, email, phone': `📞 **Contact Us**
 
-**Email**: support@petalandpearl.com
-**Phone**: +880 1XXX-XXXXXX
-**WhatsApp**: +880 1XXX-XXXXXX
+**Email**: sifat.sai3@gmail.com,shahela17@gmail.com
+**Phone**: +880 1758761248,+880 1777954044 
+**WhatsApp**: +880 1758761248,+880 1777954044
 
 **Business Hours**:
 Saturday - Thursday: 10 AM - 8 PM
@@ -71,14 +71,14 @@ We typically respond within 2-4 hours during business hours.`,
 
 Online orders can be placed 24/7!`,
 
-    'track, tracking, order status': `📦 **Track Your Order**
+    //     'track, tracking, order status': `📦 **Track Your Order**
 
-To track your order:
-1. Go to "My Orders" in your profile
-2. Click on the order you want to track
-3. View the current status
+    // To track your order:
+    // 1. Go to "My Orders" in your profile
+    // 2. Click on the order you want to track
+    // 3. View the current status
 
-You'll also receive SMS/email updates when your order status changes.`,
+    // You'll also receive SMS/email updates when your order status changes.`,
 
     'default': `👋 Hello! I'm here to help you with:
 

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion /* , AnimatePresence */ } from 'framer-motion';
-// import { Filter, SlidersHorizontal, Trash2, X } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 // import ProductGrid from '@/components/ProductGrid';
 import PageLayout from '@/components/PageLayout';
+import { Link } from 'react-router-dom';
 // import FilterSidebar from '@/components/FilterSidebar';
 // import { useCart } from '@/hooks/use-cart';
 // import { productApi } from '@/api/services';
@@ -76,8 +77,22 @@ const Collections = () => {
     */
 
     return (
-        <PageLayout>
+        <PageLayout showFooter={false}>
             <div className="pt-32 pb-20 overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Return to Home Link */}
+                    <Link to="/">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="inline-flex items-center gap-2 mb-8 px-4 py-3 bg-[#1a3a2e] text-[#a8c5b8] hover:bg-[#234438] transition-colors rounded-lg cursor-pointer"
+                        >
+                            <ArrowLeft size={18} />
+                            <span className="text-sm font-medium">Return to Home</span>
+                        </motion.div>
+                    </Link>
+                </div>
+
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-10">
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
@@ -117,7 +132,7 @@ const Collections = () => {
                                 </div>
 
                                 <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl text-foreground">
-                                    Summer <span className="text-accent italic">2025</span>
+                                    Summer <span className="text-accent italic">2026</span>
                                 </h2>
 
                                 <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">

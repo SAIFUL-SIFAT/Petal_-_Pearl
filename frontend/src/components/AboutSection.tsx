@@ -31,7 +31,7 @@ const AboutSection = () => {
               transition={{ delay: 0.4 }}
               className="absolute -bottom-4 sm:-bottom-8 -left-4 sm:-left-8 bg-[#1c1a0e] text-primary p-4 sm:p-6 rounded-lg shadow-xl"
             >
-              <p className="text-3xl sm:text-4xl font-serif text-accent mb-1">15+</p>
+              <p className="text-3xl sm:text-4xl font-serif text-accent mb-1">1+</p>
               <p className="text-xs sm:text-sm text-primary/70">Years of Excellence</p>
             </motion.div>
           </motion.div>
@@ -67,15 +67,15 @@ const AboutSection = () => {
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-6 sm:gap-8 mt-8">
               <div className="text-center lg:text-left">
-                <p className="text-2xl sm:text-3xl font-serif text-accent">500+</p>
+                <p className="text-2xl sm:text-3xl font-serif text-accent">100+</p>
                 <p className="text-xs sm:text-sm text-muted-foreground">Unique Designs</p>
               </div>
               <div className="text-center lg:text-left">
-                <p className="text-2xl sm:text-3xl font-serif text-accent">50+</p>
+                <p className="text-2xl sm:text-3xl font-serif text-accent">10+</p>
                 <p className="text-xs sm:text-sm text-muted-foreground">Partner Artisans</p>
               </div>
               <div className="text-center lg:text-left">
-                <p className="text-2xl sm:text-3xl font-serif text-accent">10k+</p>
+                <p className="text-2xl sm:text-3xl font-serif text-accent">1k+</p>
                 <p className="text-xs sm:text-sm text-muted-foreground">Happy Customers</p>
               </div>
             </div>

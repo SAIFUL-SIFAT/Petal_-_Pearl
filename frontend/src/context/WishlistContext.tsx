@@ -10,6 +10,7 @@ export interface Product {
     category: string;
     isNew?: boolean;
     isSale?: boolean;
+    stock: number;
 }
 
 interface WishlistContextType {

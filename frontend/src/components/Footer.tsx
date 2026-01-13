@@ -155,7 +155,7 @@ const Footer = () => {
       <div className="border-t border-secondary/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-foreground/60">
-            <p>© 2025 Petal & Pearl. All rights reserved.</p>
+            <p>© 2026 Petal & Pearl. All rights reserved.</p>
             <div className="flex items-center gap-4">
               <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-6 opacity-60" />
               <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-6 opacity-60" />

@@ -48,7 +48,7 @@ const Index = () => {
       <ProductGrid
         title="Handcrafted Ornaments"
         subtitle="Timeless Jewelry"
-        products={ornaments}
+        products={ornaments.slice(0, 8)}
         type="ornament"
         onAddToCart={addToCart}
       />
@@ -78,7 +78,7 @@ const Index = () => {
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <p className="text-accent uppercase tracking-[0.4em] text-sm font-medium">Summer 2025</p>
+            <p className="text-accent uppercase tracking-[0.4em] text-sm font-medium">Summer 2026</p>
             <h2 className="font-serif text-5xl md:text-7xl text-foreground mb-4">Exclusive <span className="italic text-accent">Collection</span></h2>
 
             <div className="flex items-center justify-center gap-4 py-8">

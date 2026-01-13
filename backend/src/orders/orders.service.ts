@@ -167,4 +167,9 @@ export class OrdersService {
         return order;
     }
 
+    async remove(id: number) {
+        const order = await this.findOne(id);
+        if (!order) throw new BadRequestException('Order not found');
+        return this.ordersRepository.remove(order);
+    }
 }

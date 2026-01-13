@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
 import { useCart } from '@/hooks/use-cart';
 import ProductCard from '@/components/ProductCard';
@@ -7,6 +8,7 @@ import Footer from '@/components/Footer';
 import CartSidebar from '@/components/CartSidebar';
 import MobileMenu from '@/components/MobileMenu';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Favorites = () => {
     const { wishlist } = useWishlist();
@@ -34,6 +36,18 @@ const Favorites = () => {
             <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 
             <main className="pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto min-h-[60vh]">
+                {/* Return to Home Link */}
+                <Link to="/">
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="inline-flex items-center gap-2 mb-8 px-4 py-3 bg-[#1a3a2e] text-[#a8c5b8] hover:bg-[#234438] transition-colors rounded-lg cursor-pointer"
+                    >
+                        <ArrowLeft size={18} />
+                        <span className="text-sm font-medium">Return to Home</span>
+                    </motion.div>
+                </Link>
+
                 <div className="flex flex-col items-center mb-12">
                     <motion.span
                         initial={{ opacity: 0, y: 20 }}

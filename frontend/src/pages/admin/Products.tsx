@@ -216,11 +216,18 @@ const AdminProducts = () => {
     };
 
     const [filterType, setFilterType] = useState<'all' | 'clothing' | 'ornament'>('all');
+    const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+    // Reset sub-filter when main filter changes
+    useEffect(() => {
+        setSelectedCategory('all');
+    }, [filterType]);
 
     const filteredProducts = products.filter(product =>
         (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             product.category.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (filterType === 'all' || product.type === filterType)
+        (filterType === 'all' || product.type === filterType) &&
+        (selectedCategory === 'all' || product.category.toLowerCase() === selectedCategory.toLowerCase())
     );
 
     return (
@@ -240,31 +247,59 @@ const AdminProducts = () => {
             </div>
 
             {/* Search and Filters */}
-            <div className="bg-[#032218] p-4 rounded-2xl border border-[#449c80]/20 mb-8 flex flex-col md:flex-row gap-4">
-                <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                    <input
-                        type="text"
-                        placeholder="Search products by name or category..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-[#02140f] border border-[#449c80]/20 rounded-xl py-3 pl-12 pr-4 focus:border-accent outline-none transition-all"
-                    />
+            <div className="bg-[#032218] p-4 rounded-2xl border border-[#449c80]/20 mb-8 space-y-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+                        <input
+                            type="text"
+                            placeholder="Search products by name or category..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full bg-[#02140f] border border-[#449c80]/20 rounded-xl py-3 pl-12 pr-4 focus:border-accent outline-none transition-all"
+                        />
+                    </div>
+                    <div className="flex gap-2">
+                        {['all', 'clothing', 'ornament'].map((type) => (
+                            <button
+                                key={type}
+                                onClick={() => setFilterType(type as any)}
+                                className={`px-4 py-2 rounded-xl text-sm font-bold capitalize transition-all border ${filterType === type
+                                    ? 'bg-accent text-accent-foreground border-accent'
+                                    : 'bg-[#02140f] text-muted-foreground border-[#449c80]/20 hover:border-accent/50'
+                                    }`}
+                            >
+                                {type}
+                            </button>
+                        ))}
+                    </div>
                 </div>
-                <div className="flex gap-2">
-                    {['all', 'clothing', 'ornament'].map((type) => (
-                        <button
-                            key={type}
-                            onClick={() => setFilterType(type as any)}
-                            className={`px-4 py-2 rounded-xl text-sm font-bold capitalize transition-all border ${filterType === type
-                                ? 'bg-accent text-accent-foreground border-accent'
-                                : 'bg-[#02140f] text-muted-foreground border-[#449c80]/20 hover:border-accent/50'
-                                }`}
+
+                {/* Sub-filters for Ornaments */}
+                <AnimatePresence>
+                    {filterType === 'ornament' && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="flex flex-wrap gap-2 border-t border-[#449c80]/10 pt-4 overflow-hidden"
                         >
-                            {type}
-                        </button>
-                    ))}
-                </div>
+                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground w-full mb-1">Ornament Categories:</span>
+                            {['all', 'ring', 'hair clips', 'hair band', 'Jewellery Set'].map((cat) => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setSelectedCategory(cat)}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all border ${selectedCategory === cat
+                                        ? 'bg-accent/20 text-accent border-accent/50 shadow-lg shadow-accent/10'
+                                        : 'bg-[#02140f] text-muted-foreground border-[#449c80]/20 hover:border-accent/30'
+                                        }`}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
 
             {/* Products Table */}

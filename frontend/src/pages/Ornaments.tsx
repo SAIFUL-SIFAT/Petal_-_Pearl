@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Filter, SlidersHorizontal, Trash2, X } from 'lucide-react';
+import { Filter, SlidersHorizontal, Trash2, X, ArrowLeft } from 'lucide-react';
 import ProductGrid from '@/components/ProductGrid';
 import PageLayout from '@/components/PageLayout';
 import FilterSidebar from '@/components/FilterSidebar';
 import { useCart } from '@/hooks/use-cart';
 import { productApi } from '@/api/services';
+import { Link } from 'react-router-dom';
 
 const Ornaments = () => {
     const { addToCart } = useCart();
@@ -73,9 +74,21 @@ const Ornaments = () => {
     const activeFilterCount = Object.values(activeFilters).filter(v => v !== null).length;
 
     return (
-        <PageLayout>
+        <PageLayout showFooter={false}>
             <div className="pt-32 pb-20 bg-secondary/30 min-h-screen">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Return to Home Link */}
+                    <Link to="/">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="inline-flex items-center gap-2 mb-8 px-4 py-3 bg-[#1a3a2e] text-[#a8c5b8] hover:bg-[#234438] transition-colors rounded-lg cursor-pointer"
+                        >
+                            <ArrowLeft size={18} />
+                            <span className="text-sm font-medium">Return to Home</span>
+                        </motion.div>
+                    </Link>
+
                     {/* Header Section */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                         <motion.div

@@ -17,7 +17,8 @@ import {
     MapPin,
     Printer,
     ShieldCheck,
-    AlertCircle
+    AlertCircle,
+    Trash2
 } from 'lucide-react';
 import ThermalReceipt from '@/components/ThermalReceipt';
 import { orderApi } from '@/api/services';
@@ -104,6 +105,29 @@ const AdminOrders = () => {
             toast({
                 title: "Confirmation Failed",
                 description: error.response?.data?.message || "Failed to connect to Steadfast",
+                variant: "destructive"
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteOrder = async (id: number) => {
+        if (!window.confirm("Are you sure you want to delete this order? This action cannot be undone.")) return;
+
+        try {
+            setLoading(true);
+            await orderApi.remove(id);
+            toast({
+                title: "Order Deleted",
+                description: `Order #${id} has been removed successfully.`,
+            });
+            setIsModalOpen(false);
+            await fetchOrders();
+        } catch (error: any) {
+            toast({
+                title: "Deletion Failed",
+                description: error.response?.data?.message || "Failed to delete order",
                 variant: "destructive"
             });
         } finally {
@@ -219,15 +243,25 @@ const AdminOrders = () => {
                                             </span>
                                         </td>
                                         <td className="p-4 sm:p-6 text-right">
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedOrder(order);
-                                                    setIsModalOpen(true);
-                                                }}
-                                                className="p-2 hover:bg-accent/10 text-accent rounded-lg transition-colors border border-transparent hover:border-accent/20"
-                                            >
-                                                <Eye size={18} />
-                                            </button>
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedOrder(order);
+                                                        setIsModalOpen(true);
+                                                    }}
+                                                    className="p-2 hover:bg-accent/10 text-accent rounded-lg transition-colors border border-transparent hover:border-accent/20"
+                                                    title="View Details"
+                                                >
+                                                    <Eye size={18} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteOrder(order.id)}
+                                                    className="p-2 hover:bg-red-500/10 text-red-400 rounded-lg transition-colors border border-transparent hover:border-red-500/20"
+                                                    title="Delete Order"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
@@ -272,6 +306,13 @@ const AdminOrders = () => {
                                     >
                                         <Printer size={16} className="text-accent" />
                                         Print Receipt
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteOrder(selectedOrder.id)}
+                                        className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-red-500/20"
+                                    >
+                                        <Trash2 size={16} />
+                                        Delete Order
                                     </button>
                                     <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-white/5 rounded-full transition-colors">
                                         <XCircle size={24} className="text-muted-foreground" />

@@ -47,7 +47,7 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-gold uppercase tracking-[0.4em] text-xs sm:text-sm mb-6 font-medium"
         >
-          ✦ Festive Collection 2025 ✦
+          ✦ Festive Collection 2026 ✦
         </motion.p>
 
         {/* Main Title */}
@@ -55,10 +55,10 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.4 }}
-          className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-foreground mb-6 leading-tight"
+          className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-foreground mb-12 leading-tight"
         >
-          The Art of
-          <span className="block text-gradient-gold mt-2 mb-2">Jamdani</span>
+          Simple. Elegant.
+          <span className="block text-gradient-gold mt-2 mb-2">Beautifully You</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -68,8 +68,8 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="mt-6 text-foreground/70 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed"
         >
-          Discover our exquisite collection of handcrafted three-piece suites
-          and timeless ornaments, curated for the modern Bangladeshi woman.
+          Petal & Pearl offers elegant ready-made Jewellery and Dresses for teens, young women.Minimal, trendy, and traditional designs—perfect for daily wear and special moments.
+          Quality pieces, carefully chosen, at affordable prices
         </motion.p>
 
         {/* CTA Buttons */}
