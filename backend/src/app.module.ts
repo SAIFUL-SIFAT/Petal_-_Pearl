@@ -127,6 +127,7 @@ import { AuthModule } from './auth/auth.module';
           entities: [Product, User, Order, Notification, Cart],
           schema: 'public', //  Explicitly force public schema for Neon DB
           synchronize: true, // Set to true to ensure tables are created in Neon during test
+          // Force restart for schema sync
           retryAttempts: 15,
           retryDelay: 3000,
           ssl: nodeEnv === 'production' || !!dbUrl,

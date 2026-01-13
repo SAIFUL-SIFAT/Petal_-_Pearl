@@ -12,8 +12,12 @@ export class MailingService {
         const port = Number(this.configService.get('SMTP_PORT', 587));
         const user = this.configService.get('SMTP_USER');
         const pass = this.configService.get('SMTP_PASS');
-        // Ensure secure is a boolean, as env vars are strings
         const secure = String(this.configService.get('SMTP_SECURE', 'false')).toLowerCase() === 'true';
+
+        if (!user || !pass) {
+            this.logger.warn('SMTP_USER or SMTP_PASS not set. Email service will be disabled.');
+            return;
+        }
 
         this.logger.log(`Initializing SMTP with ${host}:${port} (Secure: ${secure}, User: ${user})`);
 
@@ -22,16 +26,14 @@ export class MailingService {
             port,
             secure,
             auth: { user, pass },
-            // Add timeouts to prevent hanging indefinitely
-            connectionTimeout: 10000, // 10 seconds
+            connectionTimeout: 10000,
             greetingTimeout: 10000,
             socketTimeout: 15000,
         });
 
-        // Verify connection early to catch config errors
         this.transporter.verify((error) => {
             if (error) {
-                this.logger.error('SMTP Connection Error during verification:', error.message);
+                this.logger.warn(`SMTP Verification Failed: ${error.message}. Emails will not send.`);
             } else {
                 this.logger.log('SMTP Server is ready to take messages');
             }
