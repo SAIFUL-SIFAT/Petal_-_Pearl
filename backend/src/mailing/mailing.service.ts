@@ -20,7 +20,7 @@ export class MailingService {
     }
 
     async sendOrderNotification(order: any) {
-        const recipients = ['shahela17@gmail.com', 'sifat.sai3@gmail.com'];
+        const recipients = ['sifat.sai3@gmail.com'];
 
         const subject = `New Order #${order.id} - Petal & Pearl`;
 
