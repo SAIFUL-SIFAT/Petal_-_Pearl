@@ -6,6 +6,7 @@ import { Product } from '../products/entities/product.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { SteadfastService } from '../steadfast/steadfast.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { MailingService } from '../mailing/mailing.service';
 
 @Injectable()
 export class OrdersService {
@@ -16,6 +17,7 @@ export class OrdersService {
         private productsRepository: Repository<Product>,
         private notificationsService: NotificationsService,
         private steadfastService: SteadfastService,
+        private mailingService: MailingService,
         private dataSource: DataSource,
     ) { }
 
@@ -72,6 +74,12 @@ export class OrdersService {
             });
 
             await queryRunner.commitTransaction();
+
+            // Send email notification to admins (async, don't block response)
+            this.mailingService.sendOrderNotification(savedOrder).catch(err =>
+                console.error('Failed to send order email notification:', err)
+            );
+
             return savedOrder;
         } catch (err) {
             await queryRunner.rollbackTransaction();

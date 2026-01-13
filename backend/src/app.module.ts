@@ -129,18 +129,19 @@ import { AuthModule } from './auth/auth.module';
           synchronize: true, // Set to true to ensure tables are created in Neon during test
           retryAttempts: 15,
           retryDelay: 3000,
-          ssl: nodeEnv === 'production' || !!dbUrl,
-          extra: {
-            ssl: (nodeEnv === 'production' || !!dbUrl)
-              ? { rejectUnauthorized: false }
-              : null,
-            family: 4,
-            keepAlive: true,
-            max: 5,           // Lower from default 10
-            min: 1,
-            idleTimeoutMillis: 30000,
-            connectionTimeoutMillis: 45000,
-          },
+          ssl: false,
+          // ssl: nodeEnv === 'production' || !!dbUrl,
+          // extra: {
+          //   ssl: (nodeEnv === 'production' || !!dbUrl)
+          //     ? { rejectUnauthorized: false }
+          //     : null,
+          //   family: 4,
+          //   keepAlive: true,
+          //   max: 5,           // Lower from default 10
+          //   min: 1,
+          //   idleTimeoutMillis: 30000,
+          //   connectionTimeoutMillis: 45000,
+          // },
         };
       },
     }),
