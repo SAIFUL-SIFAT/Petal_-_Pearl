@@ -114,7 +114,7 @@ const Ornaments = () => {
                                 Timeless <span className="text-gold italic">Ornaments</span>
                             </h1>
                             <p className="text-muted-foreground text-lg">
-                                Discover our exquisite range of handcrafted jewelry and majestic bridal sets.
+                                Discover our exquisite range of  jewelry.
                             </p>
                         </motion.div>
 

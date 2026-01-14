@@ -1,56 +1,37 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
 @Injectable()
 export class MailingService {
     private readonly logger = new Logger(MailingService.name);
-    private transporter: nodemailer.Transporter;
+    private isEnabled = false;
 
     constructor(private configService: ConfigService) {
-        const host = this.configService.get('SMTP_HOST');
-        const port = Number(this.configService.get('SMTP_PORT', 587));
-        const user = this.configService.get('SMTP_USER');
-        const pass = this.configService.get('SMTP_PASS');
-        const secure = String(this.configService.get('SMTP_SECURE', 'false')).toLowerCase() === 'true';
+        const apiKey = this.configService.get<string>('SENDGRID_API_KEY');
 
-        if (!user || !pass) {
-            this.logger.warn('SMTP_USER or SMTP_PASS not set. Email service will be disabled.');
+        if (!apiKey) {
+            this.logger.warn('SENDGRID_API_KEY not set. Email service will be disabled.');
             return;
         }
 
-        this.logger.log(`Initializing SMTP with ${host}:${port} (Secure: ${secure}, User: ${user})`);
-
-        this.transporter = nodemailer.createTransport({
-            host,
-            port,
-            secure,
-            auth: { user, pass },
-            // Increase timeouts significantly for cloud environments
-            connectionTimeout: 60000, // 60s
-            greetingTimeout: 30000,   // 30s
-            socketTimeout: 60000,     // 60s
-            dnsTimeout: 60000,        // 60s
-            // Force IPv4 to avoid IPv6 timeouts in some restricted cloud networks
-            family: 4,
-        } as any);
-
-        this.transporter.verify((error) => {
-            if (error) {
-                this.logger.warn(`SMTP Verification Failed: ${error.message}. Emails will not send.`);
-            } else {
-                this.logger.log('SMTP Server is ready to take messages');
-            }
-        });
+        sgMail.setApiKey(apiKey);
+        this.isEnabled = true;
+        this.logger.log('SendGrid service initialized');
     }
 
     async sendOrderNotification(order: any) {
+        if (!this.isEnabled) {
+            this.logger.warn('SendGrid not enabled. Skipping order notification.');
+            return;
+        }
+
         const recipients = ['sifat.sai3@gmail.com', 'shahela17@gmail.com'];
         const subject = `New Order #${order.id} - Petal & Pearl`;
 
-        // Use SMTP_USER for from field if SMTP_FROM is not set, as Gmail requires this
-        const fromEmail = this.configService.get('SMTP_FROM') ||
-            `"Petal & Pearl" <${this.configService.get('SMTP_USER')}>`;
+        const fromEmail = this.configService.get<string>('SENDGRID_FROM') ||
+            this.configService.get<string>('SMTP_FROM') ||
+            'sifat.sai3@gmail.com';
 
         const itemsList = order.items.map((item: any) =>
             `<li>${item.name} x ${item.quantity} - ৳${item.price * item.quantity}</li>`
@@ -75,37 +56,60 @@ export class MailingService {
             </div>
         `;
 
+        const msg = {
+            to: recipients,
+            from: fromEmail,
+            subject: subject,
+            html: html,
+        };
+
         try {
-            this.logger.log(`Attempting to send order notification for #${order.id} to ${recipients}...`);
-            await this.transporter.sendMail({ from: fromEmail, to: recipients.join(', '), subject, html });
+            this.logger.log(`Attempting to send order notification for #${order.id} to ${recipients.join(', ')}...`);
+
+            // Send to each recipient individually to ensure better delivery tracking
+            const sendPromises = recipients.map(recipient =>
+                sgMail.send({
+                    ...msg,
+                    to: recipient
+                })
+            );
+
+            await Promise.all(sendPromises);
             this.logger.log(`Order notification email sent successfully for order #${order.id}`);
-        } catch (error) {
-            this.logger.error(`CRITICAL: SMTP Failure for order #${order.id}. Check your SMTP_USER/PASS. Error: ${error.message}`);
+        } catch (error: any) {
+            this.logger.error(`CRITICAL: SendGrid Failure for order #${order.id}. Error: ${error.message}`);
+            if (error.response) {
+                this.logger.error(JSON.stringify(error.response.body));
+            }
         }
     }
 
-    // async sendOrderConfirmation(order: any) {
-    //     const recipients = [order.customerEmail, 'sifat.sai3@gmail.com'];
-    //     const subject = `Order Confirmed #${order.id} - Petal & Pearl`;
+    async sendEmail(options: { to: string; subject: string; html: string }) {
+        if (!this.isEnabled) {
+            this.logger.warn('SendGrid not enabled. Skipping email send.');
+            return;
+        }
 
-    //     const fromEmail = this.configService.get('SMTP_FROM') ||
-    //         `"Petal & Pearl" <${this.configService.get('SMTP_USER')}>`;
+        const fromEmail = this.configService.get<string>('SENDGRID_FROM') ||
+            this.configService.get<string>('SMTP_FROM') ||
+            'sifat.sai3@gmail.com';
 
-    //     const html = `
-    //         <div style="font-family: sans-serif; color: #333;">
-    //             <h1>Order Confirmed!</h1>
-    //             <p>Hello ${order.customerName}, your order #${order.id} has been confirmed and is being processed.</p>
-    //             <p><strong>Tracking Number:</strong> ${order.courierConsignmentId || 'Pending'}</p>
-    //             <p>We will notify you once it has been shipped. Thank you for shopping with Petal & Pearl!</p>
-    //         </div>
-    //     `;
+        const msg = {
+            to: options.to,
+            from: fromEmail,
+            subject: options.subject,
+            html: options.html,
+        };
 
-    //     try {
-    //         this.logger.log(`Sending confirmation email for #${order.id} to ${order.customerEmail}...`);
-    //         await this.transporter.sendMail({ from: fromEmail, to: recipients.join(', '), subject, html });
-    //         this.logger.log(`Order confirmation email sent for order #${order.id}`);
-    //     } catch (error) {
-    //         this.logger.error(`Failed to send confirmation email for order #${order.id}: ${error.message}`);
-    //     }
-    // }
+        try {
+            await sgMail.send(msg);
+            this.logger.log(`Email sent successfully to ${options.to}`);
+        } catch (error: any) {
+            this.logger.error(`Failed to send email to ${options.to}: ${error.message}`);
+            if (error.response) {
+                this.logger.error(JSON.stringify(error.response.body));
+            }
+        }
+    }
 }
+

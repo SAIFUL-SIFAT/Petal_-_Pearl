@@ -396,8 +396,24 @@ const AdminOrders = () => {
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <p className="text-xs text-muted-foreground">Consignment ID:</p>
-                                                <p className="font-mono text-sm font-bold text-foreground">{selectedOrder.courierConsignmentId}</p>
+                                                <div className="flex flex-col gap-1">
+                                                    <p className="text-[10px] text-muted-foreground uppercase">Consignment ID</p>
+                                                    <p className="font-mono text-xs font-bold text-foreground bg-black/20 p-2 rounded">{selectedOrder.courierConsignmentId || 'N/A'}</p>
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <p className="text-[10px] text-muted-foreground uppercase">Tracking Code</p>
+                                                    <p className="font-mono text-xs font-bold text-accent bg-accent/5 p-2 rounded border border-accent/10">{selectedOrder.trackingCode || 'N/A'}</p>
+                                                </div>
+                                                {selectedOrder.trackingLink && (
+                                                    <a
+                                                        href={selectedOrder.trackingLink}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="block text-center bg-accent/20 hover:bg-accent/30 text-accent py-2 rounded-lg text-[10px] font-bold transition-all"
+                                                    >
+                                                        Track Live
+                                                    </a>
+                                                )}
                                             </div>
                                         ) : (
                                             <button

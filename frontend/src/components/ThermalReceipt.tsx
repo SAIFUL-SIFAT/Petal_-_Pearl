@@ -174,6 +174,20 @@ const ThermalReceipt = ({ order, autoPrint = false }: ThermalReceiptProps) => {
           <span>Payment</span>
           <span>{order.paymentMethod?.replace(/_/g, ' ') || 'N/A'}</span>
         </div>
+        {order.courier === 'steadfast' && (
+          <>
+            <div className="row">
+              <span>Courier</span>
+              <span>Steadfast</span>
+            </div>
+            {order.trackingCode && (
+              <div className="row">
+                <span>Tracking</span>
+                <span className="bold">{order.trackingCode}</span>
+              </div>
+            )}
+          </>
+        )}
 
         <div className="divider">--------------------------</div>
 

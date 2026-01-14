@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, MapPin, User, Mail, Phone, CreditCard, ArrowLeft, Check, Copy, AlertCircle, Info } from 'lucide-react';
+import { ShoppingBag, MapPin, User, Mail, Phone, CreditCard, ArrowLeft, Check, Copy, AlertCircle, Info, Truck } from 'lucide-react';
 import { useCart } from '@/hooks/use-cart';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -165,7 +165,7 @@ const Checkout = () => {
     const [isProcessing, setIsProcessing] = useState(false);
 
     const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shippingFee = subtotal > 5000 ? 0 : 120;
+    const shippingFee = 0;
     const total = subtotal + shippingFee;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -442,11 +442,21 @@ const Checkout = () => {
                                     <span className="text-muted-foreground">Original Sum</span>
                                     <span className="font-mono">৳{subtotal.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Logistic Fees</span>
-                                    <span className="text-accent font-bold uppercase text-[10px] tracking-widest">
-                                        {shippingFee === 0 ? 'Complimentary' : `৳${shippingFee}`}
-                                    </span>
+                                <div className="bg-accent/10 border border-accent/20 rounded-xl p-3 flex items-start gap-3">
+                                    <div className="p-1.5 bg-accent/20 rounded-lg text-accent mt-0.5">
+                                        <Truck size={14} />
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <p className="text-xs font-bold text-accent uppercase tracking-wider">Delivery Charge (Pay on Delivery)</p>
+                                        <div className="flex justify-between text-xs text-muted-foreground">
+                                            <span>Inside Dhaka</span>
+                                            <span className="font-mono font-bold text-foreground">৳50</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs text-muted-foreground">
+                                            <span>Outside Dhaka</span>
+                                            <span className="font-mono font-bold text-foreground">৳110</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="flex justify-between items-end pt-4 border-t border-[#449c80]/30">
                                     <span className="font-serif text-lg">Total Valuation</span>

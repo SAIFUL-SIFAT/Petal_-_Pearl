@@ -68,4 +68,10 @@ export class Order {
     @Column({ type: 'varchar', nullable: true })
     courierStatus: string | null;
 
+    @Column({ type: 'varchar', nullable: true })
+    trackingCode: string | null;
+
+    @Column({ type: 'varchar', nullable: true })
+    trackingLink: string | null;
+
 }

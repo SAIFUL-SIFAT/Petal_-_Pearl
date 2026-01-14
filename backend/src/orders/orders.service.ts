@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Order } from './entities/order.entity';
@@ -10,6 +10,8 @@ import { MailingService } from '../mailing/mailing.service';
 
 @Injectable()
 export class OrdersService {
+    private readonly logger = new Logger(OrdersService.name);
+
     constructor(
         @InjectRepository(Order)
         private ordersRepository: Repository<Order>,
@@ -139,45 +141,86 @@ export class OrdersService {
 
         if (!order) throw new Error('Order not found');
 
-        // Send to Steadfast
-        const steadfastResponse = await this.steadfastService.createParcel(order);
+        try {
+            // Send to Steadfast
+            const steadfastResult = await this.steadfastService.createParcel(order);
 
-        order.courier = 'steadfast';
-        order.courierConsignmentId = steadfastResponse.consignment.consignment_id;
-        order.courierStatus = steadfastResponse.consignment.status; // Should be 'in_review'
-        order.status = 'confirmed';
+            if (steadfastResult.success) {
+                order.courier = 'steadfast';
+                order.courierConsignmentId = steadfastResult.parcelId?.toString() ?? null;
+                order.trackingCode = steadfastResult.trackingCode ?? null;
+                order.trackingLink = steadfastResult.trackingLink ?? null;
+                order.courierStatus = (steadfastResult as any).status ?? null;
+                order.status = 'confirmed';
 
-        const savedOrder = await this.ordersRepository.save(order);
+                const savedOrder = await this.ordersRepository.save(order);
 
-        // Send confirmation email to customer (async)
-        // this.mailingService.sendOrderConfirmation(savedOrder).catch(err =>
-        //     console.error('Failed to send order confirmation email:', err)
-        // );
+                // Send tracking email to customer (async)
+                this.sendTrackingEmail(savedOrder, steadfastResult).catch(err =>
+                    this.logger.error(`Failed to send tracking email: ${err.message}`)
+                );
 
-        return savedOrder;
+                return savedOrder;
+            } else {
+                throw new Error(steadfastResult.message || 'Unknown courier error');
+            }
+        } catch (error: any) {
+            this.logger.error(`Failed to create courier parcel for order #${order.id}: ${error.message}`);
+            throw new BadRequestException(`Courier Error: ${error.message}`);
+        }
+    }
+
+    async sendTrackingEmail(order: Order, tracking: any) {
+        const html = `
+            <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+                <h2 style="color: #d4af37;">Your Order is on the Way! 🚚</h2>
+                <p>Hello ${order.customerName},</p>
+                <p>Great news! Your order <strong>#${order.id}</strong> has been shipped via <strong>Steadfast Courier</strong>.</p>
+                
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <p style="margin: 5px 0;"><strong>Tracking Code:</strong> ${tracking.trackingCode}</p>
+                    <p style="margin: 5px 0;"><strong>Invoice:</strong> ${tracking.invoice}</p>
+                    <p style="margin: 5px 0;"><strong>COD Amount:</strong> ৳${tracking.cod}</p>
+                </div>
+
+                <p>You can track your parcel in real-time here:</p>
+                <p style="text-align: center;">
+                    <a href="${tracking.trackingLink}" style="display: inline-block; background: #d4af37; color: #fff; padding: 10px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Track Your Order</a>
+                </p>
+                
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
+                <p style="font-size: 12px; color: #888;">Thank you for shopping with Petal & Pearl Boutique!</p>
+            </div>
+        `;
+
+        await this.mailingService.sendEmail({
+            to: order.customerEmail,
+            subject: `Your Order #${order.id} - Tracking Information`,
+            html,
+        });
     }
 
     async syncStatus(orderId: number) {
         const order = await this.ordersRepository.findOne({ where: { id: orderId } });
-        if (!order || order.courier !== 'steadfast' || !order.courierConsignmentId) {
+        if (!order || order.courier !== 'steadfast' || !order.trackingCode) {
             return order;
         }
 
         try {
-            const res = await this.steadfastService.getStatusByCid(order.courierConsignmentId);
-            if (res.status === 200) {
-                order.courierStatus = res.delivery_status;
+            const res = await this.steadfastService.trackParcel(order.trackingCode);
+            if (res.success) {
+                order.courierStatus = res.status;
                 // Map statuses
-                if (res.delivery_status === 'delivered') {
+                if (res.status === 'delivered') {
                     order.status = 'delivered';
                     order.paymentStatus = 'paid';
-                } else if (res.delivery_status === 'cancelled') {
+                } else if (res.status === 'cancelled') {
                     order.status = 'cancelled';
                 }
                 return await this.ordersRepository.save(order);
             }
-        } catch (error) {
-            console.error(`Failed to sync status for order ${order.id}:`, error.message);
+        } catch (error: any) {
+            this.logger.error(`Failed to sync status for order ${order.id}:`, error.message);
         }
         return order;
     }

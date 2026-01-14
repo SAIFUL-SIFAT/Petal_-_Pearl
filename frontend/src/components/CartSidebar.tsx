@@ -24,7 +24,7 @@ const CartSidebar = ({
   onCheckout
 }: CartSidebarProps) => {
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shippingFee = subtotal > 5000 ? 0 : 120;
+  const shippingFee = 0;
   const total = subtotal + shippingFee;
 
   return (
@@ -159,17 +159,6 @@ const CartSidebar = ({
                     <span className="text-muted-foreground">Subtotal</span>
                     <span>৳ {subtotal.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span className={shippingFee === 0 ? 'text-accent' : ''}>
-                      {shippingFee === 0 ? 'Free' : `৳ ${shippingFee}`}
-                    </span>
-                  </div>
-                  {shippingFee > 0 && (
-                    <p className="text-xs text-muted-foreground">
-                      Free shipping on orders above ৳5,000
-                    </p>
-                  )}
                   <div className="flex justify-between font-semibold text-lg pt-2 border-t border-[#449c80]">
                     <span>Total</span>
                     <span className="text-accent">৳ {total.toLocaleString()}</span>
