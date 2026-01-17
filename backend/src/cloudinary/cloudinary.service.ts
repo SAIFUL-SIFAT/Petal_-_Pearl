@@ -11,6 +11,8 @@ export class CloudinaryService {
             const uploadStream = cloudinary.uploader.upload_stream(
                 {
                     folder: 'petal_pearl_products',
+                    // format: 'auto', // causing invalid extension error
+                    quality: 'auto',
                 },
                 (error, result) => {
                     if (error) return reject(error);

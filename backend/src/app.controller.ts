@@ -16,8 +16,7 @@ export class AppController {
   ) { }
 
   @Get('health')
-  async ping() {
-    await this.dataSource.query('SELECT 1');
+  health() {
     return 'OK';
   }
 

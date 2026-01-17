@@ -18,7 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "seed": "ts-node src/scripts/seed.ts"
+    "seed": "ts-node src/scripts/seed.ts",
+    "reset:db": "ts-node src/scripts/reset-db.ts",
+    "reindex:db": "ts-node src/scripts/reindex-db.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

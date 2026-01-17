@@ -1,4 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
+import { useEffect } from "react";
+import { verifyHealth } from "./lib/utils";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -27,48 +29,55 @@ import { QuickViewProvider } from "./context/QuickViewContext";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <QuickViewProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <Chatbot />
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/ornaments" element={<Ornaments />} />
-                  <Route path="/product/:id" element={<ProductDetail />} />
-                  <Route path="/product/:id/:slug" element={<ProductDetail />} />
-                  <Route path="/collections" element={<Collections />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route element={<ProtectedRoute />}>
-                    <Route path="/favorites" element={<Favorites />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/orders" element={<Orders />} />
-                  </Route>
+const App = () => {
+  // Warm up backend
+  useEffect(() => {
+    verifyHealth();
+  }, []);
 
-                  <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-                    <Route path="/admin/dashboard" element={<Dashboard />} />
-                    <Route path="/admin/products" element={<AdminProducts />} />
-                    <Route path="/admin/inventory" element={<AdminInventory />} />
-                    <Route path="/admin/users" element={<AdminUsers />} />
-                    <Route path="/admin/orders" element={<AdminOrders />} />
-                  </Route>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <QuickViewProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <Chatbot />
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/ornaments" element={<Ornaments />} />
+                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route path="/product/:id/:slug" element={<ProductDetail />} />
+                    <Route path="/collections" element={<Collections />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/favorites" element={<Favorites />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/orders" element={<Orders />} />
+                    </Route>
 
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </TooltipProvider>
-            </QuickViewProvider>
-          </WishlistProvider>
-        </CartProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+                    <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+                      <Route path="/admin/dashboard" element={<Dashboard />} />
+                      <Route path="/admin/products" element={<AdminProducts />} />
+                      <Route path="/admin/inventory" element={<AdminInventory />} />
+                      <Route path="/admin/users" element={<AdminUsers />} />
+                      <Route path="/admin/orders" element={<AdminOrders />} />
+                    </Route>
 
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </TooltipProvider>
+              </QuickViewProvider>
+            </WishlistProvider>
+          </CartProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+
+};
 export default App;

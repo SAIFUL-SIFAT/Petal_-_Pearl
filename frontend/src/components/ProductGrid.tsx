@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ProductCard, { Product } from './ProductCard';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface ProductGridProps {
   title: string;
@@ -10,6 +11,7 @@ interface ProductGridProps {
   onAddToCart: (product: Product) => void;
   showViewAll?: boolean;
   transparent?: boolean;
+  isLoading?: boolean;
 }
 
 const ProductGrid = ({
@@ -19,7 +21,8 @@ const ProductGrid = ({
   type = 'clothing',
   onAddToCart,
   showViewAll = true,
-  transparent = false
+  transparent = false,
+  isLoading = false
 }: ProductGridProps) => {
   const backgroundClass = transparent ? '' : (type === 'ornament' ? 'bg-secondary' : 'bg-background');
   const paddingClass = transparent ? '' : 'py-20';
@@ -60,7 +63,17 @@ const ProductGrid = ({
         </motion.div>
 
         {/* Product Grid */}
-        {type === 'ornament' ? (
+        {isLoading ? (
+          <div className={`grid gap-6 ${type === 'ornament' ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'}`}>
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="aspect-[3/4] w-full rounded-lg" />
+                <Skeleton className="h-4 w-3/4 mx-auto" />
+                <Skeleton className="h-4 w-1/2 mx-auto" />
+              </div>
+            ))}
+          </div>
+        ) : type === 'ornament' ? (
           // Fixed Grid for Ornaments (was Masonry)
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {products.map((product, index) => (
