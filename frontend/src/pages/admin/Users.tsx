@@ -13,7 +13,7 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { userApi } from '@/api/services';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminUsers = () => {
@@ -22,7 +22,6 @@ const AdminUsers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUser, setEditingUser] = useState<any>(null);
-    const { toast } = useToast();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -38,10 +37,8 @@ const AdminUsers = () => {
             const response = await userApi.getAll();
             setUsers(response.data);
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to fetch users",
-                variant: "destructive"
+            toast.error("Error", {
+                description: "Failed to fetch users"
             });
         } finally {
             setLoading(false);
@@ -84,18 +81,16 @@ const AdminUsers = () => {
                 if (!payload.password) delete payload.password;
 
                 await userApi.update(editingUser.id, payload);
-                toast({ title: "Updated", description: "User updated successfully" });
+                toast.success("Updated", { description: "User updated successfully" });
             } else {
                 await userApi.signup(formData);
-                toast({ title: "Created", description: "User created successfully" });
+                toast.success("Created", { description: "User created successfully" });
             }
             setIsModalOpen(false);
             fetchUsers();
         } catch (error: any) {
-            toast({
-                title: "Error",
-                description: error.response?.data?.message || "Operation failed",
-                variant: "destructive"
+            toast.error("Error", {
+                description: error.response?.data?.message || "Operation failed"
             });
         }
     };
@@ -104,13 +99,11 @@ const AdminUsers = () => {
         if (!confirm("Are you sure you want to delete this user?")) return;
         try {
             await userApi.remove(id);
-            toast({ title: "Deleted", description: "User removed successfully" });
+            toast.success("Deleted", { description: "User removed successfully" });
             fetchUsers();
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to delete user",
-                variant: "destructive"
+            toast.error("Error", {
+                description: "Failed to delete user"
             });
         }
     };

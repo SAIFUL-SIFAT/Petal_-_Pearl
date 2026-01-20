@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import ThermalReceipt from '@/components/ThermalReceipt';
 import { orderApi } from '@/api/services';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 
@@ -32,7 +32,6 @@ const AdminOrders = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { toast } = useToast();
 
     const fetchOrders = async () => {
         try {
@@ -44,10 +43,8 @@ const AdminOrders = () => {
                 if (updated) setSelectedOrder(updated);
             }
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to fetch orders",
-                variant: "destructive"
+            toast.error("Error", {
+                description: "Failed to fetch orders"
             });
         } finally {
             setLoading(false);
@@ -61,16 +58,13 @@ const AdminOrders = () => {
     const handleUpdateStatus = async (id: number, status: string) => {
         try {
             await orderApi.updateStatus(id, status);
-            toast({
-                title: "Status Updated",
+            toast.success("Status Updated", {
                 description: `Order #${id} is now ${status}`,
             });
             fetchOrders();
         } catch (error) {
-            toast({
-                title: "Update Failed",
-                description: "Failed to update order status",
-                variant: "destructive"
+            toast.error("Update Failed", {
+                description: "Failed to update order status"
             });
         }
     };
@@ -78,16 +72,13 @@ const AdminOrders = () => {
     const handleUpdatePaymentStatus = async (id: number, paymentStatus: string) => {
         try {
             await orderApi.updatePaymentStatus(id, paymentStatus);
-            toast({
-                title: "Payment Verified",
+            toast.success("Payment Verified", {
                 description: `Order #${id} marked as ${paymentStatus}`,
             });
             fetchOrders();
         } catch (error) {
-            toast({
-                title: "Update Failed",
-                description: "Failed to verify payment",
-                variant: "destructive"
+            toast.error("Update Failed", {
+                description: "Failed to verify payment"
             });
         }
     };
@@ -96,16 +87,13 @@ const AdminOrders = () => {
         try {
             setLoading(true);
             await orderApi.confirm(id);
-            toast({
-                title: "Order Confirmed",
+            toast.success("Order Confirmed", {
                 description: `Order #${id} has been sent to Steadfast Courier`,
             });
             await fetchOrders();
         } catch (error: any) {
-            toast({
-                title: "Confirmation Failed",
-                description: error.response?.data?.message || "Failed to connect to Steadfast",
-                variant: "destructive"
+            toast.error("Confirmation Failed", {
+                description: error.response?.data?.message || "Failed to connect to Steadfast"
             });
         } finally {
             setLoading(false);
@@ -118,17 +106,14 @@ const AdminOrders = () => {
         try {
             setLoading(true);
             await orderApi.remove(id);
-            toast({
-                title: "Order Deleted",
+            toast.success("Order Deleted", {
                 description: `Order #${id} has been removed successfully.`,
             });
             setIsModalOpen(false);
             await fetchOrders();
         } catch (error: any) {
-            toast({
-                title: "Deletion Failed",
-                description: error.response?.data?.message || "Failed to delete order",
-                variant: "destructive"
+            toast.error("Deletion Failed", {
+                description: error.response?.data?.message || "Failed to delete order"
             });
         } finally {
             setLoading(false);
@@ -380,10 +365,10 @@ const AdminOrders = () => {
                                                                 try {
                                                                     setLoading(true);
                                                                     await orderApi.syncStatus(selectedOrder.id);
-                                                                    toast({ title: "Status Synced", description: "Courier status updated from Steadfast" });
+                                                                    toast.success("Status Synced", { description: "Courier status updated from Steadfast" });
                                                                     await fetchOrders();
                                                                 } catch (error) {
-                                                                    toast({ title: "Sync Failed", variant: "destructive", description: "Could not sync with Steadfast" });
+                                                                    toast.error("Sync Failed", { description: "Could not sync with Steadfast" });
                                                                 } finally {
                                                                     setLoading(false);
                                                                 }

@@ -11,50 +11,41 @@ import {
     RefreshCw
 } from 'lucide-react';
 import { productApi } from '@/api/services';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { useProducts } from '@/hooks/use-products';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Inventory = () => {
+    const queryClient = useQueryClient();
+    const [searchTerm, setSearchTerm] = useState('');
+
+    // Use the same products query hook
+    const { data: products = [], isLoading: loading, refetch: fetchInventory } = useProducts({});
+
+    /*
+    REMOVED LOCAL STATE IN FAVOR OF REACT-QUERY
     const [products, setProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
-    const { toast } = useToast();
 
-    const fetchInventory = async () => {
-        try {
-            setLoading(true);
-            const response = await productApi.getAll({});
-            setProducts(response.data);
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to fetch inventory",
-                variant: "destructive"
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchInventory();
-    }, []);
+    const fetchInventory = async () => { ... };
+    useEffect(() => { fetchInventory(); }, []);
+    */
 
     const handleUpdateStock = async (id: number, newStock: number) => {
         if (newStock < 0) return;
 
         try {
             await productApi.update(id, { stock: newStock });
-            setProducts(products.map(p => p.id === id ? { ...p, stock: newStock } : p));
-            toast({
-                title: "Stock Updated",
+            // Invalidate queries to update all product displays instantly
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+
+            toast.success("Stock Updated", {
                 description: "Inventory has been updated successfully.",
             });
         } catch (error) {
-            toast({
-                title: "Update Failed",
-                description: "Could not update stock levels.",
-                variant: "destructive"
+            toast.error("Update Failed", {
+                description: "Could not update stock levels."
             });
         }
     };
@@ -139,7 +130,7 @@ const Inventory = () => {
                     />
                 </div>
                 <button
-                    onClick={fetchInventory}
+                    onClick={() => fetchInventory()}
                     className="p-3 bg-accent/10 text-accent hover:bg-accent rounded-xl transition-all hover:text-accent-foreground"
                 >
                     <RefreshCw size={24} />

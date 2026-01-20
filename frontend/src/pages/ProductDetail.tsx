@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { productApi } from '@/api/services';
 import ProductCard, { Product } from '@/components/ProductCard';
+import { getOptimizedImageUrl } from '@/lib/utils';
 import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/context/WishlistContext';
 import PageLayout from '@/components/PageLayout';
@@ -15,10 +16,12 @@ const ProductDetail = () => {
     const [product, setProduct] = useState<Product | null>(null);
     const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isMainImageLoaded, setIsMainImageLoaded] = useState(false);
     const { addToCart } = useCart();
     const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
     useEffect(() => {
+        setIsMainImageLoaded(false);
         const fetchProduct = async () => {
             setIsLoading(true);
             try {
@@ -60,6 +63,10 @@ const ProductDetail = () => {
     const isWishlisted = isInWishlist(product.id);
     const isOutOfStock = product.stock <= 0;
 
+    const placeholderUrl = product.image?.includes('cloudinary.com')
+        ? getOptimizedImageUrl(product.image, 'placeholder')
+        : null;
+
     return (
         <PageLayout>
             <div className="pt-24 pb-20 min-h-screen bg-background">
@@ -80,9 +87,21 @@ const ProductDetail = () => {
                             animate={{ opacity: 1, x: 0 }}
                             className="relative aspect-[4/5] rounded-[32px] overflow-hidden bg-muted group"
                         >
-                            <img
-                                src={product.image?.startsWith('http') ? product.image : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.image}`}
+                            {/* Blurred Placeholder */}
+                            {placeholderUrl && !isMainImageLoaded && (
+                                <img
+                                    src={placeholderUrl}
+                                    alt=""
+                                    className="absolute inset-0 w-full h-full object-cover blur-lg scale-110"
+                                    aria-hidden="true"
+                                />
+                            )}
+                            <motion.img
+                                animate={{ opacity: isMainImageLoaded ? 1 : 0 }}
+                                src={product.image?.startsWith('http') ? getOptimizedImageUrl(product.image, 'detail') : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.image}`}
                                 alt={product.name}
+                                onLoad={() => setIsMainImageLoaded(true)}
+                                fetchPriority="high"
                                 crossOrigin="anonymous"
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             />

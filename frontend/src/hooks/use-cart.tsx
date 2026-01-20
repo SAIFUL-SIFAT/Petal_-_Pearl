@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '@/components/ProductCard';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { cartApi } from '@/api/services';
 
@@ -27,7 +27,6 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
-    const { toast } = useToast();
     const navigate = useNavigate();
     const { user, isAuthenticated } = useAuth();
 
@@ -94,10 +93,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             const existingItem = prevItems.find((item) => item.id === product.id);
             if (existingItem) {
                 if (existingItem.quantity >= product.stock) {
-                    toast({
-                        title: "Limit reached",
-                        description: `Only ${product.stock} items available in stock.`,
-                        variant: "destructive"
+                    toast.error("Limit reached", {
+                        description: `Only ${product.stock} items available in stock.`
                     });
                     return prevItems;
                 }
@@ -108,16 +105,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 );
             }
             if (product.stock <= 0) {
-                toast({
-                    title: "Out of stock",
-                    description: "This product is currently unavailable.",
-                    variant: "destructive"
+                toast.error("Out of stock", {
+                    description: "This product is currently unavailable."
                 });
                 return prevItems;
             }
-            toast({
-                title: "Added to bag!",
-                description: `${product.name} has been added to your bag.`,
+            toast.success("Added to bag!", {
+                description: `${product.name} has been added to your bag.`
             });
             return [...prevItems, { ...product, quantity: 1 }];
         });
@@ -128,10 +122,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             prevItems.map((item) => {
                 if (item.id === id) {
                     if (quantity > item.stock) {
-                        toast({
-                            title: "Stock limit",
-                            description: `Only ${item.stock} items available.`,
-                            variant: "destructive"
+                        toast.error("Stock limit", {
+                            description: `Only ${item.stock} items available.`
                         });
                         return item;
                     }
@@ -144,11 +136,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     const removeItem = useCallback((id: number) => {
         setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-        toast({
-            title: "Item removed",
-            description: "The item has been removed from your bag.",
+        toast.info("Item removed", {
+            description: "The item has been removed from your bag."
         });
-    }, [toast]);
+    }, []);
 
     const clearCart = useCallback(() => {
         setCartItems([]);

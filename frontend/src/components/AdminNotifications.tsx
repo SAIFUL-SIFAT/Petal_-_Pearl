@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { notificationApi } from '@/api/services';
 
 const AdminNotifications = () => {
-    const { toast } = useToast();
     const processedNotificationIds = useRef<Set<number>>(new Set(
         JSON.parse(sessionStorage.getItem('processedNotificationIds') || '[]')
     ));
@@ -28,15 +27,12 @@ const AdminNotifications = () => {
                     if (!processedNotificationIds.current.has(notification.id)) {
                         addToProcessed(notification.id);
 
-                        toast({
-                            title: "New Order Notification",
+                        toast.info("New Order Notification", {
                             description: notification.message,
                             duration: Infinity, // Keep open until manually closed
-                            onOpenChange: (open) => {
-                                if (!open) {
-                                    // Mark as read when closed (dismissed)
-                                    notificationApi.markAsRead(notification.id).catch(console.error);
-                                }
+                            onDismiss: () => {
+                                // Mark as read when closed (dismissed)
+                                notificationApi.markAsRead(notification.id).catch(console.error);
                             }
                         });
                     }

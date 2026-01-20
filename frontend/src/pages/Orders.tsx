@@ -4,7 +4,7 @@ import { Package, MapPin, Calendar, CreditCard, Eye, ArrowLeft, ShieldCheck, Clo
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { orderApi } from '@/api/services';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -34,7 +34,6 @@ interface Order {
 const Orders = () => {
     const navigate = useNavigate();
     const { user, isLoading: isAuthLoading } = useAuth();
-    const { toast } = useToast();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -52,10 +51,8 @@ const Orders = () => {
                 const response = await orderApi.getByUser(user.id);
                 setOrders(response.data);
             } catch (error) {
-                toast({
-                    title: "Error",
-                    description: "Failed to load orders",
-                    variant: "destructive",
+                toast.error("Error", {
+                    description: "Failed to load orders"
                 });
             } finally {
                 setLoading(false);

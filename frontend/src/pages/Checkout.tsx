@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, MapPin, User, Mail, Phone, CreditCard, ArrowLeft, Check, Copy, AlertCircle, Info, Truck } from 'lucide-react';
 import { useCart } from '@/hooks/use-cart';
 import { useAuth } from '@/context/AuthContext';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import api from '@/api/axios';
 
 interface PaymentInstructionsProps {
@@ -140,7 +140,6 @@ const Checkout = () => {
     const navigate = useNavigate();
     const { items, clearCart } = useCart();
     const { user } = useAuth();
-    const { toast } = useToast();
 
     const [formData, setFormData] = useState({
         customerName: '',
@@ -177,8 +176,7 @@ const Checkout = () => {
 
     const copyToClipboard = (text: string, label: string) => {
         navigator.clipboard.writeText(text);
-        toast({
-            title: "Copied!",
+        toast.success("Copied!", {
             description: `${label} copied to clipboard.`,
         });
     };
@@ -188,10 +186,8 @@ const Checkout = () => {
 
         // Validation for transaction ID
         if (formData.paymentMethod !== 'cash_on_delivery' && !formData.transactionId) {
-            toast({
-                title: "Transaction ID Required",
-                description: "Please provide the reference/transaction ID for your payment.",
-                variant: "destructive"
+            toast.error("Transaction ID Required", {
+                description: "Please provide the reference/transaction ID for your payment."
             });
             return;
         }
@@ -213,8 +209,7 @@ const Checkout = () => {
 
             await api.post('/orders', orderData);
 
-            toast({
-                title: "Order Placed Successfully!",
+            toast.success("Order Placed Successfully!", {
                 description: formData.paymentMethod === 'cash_on_delivery'
                     ? "Your order is confirmed. Cash will be collected on delivery."
                     : "Order received! Our team will verify your payment shortly.",
@@ -223,10 +218,8 @@ const Checkout = () => {
             clearCart();
             navigate(user ? '/orders' : '/');
         } catch (error: any) {
-            toast({
-                title: "Order Failed",
-                description: error.response?.data?.message || "Something went wrong. Please try again.",
-                variant: "destructive",
+            toast.error("Order Failed", {
+                description: error.response?.data?.message || "Something went wrong. Please try again."
             });
         } finally {
             setIsProcessing(false);

@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { useToast } from '@/hooks/use-toast';
 import { notificationApi } from '@/api/services';
 
 interface AdminLayoutProps {
@@ -25,7 +24,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     const { user, logout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
-    const { toast } = useToast();
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(window.innerWidth > 1024);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 

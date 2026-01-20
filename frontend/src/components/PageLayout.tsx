@@ -5,7 +5,6 @@ import AuthModal from './AuthModal';
 import CartSidebar from './CartSidebar';
 import Footer from './Footer';
 import { useAuth } from '@/context/AuthContext';
-import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/hooks/use-cart';
 
 interface PageLayoutProps {
@@ -18,7 +17,6 @@ const PageLayout = ({ children, showFooter = true }: PageLayoutProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showGuestInAuth, setShowGuestInAuth] = useState(false);
     const { isAuthenticated } = useAuth();
-    const { toast } = useToast();
     const {
         cartItems,
         cartCount,

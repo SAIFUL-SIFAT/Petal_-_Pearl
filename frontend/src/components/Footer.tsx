@@ -1,17 +1,15 @@
 import { motion } from 'framer-motion';
 import { Instagram, Facebook, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
-  const { toast } = useToast();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Subscribed!",
+    toast.success("Subscribed!", {
       description: "Thank you for joining our newsletter.",
     });
     setEmail('');
@@ -65,14 +63,18 @@ const Footer = () => {
             <div className="flex gap-3">
               <motion.a
                 whileHover={{ scale: 1.1, y: -2 }}
-                href="#"
+                href="https://instagram.com/petal_andpearl26"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-2.5 bg-secondary/30 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors"
               >
                 <Instagram size={18} />
               </motion.a>
               <motion.a
                 whileHover={{ scale: 1.1, y: -2 }}
-                href="#"
+                href="https://www.facebook.com/profile.php?id=61585714470891"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-2.5 bg-secondary/30 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors"
               >
                 <Facebook size={18} />

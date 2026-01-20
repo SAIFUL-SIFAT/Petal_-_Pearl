@@ -7,21 +7,20 @@ import FilterSidebar from '@/components/FilterSidebar';
 import { useCart } from '@/hooks/use-cart';
 import { productApi } from '@/api/services';
 import { Link } from 'react-router-dom';
+import { useProducts } from '@/hooks/use-products';
 
 const Ornaments = () => {
     const { addToCart } = useCart();
-    const [products, setProducts] = useState([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
     const categoryMenuRef = useRef<HTMLDivElement>(null);
-    const [isLoading, setIsLoading] = useState(true);
     const [filterMetadata, setFilterMetadata] = useState({
         materials: [],
         occasions: [],
         colors: [],
         categories: []
     });
-    const [activeFilters, setActiveFilters] = useState({
+    const [activeFilters, setActiveFilters] = useState<any>({
         material: null,
         occasion: null,
         color: null,
@@ -32,6 +31,17 @@ const Ornaments = () => {
         sortBy: 'date',
         sortOrder: 'DESC' as 'ASC' | 'DESC'
     });
+
+    const { data: products = [], isLoading } = useProducts({
+        type: 'ornament',
+        ...activeFilters
+    });
+
+    /*
+    REMOVED LOCAL STATE AND CUSTOM FETCH IN FAVOR OF USEPRODUCTS HOOK
+    const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    */
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -55,25 +65,15 @@ const Ornaments = () => {
         fetchMetadata();
     }, []);
 
+    /*
     const fetchProducts = async () => {
-        setIsLoading(true);
-        try {
-            const params = {
-                type: 'ornament',
-                ...activeFilters
-            };
-            const res = await productApi.getAll(params);
-            setProducts(res.data);
-        } catch (error) {
-            console.error('Failed to fetch ornaments:', error);
-        } finally {
-            setIsLoading(false);
-        }
+        // ...
     };
 
     useEffect(() => {
         fetchProducts();
     }, [activeFilters]);
+    */
 
     const handleFilterChange = (key: string | Record<string, any>, value?: any) => {
         if (typeof key === 'object') {
@@ -205,29 +205,25 @@ const Ornaments = () => {
                                     if (key === 'sortBy' && value === 'date' && activeFilters.sortOrder === 'DESC') return null;
                                     if (key === 'sortOrder') return null;
 
-                                    let displayValue = value;
-                                    let displayKey = key;
+                                    const displayValue = value as string;
+                                    const displayKey = key;
 
                                     if (key === 'inStock') {
-                                        displayKey = 'Availability';
-                                        displayValue = 'In Stock';
-                                    } else if (key === 'minPrice') {
-                                        displayKey = 'Min Price';
-                                        displayValue = `৳${value}`;
-                                    } else if (key === 'maxPrice') {
-                                        displayKey = 'Max Price';
-                                        displayValue = `৳${value}`;
-                                    } else if (key === 'sortBy') {
-                                        displayKey = 'Sorted By';
-                                        const orderLabel = activeFilters.sortOrder === 'ASC' ?
-                                            (value === 'price' ? 'Low to High' : value === 'name' ? 'A-Z' : 'Oldest First') :
-                                            (value === 'price' ? 'High to Low' : value === 'name' ? 'Z-A' : 'Newest First');
-                                        displayValue = `${value.charAt(0).toUpperCase() + value.slice(1)} (${orderLabel})`;
+                                        // ... existing logic handled by displayValue variable
                                     }
 
                                     return (
                                         <span key={key} className="flex items-center gap-2 bg-gold/10 border border-gold/20 px-4 py-1.5 rounded-full text-xs text-gold font-medium">
-                                            <span className="capitalize text-[10px] opacity-60 mr-1">{displayKey}:</span> {displayValue}
+                                            <span className="capitalize text-[10px] opacity-60 mr-1">{displayKey}:</span>
+                                            {key === 'inStock' ? 'In Stock' :
+                                                key === 'minPrice' ? `৳${value}` :
+                                                    key === 'maxPrice' ? `৳${value}` :
+                                                        key === 'sortBy' ? (
+                                                            `${(value as string).charAt(0).toUpperCase() + (value as string).slice(1)} (${activeFilters.sortOrder === 'ASC' ?
+                                                                (value === 'price' ? 'Low to High' : value === 'name' ? 'A-Z' : 'Oldest First') :
+                                                                (value === 'price' ? 'High to Low' : value === 'name' ? 'Z-A' : 'Newest First')
+                                                            })`
+                                                        ) : value as React.ReactNode}
                                             <button
                                                 onClick={() => {
                                                     if (key === 'sortBy') {
@@ -260,13 +256,7 @@ const Ornaments = () => {
 
                         {/* Content */}
                         <div className="relative z-10">
-                            {isLoading ? (
-                                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
-                                    {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                                        <div key={i} className="aspect-square bg-muted/20 animate-pulse rounded-2xl" />
-                                    ))}
-                                </div>
-                            ) : products.length > 0 ? (
+                            {products.length > 0 || isLoading ? (
                                 <ProductGrid
                                     title=""
                                     products={products}
@@ -274,6 +264,7 @@ const Ornaments = () => {
                                     onAddToCart={addToCart}
                                     showViewAll={false}
                                     transparent={true}
+                                    isLoading={isLoading}
                                 />
                             ) : (
                                 <div className="text-center py-20 border-2 border-dashed border-gold/20 rounded-3xl">

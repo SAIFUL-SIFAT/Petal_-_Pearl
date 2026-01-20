@@ -1,4 +1,4 @@
-import { Toaster } from "@/components/ui/toaster";
+
 import { useEffect } from "react";
 import { verifyHealth } from "./lib/utils";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -43,7 +43,7 @@ const App = () => {
             <WishlistProvider>
               <QuickViewProvider>
                 <TooltipProvider>
-                  <Toaster />
+
                   <Sonner />
                   <Chatbot />
                   <Routes>

@@ -15,7 +15,7 @@ import {
     Upload
 } from 'lucide-react';
 import { productApi } from '@/api/services';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminProducts = () => {
@@ -27,7 +27,6 @@ const AdminProducts = () => {
     const [uploading, setUploading] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>('');
-    const { toast } = useToast();
 
     // Form State
     const [formData, setFormData] = useState({
@@ -53,10 +52,8 @@ const AdminProducts = () => {
             const response = await productApi.getAll({});
             setProducts(response.data);
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to fetch products",
-                variant: "destructive"
+            toast.error("Error", {
+                description: "Failed to fetch products"
             });
         } finally {
             setLoading(false);
@@ -88,10 +85,8 @@ const AdminProducts = () => {
             const response = await productApi.upload(selectedFile);
             return response.data.url;
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to upload image",
-                variant: "destructive"
+            toast.error("Error", {
+                description: "Failed to upload image"
             });
             return null;
         } finally {
@@ -153,10 +148,8 @@ const AdminProducts = () => {
             if (selectedFile) {
                 const uploadedUrl = await handleUploadImage();
                 if (!uploadedUrl) {
-                    toast({
-                        title: "Error",
-                        description: "Image upload failed. Please try again.",
-                        variant: "destructive"
+                    toast.error("Error", {
+                        description: "Image upload failed. Please try again."
                     });
                     return;
                 }
@@ -165,10 +158,8 @@ const AdminProducts = () => {
 
             // Validate that we have an image URL
             if (!imageUrl) {
-                toast({
-                    title: "Error",
-                    description: "Please select an image",
-                    variant: "destructive"
+                toast.error("Error", {
+                    description: "Please select an image"
                 });
                 return;
             }
@@ -184,18 +175,16 @@ const AdminProducts = () => {
 
             if (editingProduct) {
                 await productApi.update(editingProduct.id, payload);
-                toast({ title: "Updated", description: "Product updated successfully" });
+                toast.success("Updated", { description: "Product updated successfully" });
             } else {
                 await productApi.create(payload);
-                toast({ title: "Created", description: "Product created successfully" });
+                toast.success("Created", { description: "Product created successfully" });
             }
             setIsModalOpen(false);
             fetchProducts();
         } catch (error: any) {
-            toast({
-                title: "Error",
-                description: error.response?.data?.message || "Operation failed",
-                variant: "destructive"
+            toast.error("Error", {
+                description: error.response?.data?.message || "Operation failed"
             });
         }
     };
@@ -204,13 +193,11 @@ const AdminProducts = () => {
         if (!confirm("Are you sure you want to delete this product?")) return;
         try {
             await productApi.remove(id);
-            toast({ title: "Deleted", description: "Product removed successfully" });
+            toast.success("Deleted", { description: "Product removed successfully" });
             fetchProducts();
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to delete product",
-                variant: "destructive"
+            toast.error("Error", {
+                description: "Failed to delete product"
             });
         }
     };

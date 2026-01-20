@@ -7,6 +7,7 @@ import { getOptimizedImageUrl } from '@/lib/utils';
 
 import { useWishlist } from '@/context/WishlistContext';
 import { useQuickView } from '@/context/QuickViewContext';
+import { useCart } from '@/hooks/use-cart';
 
 export interface Product {
   id: number;
@@ -31,15 +32,22 @@ interface ProductCardProps {
   type?: 'clothing' | 'ornament';
   onAddToCart: (product: Product) => void;
   index?: number;
+  priority?: boolean;
 }
 
-const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: ProductCardProps) => {
+const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0, priority = false }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { openQuickView } = useQuickView();
+  const { cartItems } = useCart();
   const navigate = useNavigate();
+
+  const itemInCart = cartItems.find(item => item.id === product.id);
+  const displayStock = product.stock - (itemInCart?.quantity || 0);
+
   const isWishlisted = isInWishlist(product.id);
-  const isOutOfStock = product.stock <= 0;
+  const isOutOfStock = displayStock <= 0;
 
   const slugify = (text: string) => {
     return text
@@ -49,6 +57,10 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
   };
 
   const productUrl = `/product/${product.id}/${slugify(product.name)}`;
+
+  const placeholderUrl = product.image?.includes('cloudinary.com')
+    ? getOptimizedImageUrl(product.image, 'placeholder')
+    : null;
 
   return (
     <motion.div
@@ -66,12 +78,30 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
         className="relative aspect-[3/4] overflow-hidden cursor-pointer"
         onClick={() => navigate(productUrl)}
       >
+        {/* Blurred Placeholder */}
+        {placeholderUrl && !isLoaded && (
+          <img
+            src={placeholderUrl}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover blur-lg scale-110"
+            aria-hidden="true"
+          />
+        )}
+
         <motion.img
-          animate={{ scale: isHovered ? 1.1 : 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          animate={{
+            scale: isHovered ? 1.1 : 1,
+            opacity: isLoaded ? 1 : 0
+          }}
+          transition={{
+            scale: { duration: 0.6, ease: "easeOut" },
+            opacity: { duration: 0.4 }
+          }}
           src={product.image?.startsWith('http') ? getOptimizedImageUrl(product.image, 'list') : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.image}`}
           alt={product.name}
-          loading="lazy"
+          onLoad={() => setIsLoaded(true)}
+          loading={priority ? "eager" : "lazy"}
+          {...(priority ? { fetchPriority: "high" } : {})}
           crossOrigin="anonymous"
           className={`h-full w-full object-cover ${isOutOfStock ? 'grayscale opacity-70' : ''}`}
         />
@@ -178,10 +208,10 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0 }: Pro
         <div className="text-[10px] uppercase tracking-wider font-medium">
           {isOutOfStock ? (
             <span className="text-destructive font-bold uppercase">Sold Out</span>
-          ) : product.stock <= 5 ? (
-            <span className="text-amber-500 font-bold">Only {product.stock} Left!</span>
+          ) : displayStock <= 5 ? (
+            <span className="text-amber-500 font-bold">Only {displayStock} Left!</span>
           ) : (
-            <span className="text-green-500/80 tracking-[0.1em]">{product.stock} In Stock</span>
+            <span className="text-green-500/80 tracking-[0.1em]">{displayStock} In Stock</span>
           )}
         </div>
       </div>

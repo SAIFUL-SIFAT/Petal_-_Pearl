@@ -30,7 +30,7 @@ export const verifyHealth = async () => {
 
 export const getOptimizedImageUrl = (
   items: string | undefined,
-  transformation: 'list' | 'detail' | 'thumb' = 'list'
+  transformation: 'list' | 'detail' | 'thumb' | 'placeholder' = 'list'
 ) => {
   if (!items) return "/placeholder.svg";
 
@@ -44,15 +44,26 @@ export const getOptimizedImageUrl = (
     const configs = {
       list: 'f_auto,q_auto,w_600,c_fill',   // Product Grid
       detail: 'f_auto,q_auto,w_1200',       // Product Page
-      thumb: 'f_auto,q_auto,w_200,c_fill'   // Cart/Mini views
+      thumb: 'f_auto,q_auto,w_200,c_fill',  // Cart/Mini views
+      placeholder: 'f_auto,q_auto,w_50,e_blur:1000' // Tiny blurred version
     };
 
     const params = configs[transformation];
 
     // Avoid double optimization if already present
-    if (items.includes('f_auto,q_auto')) return items;
+    // But allow replacing list with detail etc if needed
+    if (items.includes('f_auto,q_auto') && !items.includes('e_blur:1000') && transformation !== 'placeholder') {
+      return items;
+    }
 
-    return items.replace('/upload/', `/upload/${params}/`);
+    // Replace or add transformations
+    if (items.includes('/upload/v')) {
+      return items.replace('/upload/', `/upload/${params}/`);
+    } else if (items.includes('/upload/')) {
+      return items.replace('/upload/', `/upload/${params}/`);
+    }
+
+    return items;
   }
 
   // If it's just a raw public_id (no slashes, no dots usually, but could be deep), 

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, Mail, Phone, Lock, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { userApi } from '@/api/services';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 interface EditProfileModalProps {
     isOpen: boolean;
@@ -12,7 +12,6 @@ interface EditProfileModalProps {
 
 const EditProfileModal = ({ isOpen, onClose }: EditProfileModalProps) => {
     const { user, updateUser } = useAuth();
-    const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: user?.name || '',
@@ -84,18 +83,15 @@ const EditProfileModal = ({ isOpen, onClose }: EditProfileModalProps) => {
             const { password, ...userData } = response.data;
             updateUser(userData);
 
-            toast({
-                title: 'Profile Updated',
+            toast.success('Profile Updated', {
                 description: 'Your profile has been successfully updated.',
             });
 
             onClose();
         } catch (error: any) {
             console.error('Profile update error:', error);
-            toast({
-                title: 'Update Failed',
-                description: error.response?.data?.message || 'Failed to update profile. Please try again.',
-                variant: 'destructive',
+            toast.error('Update Failed', {
+                description: error.response?.data?.message || 'Failed to update profile. Please try again.'
             });
         } finally {
             setIsLoading(false);

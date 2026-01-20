@@ -9,50 +9,29 @@ import { useCart } from '@/hooks/use-cart';
 import { productApi } from '@/api/services';
 import ProductCarousel from '@/components/ProductCarousel';
 
+import { useProducts } from '@/hooks/use-products';
+
 const Index = () => {
   const { addToCart } = useCart();
+  const { data: clothing = [], isLoading: isClothingLoading } = useProducts({ type: 'clothing' });
+  const { data: ornaments = [], isLoading: isOrnamentsLoading } = useProducts({ type: 'ornament' });
+  const isLoading = isClothingLoading || isOrnamentsLoading;
+
+  /* 
+  // REMOVED LOCAL STATE AND CACHE SYSTEM IN FAVOR OF USEPRODUCTS HOOK
   const [clothing, setClothing] = useState([]);
   const [ornaments, setOrnaments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  */
 
+  /* 
   useEffect(() => {
     const fetchProducts = async () => {
-      // Check Cache
-      const cachedClothing = sessionStorage.getItem('clothing_cache');
-      const cachedOrnaments = sessionStorage.getItem('ornaments_cache');
-
-      if (cachedClothing) setClothing(JSON.parse(cachedClothing));
-      if (cachedOrnaments) setOrnaments(JSON.parse(cachedOrnaments));
-
-      // If we have cache, we can show content immediately
-      if (cachedClothing || cachedOrnaments) setIsLoading(false);
-
-      try {
-        // Only show full loader if absolutely no data
-        if (!cachedClothing && !cachedOrnaments) setIsLoading(true);
-
-        const [clothingRes, ornamentsRes] = await Promise.all([
-          productApi.getAll({ type: 'clothing' }),
-          productApi.getAll({ type: 'ornament' }),
-        ]);
-
-        if (clothingRes?.data) {
-          setClothing(clothingRes.data);
-          sessionStorage.setItem('clothing_cache', JSON.stringify(clothingRes.data));
-        }
-        if (ornamentsRes?.data) {
-          setOrnaments(ornamentsRes.data);
-          sessionStorage.setItem('ornaments_cache', JSON.stringify(ornamentsRes.data));
-        }
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      } finally {
-        setIsLoading(false);
-      }
+      // ...
     };
-
     fetchProducts();
   }, []);
+  */
 
   return (
     <PageLayout>

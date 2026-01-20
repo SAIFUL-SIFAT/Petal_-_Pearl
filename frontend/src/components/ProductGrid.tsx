@@ -83,6 +83,7 @@ const ProductGrid = ({
                 type="ornament"
                 onAddToCart={onAddToCart}
                 index={index}
+                priority={index < 4}
               />
             ))}
           </div>
@@ -96,6 +97,7 @@ const ProductGrid = ({
                 type="clothing"
                 onAddToCart={onAddToCart}
                 index={index}
+                priority={index < 4}
               />
             ))}
           </div>

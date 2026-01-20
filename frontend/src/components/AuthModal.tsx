@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, Phone, User, Eye, EyeOff } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { userApi } from '@/api/services';
 import { useAuth } from '@/context/AuthContext';
@@ -26,16 +26,13 @@ const AuthModal = ({ isOpen, onClose, showGuestOption = false, onContinueAsGuest
     password: '',
     confirmPassword: '',
   });
-  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (mode === 'signup' && formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Passwords don't match",
-        description: "Please make sure your passwords match.",
-        variant: "destructive",
+      toast.error("Passwords don't match", {
+        description: "Please make sure your passwords match."
       });
       return;
     }
@@ -49,8 +46,7 @@ const AuthModal = ({ isOpen, onClose, showGuestOption = false, onContinueAsGuest
           phone: formData.phone,
           password: formData.password,
         });
-        toast({
-          title: "Account created!",
+        toast.success("Account created!", {
           description: "You have successfully created your account. Please log in.",
         });
         setMode('login');
@@ -61,8 +57,7 @@ const AuthModal = ({ isOpen, onClose, showGuestOption = false, onContinueAsGuest
         });
 
         setAuthUser(response.data);
-        toast({
-          title: "Welcome back!",
+        toast.success("Welcome back!", {
           description: `Hello ${response.data.name}, you have successfully logged in.`,
         });
 
@@ -73,10 +68,8 @@ const AuthModal = ({ isOpen, onClose, showGuestOption = false, onContinueAsGuest
         onClose();
       }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.response?.data?.message || "Invalid credentials. Please try again.",
-        variant: "destructive",
+      toast.error("Error", {
+        description: error.response?.data?.message || "Invalid credentials. Please try again."
       });
     } finally {
       setIsLoading(false);

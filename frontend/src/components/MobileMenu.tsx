@@ -174,14 +174,18 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               <div className="flex gap-4">
                 <motion.a
                   whileHover={{ scale: 1.1, y: -2 }}
-                  href="#"
+                  href="https://instagram.com/petal_andpearl26"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2 bg-muted rounded-full hover:bg-accent hover:text-accent-foreground transition-colors"
                 >
                   <Instagram size={20} />
                 </motion.a>
                 <motion.a
                   whileHover={{ scale: 1.1, y: -2 }}
-                  href="#"
+                  href="https://www.facebook.com/profile.php?id=61585714470891"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2 bg-muted rounded-full hover:bg-accent hover:text-accent-foreground transition-colors"
                 >
                   <Facebook size={20} />
