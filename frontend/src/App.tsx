@@ -21,6 +21,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Orders from "./pages/Orders";
 import Chatbot from "./components/Chatbot";
 import ProductDetail from "./pages/ProductDetail";
+import SizeGuide from "./pages/SizeGuide";
+import ReturnsExchanges from "./pages/ReturnsExchanges";
+import FAQs from "./pages/FAQs";
+import TermsConditions from "./pages/TermsConditions";
 
 import { CartProvider } from "./hooks/use-cart";
 import { AuthProvider } from "./context/AuthContext";
@@ -53,6 +57,10 @@ const App = () => {
                     <Route path="/product/:id/:slug" element={<ProductDetail />} />
                     <Route path="/collections" element={<Collections />} />
                     <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/size-guide" element={<SizeGuide />} />
+                    <Route path="/returns-exchanges" element={<ReturnsExchanges />} />
+                    <Route path="/faqs" element={<FAQs />} />
+                    <Route path="/terms-conditions" element={<TermsConditions />} />
                     <Route element={<ProtectedRoute />}>
                       <Route path="/favorites" element={<Favorites />} />
                       <Route path="/profile" element={<Profile />} />

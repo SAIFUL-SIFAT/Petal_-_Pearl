@@ -118,13 +118,31 @@ const Footer = () => {
           <div>
             <h4 className="font-serif text-lg mb-4 text-accent">Customer Care</h4>
             <ul className="space-y-3 text-sm">
-              {['Size Guide', 'Track Order', 'Returns & Exchange', 'FAQs', 'Terms & Conditions'].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-foreground/70 hover:text-accent transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <Link to="/size-guide" className="text-foreground/70 hover:text-accent transition-colors">
+                  Size Guide
+                </Link>
+              </li>
+              <li>
+                <Link to="/" className="text-foreground/70 hover:text-accent transition-colors">
+                  Track Order
+                </Link>
+              </li>
+              <li>
+                <Link to="/returns-exchanges" className="text-foreground/70 hover:text-accent transition-colors">
+                  Returns & Exchange
+                </Link>
+              </li>
+              <li>
+                <Link to="/faqs" className="text-foreground/70 hover:text-accent transition-colors">
+                  FAQs
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms-conditions" className="text-foreground/70 hover:text-accent transition-colors">
+                  Terms & Conditions
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -143,9 +161,9 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@petalandpearl.com" className="flex items-center gap-3 text-foreground/70 hover:text-accent transition-colors">
+                <a href="mailto:petalpearl.bd@gmail.com" className="flex items-center gap-3 text-foreground/70 hover:text-accent transition-colors">
                   <Mail size={18} />
-                  <span>hello@petalandpearl.com</span>
+                  <span>petalpearl.bd@gmail.com</span>
                 </a>
               </li>
             </ul>

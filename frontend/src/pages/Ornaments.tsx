@@ -104,12 +104,11 @@ const Ornaments = () => {
             <div className="pt-32 pb-20 min-h-screen">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Return to Home Link */}
-                    <Link to="/">
-                        <div className="inline-flex items-center gap-2 mb-8 px-4 py-3 bg-[#1a3a2e] text-[#a8c5b8] hover:bg-[#234438] transition-colors rounded-lg cursor-pointer">
-                            <ArrowLeft size={18} />
-                            <span className="text-sm font-medium">Return to Home</span>
-                        </div>
+                    <Link to="/" className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-colors mb-8 group">
+                        <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                        Back to Home
                     </Link>
+
 
                     {/* Header Section */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
