@@ -35,7 +35,7 @@ const ProductDetail = () => {
                     type: res.data.type,
                     limit: 4
                 });
-                setRelatedProducts(relatedRes.data.filter((p: Product) => p.id !== res.data.id).slice(0, 4));
+                setRelatedProducts(relatedRes.data.data.filter((p: Product) => p.id !== res.data.id).slice(0, 4));
 
                 // Scroll to top when product changes
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -101,7 +101,7 @@ const ProductDetail = () => {
                                 src={product.image?.startsWith('http') ? getOptimizedImageUrl(product.image, 'detail') : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.image}`}
                                 alt={product.name}
                                 onLoad={() => setIsMainImageLoaded(true)}
-                                fetchPriority="high"
+                                {...({ fetchpriority: "high" } as any)}
                                 crossOrigin="anonymous"
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             />

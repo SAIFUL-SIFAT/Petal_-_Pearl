@@ -101,7 +101,7 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0, prior
           alt={product.name}
           onLoad={() => setIsLoaded(true)}
           loading={priority ? "eager" : "lazy"}
-          {...(priority ? { fetchPriority: "high" } : {})}
+          {...(priority ? { fetchpriority: "high" } : {})}
           crossOrigin="anonymous"
           className={`h-full w-full object-cover ${isOutOfStock ? 'grayscale opacity-70' : ''}`}
         />

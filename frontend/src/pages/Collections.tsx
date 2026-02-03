@@ -48,7 +48,7 @@ const Collections = () => {
                 ...activeFilters
             };
             const res = await productApi.getAll(params);
-            setProducts(res.data);
+            setProducts(res.data.data);
         } catch (error) {
             console.error('Failed to fetch collections:', error);
         } finally {

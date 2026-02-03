@@ -34,7 +34,7 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
         setIsSearching(true);
         try {
           const res = await productApi.getAll({ q: searchQuery });
-          setSearchResults(res.data.slice(0, 5));
+          setSearchResults(res.data.data.slice(0, 5));
         } catch (error) {
           console.error("Search failed:", error);
         } finally {

@@ -50,7 +50,7 @@ const AdminProducts = () => {
         try {
             setLoading(true);
             const response = await productApi.getAll({});
-            setProducts(response.data);
+            setProducts(response.data.data);
         } catch (error) {
             toast.error("Error", {
                 description: "Failed to fetch products"
