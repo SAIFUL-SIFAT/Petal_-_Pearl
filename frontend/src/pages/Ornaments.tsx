@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Filter, SlidersHorizontal, Trash2, X, ArrowLeft, ChevronDown } from 'lucide-react';
+import { Filter, SlidersHorizontal, Trash2, X, ArrowLeft, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductGrid from '@/components/ProductGrid';
 import PageLayout from '@/components/PageLayout';
 import FilterSidebar from '@/components/FilterSidebar';
@@ -29,13 +29,18 @@ const Ornaments = () => {
         maxPrice: null,
         inStock: false,
         sortBy: 'date',
-        sortOrder: 'DESC' as 'ASC' | 'DESC'
+        sortOrder: 'DESC' as 'ASC' | 'DESC',
+        page: 1,
+        limit: 12
     });
 
-    const { data: products = [], isLoading } = useProducts({
+    const { data: productResponse, isLoading } = useProducts({
         type: 'ornament',
         ...activeFilters
     });
+
+    const products = productResponse?.data || [];
+    const meta = productResponse?.meta;
 
     /*
     REMOVED LOCAL STATE AND CUSTOM FETCH IN FAVOR OF USEPRODUCTS HOOK
@@ -77,9 +82,18 @@ const Ornaments = () => {
 
     const handleFilterChange = (key: string | Record<string, any>, value?: any) => {
         if (typeof key === 'object') {
-            setActiveFilters(prev => ({ ...prev, ...key }));
+            setActiveFilters(prev => ({ ...prev, ...key, page: 1 }));
         } else {
-            setActiveFilters(prev => ({ ...prev, [key]: value }));
+            setActiveFilters(prev => ({ ...prev, [key]: value, page: 1 }));
+        }
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setActiveFilters(prev => ({ ...prev, page: newPage }));
+        // Scroll to top of results
+        const container = document.querySelector('.bg-card\\/30');
+        if (container) {
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
 
@@ -93,7 +107,9 @@ const Ornaments = () => {
             maxPrice: null,
             inStock: false,
             sortBy: 'date',
-            sortOrder: 'DESC'
+            sortOrder: 'DESC',
+            page: 1,
+            limit: 12
         });
     };
 
@@ -202,7 +218,7 @@ const Ornaments = () => {
                                     if (!value) return null;
 
                                     if (key === 'sortBy' && value === 'date' && activeFilters.sortOrder === 'DESC') return null;
-                                    if (key === 'sortOrder') return null;
+                                    if (key === 'sortOrder' || key === 'page' || key === 'limit') return null;
 
                                     const displayValue = value as string;
                                     const displayKey = key;
@@ -256,15 +272,73 @@ const Ornaments = () => {
                         {/* Content */}
                         <div className="relative z-10">
                             {products.length > 0 || isLoading ? (
-                                <ProductGrid
-                                    title=""
-                                    products={products}
-                                    type="ornament"
-                                    onAddToCart={addToCart}
-                                    showViewAll={false}
-                                    transparent={true}
-                                    isLoading={isLoading}
-                                />
+                                <>
+                                    <ProductGrid
+                                        title=""
+                                        products={products}
+                                        type="ornament"
+                                        onAddToCart={addToCart}
+                                        showViewAll={false}
+                                        transparent={true}
+                                        isLoading={isLoading}
+                                    />
+
+                                    {/* Premium Pagination */}
+                                    {meta && meta.lastPage > 1 && (
+                                        <div className="mt-16 flex flex-col items-center gap-6">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handlePageChange(meta.page - 1)}
+                                                    disabled={meta.page <= 1}
+                                                    className="p-3 rounded-xl border border-gold/20 text-gold hover:bg-gold hover:text-primary transition-all disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gold"
+                                                >
+                                                    <ChevronLeft size={20} />
+                                                </button>
+
+                                                <div className="flex items-center gap-1">
+                                                    {Array.from({ length: meta.lastPage }, (_, i) => i + 1).map((pageNum) => {
+                                                        // Show first, last, current, and pages around current
+                                                        if (
+                                                            pageNum === 1 ||
+                                                            pageNum === meta.lastPage ||
+                                                            (pageNum >= meta.page - 1 && pageNum <= meta.page + 1)
+                                                        ) {
+                                                            return (
+                                                                <button
+                                                                    key={pageNum}
+                                                                    onClick={() => handlePageChange(pageNum)}
+                                                                    className={`w-10 h-10 rounded-xl font-medium transition-all ${meta.page === pageNum
+                                                                        ? 'bg-gold text-primary shadow-lg shadow-gold/20'
+                                                                        : 'text-cream/60 hover:bg-gold/10 hover:text-gold border border-transparent hover:border-gold/20'
+                                                                        }`}
+                                                                >
+                                                                    {pageNum}
+                                                                </button>
+                                                            );
+                                                        } else if (
+                                                            pageNum === 2 && meta.page > 3 ||
+                                                            pageNum === meta.lastPage - 1 && meta.page < meta.lastPage - 2
+                                                        ) {
+                                                            return <span key={pageNum} className="text-gold/40 px-2 font-serif">...</span>;
+                                                        }
+                                                        return null;
+                                                    })}
+                                                </div>
+
+                                                <button
+                                                    onClick={() => handlePageChange(meta.page + 1)}
+                                                    disabled={meta.page >= meta.lastPage}
+                                                    className="p-3 rounded-xl border border-gold/20 text-gold hover:bg-gold hover:text-primary transition-all disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gold"
+                                                >
+                                                    <ChevronRight size={20} />
+                                                </button>
+                                            </div>
+                                            <p className="text-cream/40 text-[10px] uppercase tracking-[0.3em] font-bold">
+                                                Showing {(meta.page - 1) * meta.limit + 1} to {Math.min(meta.page * meta.limit, meta.total)} of {meta.total} ornaments
+                                            </p>
+                                        </div>
+                                    )}
+                                </>
                             ) : (
                                 <div className="text-center py-20 border-2 border-dashed border-gold/20 rounded-3xl">
                                     <Filter size={48} className="mx-auto text-gold mb-4 opacity-20" />

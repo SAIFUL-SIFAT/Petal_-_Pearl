@@ -13,8 +13,11 @@ import { useProducts } from '@/hooks/use-products';
 
 const Index = () => {
   const { addToCart } = useCart();
-  const { data: clothing = [], isLoading: isClothingLoading } = useProducts({ type: 'clothing' });
-  const { data: ornaments = [], isLoading: isOrnamentsLoading } = useProducts({ type: 'ornament' });
+  const { data: clothingRes, isLoading: isClothingLoading } = useProducts({ type: 'clothing' });
+  const { data: ornamentsRes, isLoading: isOrnamentsLoading } = useProducts({ type: 'ornament' });
+
+  const clothing = clothingRes?.data || [];
+  const ornaments = ornamentsRes?.data || [];
   const isLoading = isClothingLoading || isOrnamentsLoading;
 
   /* 

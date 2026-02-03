@@ -155,9 +155,9 @@ const Footer = () => {
                 <span>208,BDDL PARK<br />Dhaka 1217, Bangladesh</span>
               </li>
               <li>
-                <a href="tel:+8801758761248" className="flex items-center gap-3 text-foreground/70 hover:text-accent transition-colors">
+                <a href="tel:+8801777954044" className="flex items-center gap-3 text-foreground/70 hover:text-accent transition-colors">
                   <Phone size={18} />
-                  <span>+880 1758761248</span>
+                  <span>+880 1777954044</span>
                 </a>
               </li>
               <li>

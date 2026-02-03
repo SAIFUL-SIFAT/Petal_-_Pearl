@@ -20,17 +20,12 @@ const Inventory = () => {
     const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Use the same products query hook
-    const { data: products = [], isLoading: loading, refetch: fetchInventory } = useProducts({});
-
-    /*
-    REMOVED LOCAL STATE IN FAVOR OF REACT-QUERY
-    const [products, setProducts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    const fetchInventory = async () => { ... };
-    useEffect(() => { fetchInventory(); }, []);
-    */
+    // Use the same products query hook with server-side search
+    const { data: productsRes, isLoading: loading, refetch: fetchInventory } = useProducts({
+        q: searchTerm,
+        limit: 50 // Show more items in inventory
+    });
+    const products = productsRes?.data || [];
 
     const handleUpdateStock = async (id: number, newStock: number) => {
         if (newStock < 0) return;
@@ -50,13 +45,11 @@ const Inventory = () => {
         }
     };
 
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Client side filter removed in favor of server-side search 'q' parameter
+    const filteredProducts = products;
 
     const stats = {
-        totalProducts: products.length,
+        totalProducts: productsRes?.meta?.total || 0,
         lowStock: products.filter(p => (p.stock || 0) <= 5 && (p.stock || 0) > 0).length,
         outOfStock: products.filter(p => (p.stock || 0) === 0).length,
         totalItems: products.reduce((sum, p) => sum + (p.stock || 0), 0)

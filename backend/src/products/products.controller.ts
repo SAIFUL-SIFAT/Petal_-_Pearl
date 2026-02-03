@@ -27,6 +27,8 @@ export class ProductsController {
         @Query('sortBy') sortBy?: 'price' | 'name' | 'date',
         @Query('sortOrder') sortOrder?: 'ASC' | 'DESC',
         @Query('inStock') inStock?: string,
+        @Query('page') page?: string,
+        @Query('limit') limit?: string,
     ) {
         return this.productsService.findAll({
             type,
@@ -40,6 +42,8 @@ export class ProductsController {
             sortBy,
             sortOrder,
             inStock: inStock === 'true',
+            page: page ? parseInt(page) : undefined,
+            limit: limit ? parseInt(limit) : undefined,
         });
     }
 

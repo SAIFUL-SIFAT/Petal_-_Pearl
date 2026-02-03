@@ -7,7 +7,7 @@ export const useProducts = (params: any = {}) => {
         queryKey: ['products', params],
         queryFn: async () => {
             const response = await productApi.getAll(params);
-            return response.data as Product[];
+            return response.data;
         },
         // Refresh stock every 30 seconds for "on the fly" updates
         refetchInterval: 30000,

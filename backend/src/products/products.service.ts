@@ -22,10 +22,13 @@ export class ProductsService {
         sortBy?: 'price' | 'name' | 'date';
         sortOrder?: 'ASC' | 'DESC';
         inStock?: boolean;
+        page?: number;
+        limit?: number;
     }) {
         const {
             type, search, material, occasion, color, category,
-            minPrice, maxPrice, sortBy, sortOrder, inStock
+            minPrice, maxPrice, sortBy, sortOrder, inStock,
+            page = 1, limit = 12
         } = query;
 
         const queryBuilder = this.productsRepository.createQueryBuilder('product');
@@ -76,16 +79,28 @@ export class ProductsService {
         } else if (sortBy === 'name') {
             queryBuilder.orderBy('product.name', order);
         } else if (sortBy === 'date') {
-            // Use createdAt if possible, fallback to id
             queryBuilder.orderBy('product.createdAt', order);
         } else {
             queryBuilder.orderBy('product.id', 'DESC');
         }
 
-        // Always add id as a secondary sort for stability
         queryBuilder.addOrderBy('product.id', 'DESC');
 
-        return queryBuilder.getMany();
+        // Pagination logic
+        const skip = (page - 1) * limit;
+        queryBuilder.skip(skip).take(limit);
+
+        const [data, total] = await queryBuilder.getManyAndCount();
+
+        return {
+            data,
+            meta: {
+                total,
+                page,
+                limit,
+                lastPage: Math.ceil(total / limit),
+            },
+        };
     }
 
     async getFilterMetadata() {

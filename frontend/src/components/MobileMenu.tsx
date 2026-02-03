@@ -195,11 +195,11 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               <div className="mt-6 space-y-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Phone size={14} />
-                  <span>+880 1XXX-XXXXXX</span>
+                  <span>+880 1777954044</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail size={14} />
-                  <span>hello@petalandpearl.com</span>
+                  <span>petalpearl.bd@gmail.com</span>
                 </div>
               </div>
             </div>
