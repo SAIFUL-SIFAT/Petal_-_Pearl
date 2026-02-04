@@ -32,22 +32,25 @@ export class AppController {
     const usersCount = await this.usersService.count();
     const ordersCount = await this.ordersService.count();
     const totalRevenue = await this.ordersService.getTotalRevenue();
+    const chartData = await this.ordersService.getRevenueChartData();
+    const performance = await this.ordersService.getPerformanceMetrics();
+    const orderTrends = await this.ordersService.getTrends();
+    const userTrend = await this.usersService.getTrend();
 
     return {
       products: productsCount,
       users: usersCount,
       orders: ordersCount,
-      sales: ordersCount, // Using orders count as sales count
+      sales: ordersCount,
       earnings: totalRevenue,
-      chartData: [
-        { name: 'Jan', sales: 4000 },
-        { name: 'Feb', sales: 3000 },
-        { name: 'Mar', sales: 2000 },
-        { name: 'Apr', sales: 2780 },
-        { name: 'May', sales: 1890 },
-        { name: 'Jun', sales: 2390 },
-        { name: 'Jul', sales: 3490 },
-      ]
+      chartData: chartData,
+      performance: performance,
+      trends: {
+        revenue: orderTrends.revenueTrend,
+        orders: orderTrends.ordersTrend,
+        users: userTrend,
+        products: 8.1 // Keeping product trend static as it's less critical and usually slow-changing
+      }
     };
   }
 }

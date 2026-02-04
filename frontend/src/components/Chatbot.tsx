@@ -15,72 +15,63 @@ interface QuickReply {
 }
 
 const chatbotData: Record<string, string> = {
-    'return, refund, exchange': `📦 **Return Policy**
+    'return, refund, exchange': `Return Policy
 
-You can return items within **7 days** of delivery if:
+You can return items within 7 days of delivery if:
 • The item is unused and in original packaging
 • Tags are still attached
 • You have the original receipt
 
-To initiate a return, contact us at support@petalandpearl.com or call +880 1XXX-XXXXXX.`,
+To initiate a return, contact us at shahela17@gmail.com or call +880 1777954044.`,
 
-    'delivery, shipping, ship, courier': `🚚 **Delivery Information**
+    'delivery, shipping, ship, courier': `Delivery Information
 
-• **Dhaka**: 1-2 working days
-• **Outside Dhaka**: 3-5 working days
-• **Free shipping** on orders above ৳5,000
+• Dhaka: 1-2 working days
+• Outside Dhaka: 3-5 working days
+• Free shipping on orders above ৳5,000
 
 We use trusted courier services. You'll receive a tracking number once your order is shipped.`,
 
-    'size, measurement, fit, sizing': `📏 **Size Guide**
+    'size, measurement, fit, sizing': `Size Guide
 
-We follow **standard size charts**:
-• **S**: Bust 32-34", Waist 26-28"
-• **M**: Bust 36-38", Waist 30-32"
-• **L**: Bust 40-42", Waist 34-36"
-• **XL**: Bust 44-46", Waist 38-40"
+We follow standard size charts:
+• S: Bust 32-34", Waist 26-28"
+• M: Bust 36-38", Waist 30-32"
+• L: Bust 40-42", Waist 34-36"
+• XL: Bust 44-46", Waist 38-40"
 
 For custom measurements, please mention in order notes or contact us.`,
 
-    'payment, pay, cod, cash': `💳 **Payment Methods**
+    'payment, pay, cod, cash': `Payment Methods
 
 We accept:
-• **Cash on Delivery (COD)** - Pay when you receive
-• **bKash** - Mobile banking
-• **Nagad** - Mobile banking
-• **Bank Transfer** - Direct deposit
+• Cash on Delivery (COD) - Pay when you receive
+• bKash - Mobile banking
+• Nagad - Mobile banking
+• Bank Transfer - Direct deposit
 
 All payments are secure and encrypted.`,
 
-    'contact, support, help, email, phone': `📞 **Contact Us**
+    'contact, support, help, email, phone': `Contact Us
 
-**Email**: sifat.sai3@gmail.com,shahela17@gmail.com
-**Phone**: +880 1758761248,+880 1777954044 
-**WhatsApp**: +880 1758761248,+880 1777954044
+Email: sifat.sai3@gmail.com, shahela17@gmail.com
+Phone: +880 1758761248, +880 1777954044 
+WhatsApp: +880 1758761248, +880 1777954044
 
-**Business Hours**:
+Business Hours:
 Saturday - Thursday: 10 AM - 8 PM
 Friday: Closed
 
 We typically respond within 2-4 hours during business hours.`,
 
-    'hours, time, open, opening': `🕐 **Opening Hours**
+    'hours, time, open, opening': `Opening Hours
 
-**Saturday - Thursday**: 10:00 AM - 8:00 PM
-**Friday**: Closed
+Saturday - Thursday: 10:00 AM - 8:00 PM
+Friday: Closed
 
 Online orders can be placed 24/7!`,
 
-    //     'track, tracking, order status': `📦 **Track Your Order**
-
-    // To track your order:
-    // 1. Go to "My Orders" in your profile
-    // 2. Click on the order you want to track
-    // 3. View the current status
-
-    // You'll also receive SMS/email updates when your order status changes.`,
-
-    'default': `👋 Hello! I'm here to help you with:
+    'default': `Hello! I'm here to help you with:
 
 • Return & Exchange Policy
 • Delivery Information
@@ -93,15 +84,50 @@ Please select a topic or type your question!`
 };
 
 const quickReplies: QuickReply[] = [
-    { label: '📦 Return Policy', keywords: ['return'] },
-    { label: '🚚 Delivery Info', keywords: ['delivery'] },
-    { label: '📏 Size Guide', keywords: ['size'] },
-    { label: '💳 Payment Methods', keywords: ['payment'] },
-    { label: '📞 Contact Us', keywords: ['contact'] },
-    { label: '🕐 Opening Hours', keywords: ['hours'] },
+    { label: 'Return Policy', keywords: ['return'] },
+    { label: 'Delivery Info', keywords: ['delivery'] },
+    { label: 'Size Guide', keywords: ['size'] },
+    { label: 'Payment Methods', keywords: ['payment'] },
+    { label: 'Contact Us', keywords: ['contact'] },
+    { label: 'Opening Hours', keywords: ['hours'] },
 ];
 
 import { useLocation } from 'react-router-dom';
+
+const MessageContent = ({ text, isBot }: { text: string, isBot: boolean }) => {
+    const lines = text.split('\n');
+
+    return (
+        <div className="flex flex-col gap-1.5">
+            {lines.map((line, index) => {
+                const trimmedLine = line.trim();
+                if (!trimmedLine) return <div key={index} className="h-1" />;
+
+                // Check if it's a header (first line of a bot message usually)
+                const isHeader = isBot && index === 0 && lines.length > 1;
+
+                // Check if it's a list item
+                const isBullet = trimmedLine.startsWith('•');
+
+                return (
+                    <p
+                        key={index}
+                        className={`
+                            text-[13px] leading-relaxed
+                            ${isHeader ? 'font-serif font-bold text-lg text-accent mb-1' : ''}
+                            ${isBullet ? 'pl-4 relative' : ''}
+                        `}
+                    >
+                        {isBullet && (
+                            <span className="absolute left-0 text-accent font-bold">•</span>
+                        )}
+                        {isBullet ? trimmedLine.substring(1).trim() : trimmedLine}
+                    </p>
+                );
+            })}
+        </div>
+    );
+};
 
 const Chatbot = () => {
     const [isAdmin, setIsAdmin] = useState(false);
@@ -257,26 +283,32 @@ const Chatbot = () => {
                         </div>
 
                         {/* Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-background">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-background/95">
                             {messages.map((message) => (
                                 <motion.div
                                     key={message.id}
-                                    initial={{ opacity: 0, y: 10 }}
+                                    initial={{ opacity: 0, y: 15 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className={`flex gap-2 ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                                    className={`flex gap-3 ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
                                 >
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${message.sender === 'bot' ? 'bg-accent text-accent-foreground' : 'bg-muted'
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${message.sender === 'bot'
+                                        ? 'bg-accent text-accent-foreground'
+                                        : 'bg-muted text-muted-foreground'
                                         }`}>
                                         {message.sender === 'bot' ? <Bot size={16} /> : <UserIcon size={16} />}
                                     </div>
-                                    <div className={`max-w-[75%] ${message.sender === 'user' ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
-                                        <div className={`px-4 py-2 rounded-2xl ${message.sender === 'bot'
-                                            ? 'bg-muted text-foreground'
-                                            : 'bg-accent text-accent-foreground'
+                                    <div className={`max-w-[80%] ${message.sender === 'user' ? 'items-end' : 'items-start'} flex flex-col gap-1.5`}>
+                                        <div className={`px-4 py-3 rounded-2xl shadow-sm border ${message.sender === 'bot'
+                                            ? 'bg-card border-border rounded-tl-none text-card-foreground'
+                                            : 'bg-accent text-accent-foreground border-transparent rounded-tr-none'
                                             }`}>
-                                            <p className="text-sm whitespace-pre-line">{message.text}</p>
+                                            {message.sender === 'bot' ? (
+                                                <MessageContent text={message.text} isBot={true} />
+                                            ) : (
+                                                <p className="text-[13px] leading-relaxed">{message.text}</p>
+                                            )}
                                         </div>
-                                        <span className="text-[10px] text-muted-foreground px-2">
+                                        <span className="text-[10px] text-muted-foreground/70 px-1 font-medium italic">
                                             {message.timestamp.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                         </span>
                                     </div>
@@ -286,15 +318,15 @@ const Chatbot = () => {
                         </div>
 
                         {/* Quick Replies */}
-                        <div className="p-3 border-t border-border bg-card">
-                            <div className="flex flex-wrap gap-2 mb-2">
+                        <div className="p-3 border-t border-border bg-card/50">
+                            <div className="flex flex-wrap gap-2 mb-1 px-1">
                                 {quickReplies.map((reply, index) => (
                                     <motion.button
                                         key={index}
-                                        whileHover={{ scale: 1.05 }}
+                                        whileHover={{ scale: 1.05, backgroundColor: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => handleQuickReply(reply.keywords)}
-                                        className="px-3 py-1.5 bg-muted hover:bg-accent hover:text-accent-foreground text-xs rounded-full transition-colors border border-border"
+                                        className="px-3 py-1.5 bg-background text-accent text-[11px] font-medium rounded-full transition-all border border-accent/20 shadow-sm"
                                     >
                                         {reply.label}
                                     </motion.button>
@@ -311,13 +343,13 @@ const Chatbot = () => {
                                     onChange={(e) => setInputValue(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                                     placeholder="Type your question..."
-                                    className="flex-1 bg-background border border-border rounded-xl px-4 py-2 text-sm focus:border-accent outline-none"
+                                    className="flex-1 bg-background border border-border rounded-2xl px-4 py-2.5 text-[13px] text-foreground focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all placeholder:text-muted-foreground/50"
                                 />
                                 <button
                                     onClick={() => handleSendMessage()}
-                                    className="p-2 bg-accent text-accent-foreground rounded-xl hover:bg-accent/90 transition-colors"
+                                    className="p-2.5 bg-accent text-accent-foreground rounded-2xl hover:bg-accent/90 shadow-md hover:shadow-lg transition-all"
                                 >
-                                    <Send size={20} />
+                                    <Send size={18} />
                                 </button>
                             </div>
                         </div>

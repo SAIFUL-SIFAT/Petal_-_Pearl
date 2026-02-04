@@ -26,14 +26,19 @@ const StatCard = ({ title, value, icon, trend, trendValue }: any) => (
 );
 
 const Dashboard = () => {
-    const [stats, setStats] = useState({
+    const [stats, setStats] = useState<any>({
         products: 0,
         users: 0,
         sales: 0,
         orders: 0,
         earnings: 0,
-        chartData: []
+        chartData: [],
+        performance: {
+            targetProgress: 0,
+            fulfillmentRate: 0
+        }
     });
+
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -61,6 +66,8 @@ const Dashboard = () => {
         );
     }
 
+    const { performance, trends } = stats;
+
     return (
         <AdminLayout>
             <div className="mb-8 sm:mb-10">
@@ -73,29 +80,29 @@ const Dashboard = () => {
                     title="Total Revenue"
                     value={`৳${(stats.earnings || 0).toLocaleString()}`}
                     icon={<DollarSign size={24} />}
-                    trend="up"
-                    trendValue="+12.5%"
+                    trend={trends?.revenue >= 0 ? 'up' : 'down'}
+                    trendValue={`${trends?.revenue >= 0 ? '+' : ''}${trends?.revenue || 0}%`}
                 />
                 <StatCard
                     title="Active Users"
                     value={(stats.users || 0).toLocaleString()}
                     icon={<Users size={24} />}
-                    trend="up"
-                    trendValue="+5.2%"
+                    trend={trends?.users >= 0 ? 'up' : 'down'}
+                    trendValue={`${trends?.users >= 0 ? '+' : ''}${trends?.users || 0}%`}
                 />
                 <StatCard
                     title="Total Orders"
                     value={(stats.orders || 0).toLocaleString()}
                     icon={<Package size={24} />}
-                    trend="up"
-                    trendValue="+2.4%"
+                    trend={trends?.orders >= 0 ? 'up' : 'down'}
+                    trendValue={`${trends?.orders >= 0 ? '+' : ''}${trends?.orders || 0}%`}
                 />
                 <StatCard
                     title="Total Products"
                     value={(stats.products || 0).toLocaleString()}
-                    icon={<ShoppingBag size={24} />} // Changed icon for variety
-                    trend="up"
-                    trendValue="+8.1%"
+                    icon={<ShoppingBag size={24} />}
+                    trend={trends?.products >= 0 ? 'up' : 'down'}
+                    trendValue={`${trends?.products >= 0 ? '+' : ''}${trends?.products || 0}%`}
                 />
             </div>
 
@@ -131,25 +138,33 @@ const Dashboard = () => {
                     <div className="space-y-6">
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Target Sales</span>
-                                <span className="font-bold text-accent">85%</span>
+                                <span className="text-muted-foreground">Monthly Goal (৳100k)</span>
+                                <span className="font-bold text-accent">{performance?.targetProgress || 0}%</span>
                             </div>
                             <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                                <div className="h-full bg-accent w-[85%] rounded-full" />
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${performance?.targetProgress || 0}%` }}
+                                    className="h-full bg-accent rounded-full"
+                                />
                             </div>
                         </div>
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Server Load</span>
-                                <span className="font-bold text-green-400">24%</span>
+                                <span className="text-muted-foreground">Order Fulfillment</span>
+                                <span className="font-bold text-green-400">{performance?.fulfillmentRate || 0}%</span>
                             </div>
                             <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                                <div className="h-full bg-green-400 w-[24%] rounded-full" />
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${performance?.fulfillmentRate || 0}%` }}
+                                    className="h-full bg-green-400 rounded-full"
+                                />
                             </div>
                         </div>
                         <div className="mt-8 pt-8 border-t border-[#449c80]/10">
                             <p className="text-sm text-muted-foreground">
-                                Detailed reports for product performance and user retention will be available in the next update.
+                                Real-time performance tracking based on confirmed revenue and completed order fulfillment.
                             </p>
                         </div>
                     </div>

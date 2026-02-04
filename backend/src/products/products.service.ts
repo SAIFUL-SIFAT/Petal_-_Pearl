@@ -38,19 +38,22 @@ export class ProductsService {
         }
 
         if (category) {
-            queryBuilder.andWhere('product.category = :category', { category });
+            queryBuilder.andWhere(
+                '(product.category ILIKE :catParam OR :rawCat ILIKE CONCAT(\'%\', product.category, \'%\'))',
+                { catParam: `%${category}%`, rawCat: category }
+            );
         }
 
         if (material) {
-            queryBuilder.andWhere('product.material = :material', { material });
+            queryBuilder.andWhere('product.material ILIKE :material', { material: `${material}` });
         }
 
         if (occasion) {
-            queryBuilder.andWhere('product.occasion = :occasion', { occasion });
+            queryBuilder.andWhere('product.occasion ILIKE :occasion', { occasion: `${occasion}` });
         }
 
         if (color) {
-            queryBuilder.andWhere('product.color = :color', { color });
+            queryBuilder.andWhere('product.color ILIKE :color', { color: `${color}` });
         }
 
         if (minPrice) {

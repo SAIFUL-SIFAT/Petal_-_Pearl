@@ -13,8 +13,8 @@ import { useProducts } from '@/hooks/use-products';
 
 const Index = () => {
   const { addToCart } = useCart();
-  const { data: clothingRes, isLoading: isClothingLoading } = useProducts({ type: 'clothing' });
-  const { data: ornamentsRes, isLoading: isOrnamentsLoading } = useProducts({ type: 'ornament' });
+  const { data: clothingRes, isLoading: isClothingLoading } = useProducts({ type: 'clothing', limit: 100 });
+  const { data: ornamentsRes, isLoading: isOrnamentsLoading } = useProducts({ type: 'ornament', limit: 100 });
 
   const clothing = clothingRes?.data || [];
   const ornaments = ornamentsRes?.data || [];

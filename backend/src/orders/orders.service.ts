@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, Not, In, MoreThanOrEqual, LessThan, And } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { Product } from '../products/entities/product.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -223,6 +223,129 @@ export class OrdersService {
             this.logger.error(`Failed to sync status for order ${order.id}:`, error.message);
         }
         return order;
+    }
+
+    async getRevenueChartData() {
+        const last6Months: { date: Date; name: string; sales: number }[] = [];
+        const now = new Date();
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            last6Months.push({
+                date: d,
+                name: months[d.getMonth()],
+                sales: 0
+            });
+        }
+
+        const startDate = last6Months[0].date;
+
+        const orders = await this.ordersRepository
+            .createQueryBuilder('order')
+            .select("DATE_TRUNC('month', order.createdAt)", 'month')
+            .addSelect('SUM(order.totalAmount)', 'sales')
+            .where('order.status != :status', { status: 'cancelled' })
+            .andWhere('order.createdAt >= :startDate', { startDate })
+            .groupBy("DATE_TRUNC('month', order.createdAt)")
+            .getRawMany();
+
+        return last6Months.map(m => {
+            const orderData = orders.find(o => {
+                const orderDate = new Date(o.month);
+                return orderDate.getMonth() === m.date.getMonth() &&
+                    orderDate.getFullYear() === m.date.getFullYear();
+            });
+            return {
+                name: m.name,
+                sales: orderData ? parseFloat(orderData.sales) : 0
+            };
+        });
+    }
+
+    async getPerformanceMetrics() {
+        // 1. Monthly Goal Progress (Target: 100,000)
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        const currentMonthRevenue = await this.ordersRepository
+            .createQueryBuilder('order')
+            .select('SUM(order.totalAmount)', 'total')
+            .where('order.status != :status', { status: 'cancelled' })
+            .andWhere('order.createdAt >= :startOfMonth', { startOfMonth })
+            .getRawOne();
+
+        const revenue = parseFloat(currentMonthRevenue.total) || 0;
+        const target = 100000; // Hardcoded target for now
+        const targetProgress = Math.min(Math.round((revenue / target) * 100), 100);
+
+        // 2. Order Fulfillment Rate
+        const totalOrders = await this.ordersRepository.count({
+            where: { status: Not('cancelled') }
+        });
+
+        const fulfilledOrders = await this.ordersRepository.count({
+            where: { status: In(['shipped', 'delivered']) }
+        });
+
+        const fulfillmentRate = totalOrders > 0
+            ? Math.round((fulfilledOrders / totalOrders) * 100)
+            : 0;
+
+        return {
+            targetProgress,
+            fulfillmentRate
+        };
+    }
+
+    async getTrends() {
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+        const sixtyDaysAgo = new Date(now.getTime() - (60 * 24 * 60 * 60 * 1000));
+
+        // Revenue Trends
+        const currentRevenueRaw = await this.ordersRepository
+            .createQueryBuilder('order')
+            .select('SUM(order.totalAmount)', 'total')
+            .where('order.status != :status', { status: 'cancelled' })
+            .andWhere('order.createdAt >= :startDate', { startDate: thirtyDaysAgo })
+            .getRawOne();
+
+        const previousRevenueRaw = await this.ordersRepository
+            .createQueryBuilder('order')
+            .select('SUM(order.totalAmount)', 'total')
+            .where('order.status != :status', { status: 'cancelled' })
+            .andWhere('order.createdAt >= :startDate', { startDate: sixtyDaysAgo })
+            .andWhere('order.createdAt < :endDate', { endDate: thirtyDaysAgo })
+            .getRawOne();
+
+        const currentRevenue = parseFloat(currentRevenueRaw.total) || 0;
+        const previousRevenue = parseFloat(previousRevenueRaw.total) || 0;
+
+        // Order Trends
+        const currentOrders = await this.ordersRepository.count({
+            where: {
+                status: Not('cancelled'),
+                createdAt: MoreThanOrEqual(thirtyDaysAgo)
+            }
+        });
+
+        const previousOrders = await this.ordersRepository.count({
+            where: {
+                status: Not('cancelled'),
+                createdAt: And(MoreThanOrEqual(sixtyDaysAgo), LessThan(thirtyDaysAgo))
+            }
+        });
+
+        const calculateTrend = (current: number, previous: number) => {
+            if (previous === 0) return current > 0 ? 100 : 0;
+            return Math.round(((current - previous) / previous) * 100);
+        };
+
+        return {
+            revenueTrend: calculateTrend(currentRevenue, previousRevenue),
+            ordersTrend: calculateTrend(currentOrders, previousOrders)
+        };
     }
 
     async remove(id: number) {

@@ -49,7 +49,7 @@ const AdminProducts = () => {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const response = await productApi.getAll({});
+            const response = await productApi.getAll({ limit: 1000 });
             setProducts(response.data.data);
         } catch (error) {
             toast.error("Error", {
@@ -210,12 +210,20 @@ const AdminProducts = () => {
         setSelectedCategory('all');
     }, [filterType]);
 
-    const filteredProducts = products.filter(product =>
-        (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            product.category.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (filterType === 'all' || product.type === filterType) &&
-        (selectedCategory === 'all' || product.category.toLowerCase() === selectedCategory.toLowerCase())
-    );
+    const filteredProducts = products.filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesType = filterType === 'all' || product.type === filterType;
+
+        let matchesCategory = true;
+        if (selectedCategory !== 'all') {
+            const cat = product.category.toLowerCase();
+            const filter = selectedCategory.toLowerCase();
+            matchesCategory = cat.includes(filter) || filter.includes(cat);
+        }
+
+        return matchesSearch && matchesType && matchesCategory;
+    });
 
     return (
         <AdminLayout>
@@ -272,7 +280,7 @@ const AdminProducts = () => {
                             className="flex flex-wrap gap-2 border-t border-[#449c80]/10 pt-4 overflow-hidden"
                         >
                             <span className="text-[10px] uppercase tracking-widest text-muted-foreground w-full mb-1">Ornament Categories:</span>
-                            {['all', 'ring', 'hair clips', 'hair band', 'Jewellery Set'].map((cat) => (
+                            {['All', 'Ring', 'Hair Clips', 'Hair Bands', 'Jewellery Set'].map((cat) => (
                                 <button
                                     key={cat}
                                     onClick={() => setSelectedCategory(cat)}

@@ -163,7 +163,7 @@ const Ornaments = () => {
                                             className="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl border border-gold/20 bg-[#1c190e] backdrop-blur-md z-50 overflow-hidden"
                                         >
                                             <div className="py-1">
-                                                {['All', 'Ring', 'Hair clips', 'Hair bands', 'Jewellery set'].map((cat) => (
+                                                {['All', 'Ring', 'Hair Clips', 'Hair Bands', 'Jewellery Set'].map((cat) => (
                                                     <button
                                                         key={cat}
                                                         onClick={() => {
@@ -259,7 +259,7 @@ const Ornaments = () => {
                     </AnimatePresence>
 
                     {/* Premium Card Background Container */}
-                    <div className="bg-card/30 backdrop-blur-md border border-accent/20 rounded-[40px] p-8 md:p-16 overflow-hidden relative shadow-2xl">
+                    <div className="bg-card/30 backdrop-blur-md border border-accent/20 rounded-[30px] sm:rounded-[40px] p-4 sm:p-8 md:p-16 overflow-hidden relative shadow-2xl">
                         {/* Decorative Background Elements */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px]"></div>
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px]"></div>

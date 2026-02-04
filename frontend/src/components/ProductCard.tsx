@@ -187,20 +187,20 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0, prior
       </div>
 
       {/* Product Info */}
-      <div className="p-4 text-center">
+      <div className="p-3 sm:p-4 text-center">
         <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">
           {product.category}
         </p>
         <h3
-          className="font-serif text-lg text-foreground mb-2 line-clamp-1 cursor-pointer hover:text-accent transition-colors"
+          className="font-serif text-sm sm:text-lg text-foreground mb-1 sm:mb-2 line-clamp-1 cursor-pointer hover:text-accent transition-colors"
           onClick={() => navigate(productUrl)}
         >
           {product.name}
         </h3>
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <span className="text-accent font-semibold">৳ {product.price.toLocaleString()}</span>
+        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+          <span className="text-accent text-sm sm:text-base font-semibold">৳ {product.price.toLocaleString()}</span>
           {product.originalPrice && (
-            <span className="text-muted-foreground line-through text-sm opacity-50">
+            <span className="text-muted-foreground line-through text-[10px] sm:text-sm opacity-50">
               ৳ {product.originalPrice.toLocaleString()}
             </span>
           )}
@@ -215,7 +215,7 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0, prior
           )}
         </div>
       </div>
-    </motion.div>
+    </motion.div >
   );
 };
 

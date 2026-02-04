@@ -1,6 +1,6 @@
 import { Injectable, ConflictException, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, MoreThanOrEqual, LessThan, And } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -76,5 +76,28 @@ export class UsersService {
         return this.usersRepository.count({
             where: { role: 'user' }
         });
+    }
+
+    async getTrend() {
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+        const sixtyDaysAgo = new Date(now.getTime() - (60 * 24 * 60 * 60 * 1000));
+
+        const currentUsers = await this.usersRepository.count({
+            where: {
+                role: 'user',
+                createdAt: MoreThanOrEqual(thirtyDaysAgo)
+            }
+        });
+
+        const previousUsers = await this.usersRepository.count({
+            where: {
+                role: 'user',
+                createdAt: And(MoreThanOrEqual(sixtyDaysAgo), LessThan(thirtyDaysAgo))
+            }
+        });
+
+        if (previousUsers === 0) return currentUsers > 0 ? 100 : 0;
+        return Math.round(((currentUsers - previousUsers) / previousUsers) * 100);
     }
 }

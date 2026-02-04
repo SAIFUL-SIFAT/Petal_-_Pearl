@@ -24,7 +24,7 @@ const ProductCarousel = ({
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    const filters = ['All', 'Ring', 'Hair clips', 'Hair bands', 'Jewellery set'];
+    const filters = ['All', 'Ring', 'Hair Clips', 'Hair Bands', 'Jewellery Set'];
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -51,7 +51,13 @@ const ProductCarousel = ({
 
     const filteredProducts = selectedFilter === 'All'
         ? products
-        : products.filter(p => p.category?.toLowerCase() === selectedFilter.toLowerCase());
+        : products.filter(p => {
+            const cat = (p.category || '').toLowerCase().trim().replace(/\s+/g, '');
+            const filter = selectedFilter.toLowerCase().trim().replace(/\s+/g, '').replace(/s$/, ''); // Remove trailing 's' from filter for comparison
+            const catSingular = cat.replace(/s$/, ''); // Remove trailing 's' from cat for comparison
+
+            return cat.includes(filter) || filter.includes(cat) || catSingular.includes(filter) || filter.includes(catSingular);
+        });
 
     if (!products || products.length === 0) return null;
 
@@ -159,7 +165,7 @@ const ProductCarousel = ({
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.9 }}
                                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                                    className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] pl-4"
+                                    className="flex-[0_0_50%] min-w-0 sm:flex-[0_0_50%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] pl-4"
                                 >
                                     <ProductCard
                                         product={product}
