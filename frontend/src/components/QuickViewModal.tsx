@@ -3,6 +3,7 @@ import { X, ShoppingBag } from 'lucide-react';
 import ProductCard, { Product } from './ProductCard';
 import { useEffect, useState } from 'react';
 import { productApi } from '@/api/services';
+import { useThrottle } from '@/hooks/use-throttle';
 
 interface QuickViewModalProps {
     isOpen: boolean;
@@ -13,6 +14,11 @@ interface QuickViewModalProps {
 
 const QuickViewModal = ({ isOpen, onClose, product, onAddToCart }: QuickViewModalProps) => {
     const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+
+    const throttledAddToCart = useThrottle((p: Product) => {
+        onAddToCart(p);
+        onClose();
+    }, 1000);
 
     useEffect(() => {
         if (product) {
@@ -106,10 +112,7 @@ const QuickViewModal = ({ isOpen, onClose, product, onAddToCart }: QuickViewModa
                                     </p>
 
                                     <button
-                                        onClick={() => {
-                                            onAddToCart(product);
-                                            onClose();
-                                        }}
+                                        onClick={() => throttledAddToCart(product)}
                                         disabled={product.stock <= 0}
                                         className={`w-full py-4 rounded-xl font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 mb-4 ${product.stock <= 0
                                             ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed'

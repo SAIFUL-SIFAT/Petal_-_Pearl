@@ -5,11 +5,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Post('signup')
     signup(@Body() createUserDto: CreateUserDto) {
         return this.usersService.create(createUserDto);

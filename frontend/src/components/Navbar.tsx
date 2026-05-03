@@ -4,6 +4,7 @@ import { ShoppingBag, User, Search, Menu, X, LayoutDashboard } from 'lucide-reac
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { productApi } from '@/api/services';
+import { useDebounce } from '@/hooks/use-debounce';
 
 interface NavbarProps {
   cartCount: number;
@@ -20,6 +21,8 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -29,11 +32,11 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (searchQuery.length > 2) {
+    const performSearch = async () => {
+      if (debouncedSearchQuery.length > 2) {
         setIsSearching(true);
         try {
-          const res = await productApi.getAll({ q: searchQuery });
+          const res = await productApi.getAll({ q: debouncedSearchQuery });
           setSearchResults(res.data.data.slice(0, 5));
         } catch (error) {
           console.error("Search failed:", error);
@@ -43,10 +46,10 @@ const Navbar = ({ cartCount, onCartClick, onAuthClick, onMenuClick }: NavbarProp
       } else {
         setSearchResults([]);
       }
-    }, 300);
+    };
 
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+    performSearch();
+  }, [debouncedSearchQuery]);
 
   return (
     <motion.nav

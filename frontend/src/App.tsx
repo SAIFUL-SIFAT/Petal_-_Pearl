@@ -31,7 +31,16 @@ import { AuthProvider } from "./context/AuthContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { QuickViewProvider } from "./context/QuickViewContext";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60000, // 1 minute
+      gcTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 const App = () => {
   // Warm up backend

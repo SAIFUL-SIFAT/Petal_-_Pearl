@@ -8,6 +8,7 @@ import { getOptimizedImageUrl } from '@/lib/utils';
 import { useWishlist } from '@/context/WishlistContext';
 import { useQuickView } from '@/context/QuickViewContext';
 import { useCart } from '@/hooks/use-cart';
+import { useThrottle } from '@/hooks/use-throttle';
 
 export interface Product {
   id: number;
@@ -42,6 +43,10 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0, prior
   const { openQuickView } = useQuickView();
   const { cartItems } = useCart();
   const navigate = useNavigate();
+
+  const throttledAddToCart = useThrottle((p: Product) => {
+    onAddToCart(p);
+  }, 1000);
 
   const itemInCart = cartItems.find(item => item.id === product.id);
   const displayStock = product.stock - (itemInCart?.quantity || 0);
@@ -177,7 +182,7 @@ const ProductCard = ({ product, type = 'clothing', onAddToCart, index = 0, prior
             className="absolute bottom-0 w-full bg-[#1e1b0f]/90 backdrop-blur-md text-foreground py-3 sm:py-4 flex items-center justify-center gap-3 font-bold uppercase tracking-widest text-[10px] sm:text-xs hover:text-accent transition-all group lg:opacity-0 lg:group-hover:opacity-100"
             onClick={(e) => {
               e.stopPropagation();
-              onAddToCart(product);
+              throttledAddToCart(product);
             }}
           >
             <ShoppingBag size={18} className="transition-transform group-hover:-translate-y-0.5" />

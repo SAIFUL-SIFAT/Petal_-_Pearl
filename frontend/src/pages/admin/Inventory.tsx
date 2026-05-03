@@ -15,19 +15,25 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useProducts } from '@/hooks/use-products';
 import { useQueryClient } from '@tanstack/react-query';
+import { useDebounce } from '@/hooks/use-debounce';
+import { useThrottle } from '@/hooks/use-throttle';
+import { useMemo } from 'react';
 
 const Inventory = () => {
     const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState('');
+    const debouncedSearch = useDebounce(searchTerm, 500);
+
+    const queryParams = useMemo(() => ({
+        q: debouncedSearch,
+        limit: 50
+    }), [debouncedSearch]);
 
     // Use the same products query hook with server-side search
-    const { data: productsRes, isLoading: loading, refetch: fetchInventory } = useProducts({
-        q: searchTerm,
-        limit: 50 // Show more items in inventory
-    });
+    const { data: productsRes, isLoading: loading, refetch: fetchInventory } = useProducts(queryParams);
     const products = productsRes?.data || [];
 
-    const handleUpdateStock = async (id: number, newStock: number) => {
+    const updateStockThrottled = useThrottle(async (id: number, newStock: number) => {
         if (newStock < 0) return;
 
         try {
@@ -43,6 +49,10 @@ const Inventory = () => {
                 description: "Could not update stock levels."
             });
         }
+    }, 1000); // 1 second throttle
+
+    const handleUpdateStock = (id: number, newStock: number) => {
+        updateStockThrottled(id, newStock);
     };
 
     // Client side filter removed in favor of server-side search 'q' parameter

@@ -9,8 +9,8 @@ export const useProducts = (params: any = {}) => {
             const response = await productApi.getAll(params);
             return response.data;
         },
-        // Refresh stock every 30 seconds for "on the fly" updates
-        refetchInterval: 30000,
-        staleTime: 10000,
+        // Refresh stock every 60 seconds (reduced from 30s)
+        refetchInterval: 60000,
+        staleTime: 30000, // Data stays fresh for 30s
     });
 };

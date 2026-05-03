@@ -71,6 +71,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -100,6 +102,12 @@ import { AuthModule } from './auth/auth.module';
           ? '.env.production'
           : '.env',
     }),
+
+    // Rate limiting configuration: 60 requests per 60 seconds
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 60,
+    }]),
 
     //  DATABASE CONFIG GOES HERE
     TypeOrmModule.forRootAsync({
@@ -159,7 +167,13 @@ import { AuthModule } from './auth/auth.module';
     RecoveryModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
