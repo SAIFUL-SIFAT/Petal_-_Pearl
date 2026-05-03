@@ -1,166 +1,139 @@
-# Petal & Pearl Boutique
+# Petal & Pearl — Premium Boutique Ecosystem
 
-A premium full-stack e-commerce platform for clothing and ornaments, built with React, NestJS, and PostgreSQL. Designed with a focus on rich aesthetics, smooth interactions, and robust management capabilities.
+<div align="center">
+  <img src="frontend/public/logo.png" width="120" height="120" alt="Petal & Pearl Logo" />
+  <p><strong>A high-end, full-stack boutique platform designed for the modern fashion ecosystem.</strong></p>
 
-## Features
+  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+  [![React](https://img.shields.io/badge/Frontend-React-blue?logo=react)](https://react.dev/)
+  [![NestJS](https://img.shields.io/badge/Backend-NestJS-red?logo=nestjs)](https://nestjs.com/)
+  [![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue?logo=postgresql)](https://www.postgresql.org/)
+  [![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS-blue?logo=tailwind-css)](https://tailwindcss.com/)
+
+  <p>Browse exquisite artisanal clothing, manage global inventory, and track business performance — all through a <b>stunningly animated and responsive interface</b>.</p>
+
+  <a href="https://petalpearl.netlify.app"><strong>Explore the Boutique »</strong></a>
+  <br />
+  <br />
+</div>
+
+---
+
+## Table of Contents
+
+- [Elegance First, Always](#elegance-first-always)
+- [Why Petal & Pearl Exists](#why-petal--pearl-exists)
+- [Feature Ecosystem](#feature-ecosystem)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Architecture](#architecture)
+- [License](#license)
+
+## Elegance First, Always
+
+Petal & Pearl is built on the principle of **uncompromising aesthetics**.
+
+- **Premium UI/UX:** A bespoke design system utilizing glassmorphism, fluid animations (Framer Motion), and luxury typography.
+- **Unified Management:** One platform to rule both the storefront and the back-office, bridging the gap between customer and curator.
+- **Smart Analytics:** Real-time revenue tracking and performance insights, not just simple data tables.
+- **Blazing Fast:** Optimized client-side state management with TanStack Query and a modular NestJS backbone.
+
+## Why Petal & Pearl Exists
+
+The fashion and ornament industry often suffers from outdated digital experiences.
+
+- **Generic Platforms:** Standard e-commerce templates often lack the "luxury feel" required for high-end artisanal products.
+- **Management Fragmentation:** Small boutiques often juggle separate tools for inventory, sales tracking, and customer engagement.
+- **Performance Gaps:** Heavy image catalogs often lead to slow load times, hurting conversion rates.
+
+Petal & Pearl addresses these challenges by offering a custom-tailored, high-performance boutique ecosystem.
+
+## Feature Ecosystem
+
+Petal & Pearl provides a beautifully designed interface housing two primary modules:
 
 ### Customer Experience
-- Product Browsing: Browse artisanal clothing and ornaments with a high-end, premium UI.
-- Filter and Search: Advanced, case-insensitive, and partial-matching filters for categories, materials, occasions, and colors.
-- Shopping Cart: Add items, update quantities, and manage the shopping bag seamlessly.
-- Wishlist: Save favorite items for later viewing.
-- Quick View: Preview product details without leaving the current page.
-- AI Chatbot: Intelligent customer support assistant providing instant help on policies, delivery, and more.
-- Responsive Design: State-of-the-art responsive layout, including optimized mobile views with dual-column product cards.
-- Coming Soon Mode: Interactive preview pages for upcoming seasonal collections.
+- **Artisanal Catalog:** Browse clothing and ornaments with advanced filtering (category, material, occasion).
+- **Interactive Shopping:** Seamless cart management, wishlist functionality, and quick-view previews.
+- **AI Concierge:** Intelligent customer support assistant for instant policy and product guidance.
 
 ### Admin Dashboard
-- Revenue Overview: Dynamic 6-month revenue chart with real-time data visualization.
-- Business Performance: Track monthly goal progress and order fulfillment rates.
-- Growth Trends: Statistical trend indicators for revenue, active users, and order volume.
-- Inventory Management: Monitor stock levels with instant increment/decrement controls and low-stock alerts.
-- Product Management: Complete CRUD functionality with support for multiple product types and categories.
-- Cloudinary Integration: Secure and optimized image hosting for all inventory items.
-
-### Technical Excellence
-- NestJS Backend: Modular architecture for high scalability.
-- PostgreSQL & TypeORM: Robust data management with advanced query building.
-- State Management: Efficient data fetching and caching using TanStack Query.
-- Security: Role-based access control, JWT authentication, and secure headers via Helmet.
-- Animations: Fluid micro-interactions and page transitions powered by Framer Motion.
-
-## Tech Stack
-
-### Frontend
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- Framer Motion
-- React Router
-- Axios
-- Recharts
-- TanStack Query
-- Shadcn UI
-- Lucide React
-
-### Backend
-- NestJS
-- TypeScript
-- TypeORM
-- PostgreSQL
-- JWT
-- Helmet
-- Class Validator
-
-## Prerequisites
-- Node.js (v18 or higher)
-- PostgreSQL (v14 or higher)
-- npm or yarn
-
-## Getting Started
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/SAIFUL-SIFAT/Petal_-_Pearl.git
-cd Petal_-_Pearl
-```
-
-### 2. Backend Setup
-```bash
-cd backend
-
-# Install dependencies
-npm install
-
-# Create .env file with your configuration
-# Required: DATABASE_URL or DB credentials, JWT_SECRET
-
-# Seed initial data
-npm run seed
-
-# Start the development server
-npm run start:dev
-```
-
-### 3. Frontend Setup
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Create .env file
-# Add VITE_API_URL pointing to your backend
-
-# Start the development server
-npm run dev
-```
-
-### 4. Access the Application
-- Frontend: http://localhost:5173 (standard Vite port)
-- Backend API: http://localhost:3000
+- **Revenue Command Center:** 6-month visual analytics with revenue growth and order fulfillment tracking.
+- **Inventory Matrix:** Real-time stock management with instant increment/decrement and low-stock alerts.
+- **Product Curator:** Complete CRUD system for catalog management with Cloudinary image optimization.
 
 ## Project Structure
 
-```
-petal-pearl-boutique/
-├── backend/
+The project follows a clean monorepo-style structure separating concerns:
+
+```text
+Petal_-_Pearl/
+├── frontend/             # React + Vite application
 │   ├── src/
-│   │   ├── orders/          # Revenue analytics and order processing
-│   │   ├── products/        # Advanced filtering and inventory logic
-│   │   ├── users/           # Authentication and growth tracking
-│   │   ├── notifications/   # System alerts
-│   │   ├── scripts/         # Database seeding and migrations
-│   │   └── app.module.ts
-│   └── package.json
-│
-└── frontend/
-    ├── src/
-    │   ├── components/      # UI components (ProductCard, Carousel, etc.)
-    │   ├── pages/           # View components and admin dashboard
-    │   ├── hooks/           # Custom business logic hooks
-    │   ├── context/         # Global state (Wishlist, QuickView)
-    │   ├── lib/             # Utilities (Image optimization)
-    │   └── api/             # Service layer
-    └── package.json
+│   │   ├── api/          # Axios services and API definitions
+│   │   ├── components/   # Reusable UI components & shadcn primitives
+│   │   ├── context/      # React Context (Auth, Wishlist, QuickView)
+│   │   ├── data/         # Static data and constants
+│   │   ├── hooks/        # Custom hooks (Debounce, Throttle, Cart, etc.)
+│   │   ├── lib/          # Utility functions and shared logic
+│   │   └── pages/        # Storefront, Admin & Dashboard views
+├── backend/              # NestJS application
+│   ├── src/
+│   │   ├── auth/         # Authentication & JWT logic
+│   │   ├── products/     # Catalog, inventory & filtering
+│   │   ├── orders/       # Order processing & revenue analytics
+│   │   ├── users/        # User profile & role management
+│   │   ├── carts/        # Cart persistence logic
+│   │   ├── cloudinary/   # Image hosting integration
+│   │   ├── mailing/      # Email services (SendGrid/SMTP)
+│   │   ├── notifications/# System & user alerts
+│   │   ├── recovery/     # Password recovery & reset
+│   │   ├── steadfast/    # Courier/Delivery integration
+│   │   └── scripts/      # Database seeding and migrations
+└── README.md
 ```
 
-## Key Modules Explained
+## Getting Started
 
-### Analytics Engine
-The backend aggregates monthly data to provide real-time performance insights. This includes revenue trends, user growth percentages, and fulfillment rate calculations displayed on the admin dashboard.
+Petal & Pearl is built with **React**, **NestJS**, and **PostgreSQL**.
 
-### Intelligent Filtering
-The product search system implements flexible matching algorithms that account for singular/plural variations and case-sensitivity, ensuring customers always find what they are looking for.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/SAIFUL-SIFAT/Petal_-_Pearl.git
+   cd Petal_-_Pearl
+   ```
 
-### Design System
-The application uses a custom design tokens approach for colors like Gold (#BFA045) and Emerald (#022c22), combined with glassmorphism effects and custom typography for a luxury feel.
+2. **Backend Setup:**
+   ```bash
+   cd backend
+   npm install
+   # Configure .env with your PostgreSQL & JWT credentials
+   npm run seed      # To populate initial demo data
+   npm run start:dev
+   ```
 
-## Available Scripts
+3. **Frontend Setup:**
+   ```bash
+   cd ../frontend
+   npm install
+   npm run dev
+   ```
 
-### Backend
-- npm run start:dev: Start development server
-- npm run build: Build for production
-- npm run start:prod: Start production server
-- npm run seed: Populate database with initial data
+4. **Open [http://localhost:5173](http://localhost:5173)** in your browser.
 
-### Frontend
-- npm run dev: Start development server
-- npm run build: Build for production
-- npm run preview: Preview production build
+## Architecture
 
-## Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
+- **Frontend:** React, TypeScript, Vite, Tailwind CSS, Framer Motion, TanStack Query.
+- **Backend:** NestJS, TypeScript, TypeORM, PostgreSQL.
+- **Security:** JWT Authentication, Role-Based Access Control (RBAC), Helmet.
+- **Storage:** Cloudinary (Images).
 
 ## License
-This project is licensed under the MIT License.
 
-## Author
-Saiful Sifat
-- GitHub: [@SAIFUL-SIFAT](https://github.com/SAIFUL-SIFAT)
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
-- Design inspiration from luxury boutique platforms
-- UI components from Shadcn UI
-- Icons from Lucide React
+---
+
+<div align="center">
+  Built with ❤️ by Saiful Sifat. Star this repo if you find it useful!
+</div>
