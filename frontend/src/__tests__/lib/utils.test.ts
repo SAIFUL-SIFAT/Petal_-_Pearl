@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { cn, debounce, throttle } from "./utils";
+import { cn, debounce, throttle } from "../../lib/utils";
 
 describe("utils module", () => {
   describe("cn", () => {

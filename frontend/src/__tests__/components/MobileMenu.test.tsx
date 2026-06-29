@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import MobileMenu from './MobileMenu';
+import MobileMenu from '../../components/MobileMenu';
 import { useAuth } from '@/context/AuthContext';
 
 // Mock the Auth Context
