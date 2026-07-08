@@ -26,6 +26,7 @@
 - [Feature Ecosystem](#feature-ecosystem)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
+- [Testing](#testing)
 - [Architecture](#architecture)
 - [License](#license)
 
@@ -70,6 +71,9 @@ The project follows a clean monorepo-style structure separating concerns:
 Petal_-_Pearl/
 ├── frontend/             # React + Vite application
 │   ├── src/
+│   │   ├── __tests__/    # Vitest + React Testing Library test suite
+│   │   │   ├── components/   # Component tests (Chatbot, Navbar, MobileMenu)
+│   │   │   └── lib/          # Utility tests (cn, debounce, throttle)
 │   │   ├── api/          # Axios services and API definitions
 │   │   ├── components/   # Reusable UI components & shadcn primitives
 │   │   ├── context/      # React Context (Auth, Wishlist, QuickView)
@@ -120,6 +124,47 @@ Petal & Pearl is built with **React**, **NestJS**, and **PostgreSQL**.
    ```
 
 4. **Open [http://localhost:5173](http://localhost:5173)** in your browser.
+
+## Testing
+
+The frontend uses **Vitest** as its test runner with **React Testing Library** for component testing. Test files live in `frontend/src/__tests__/` and mirror the source directory structure.
+
+### Running Tests
+
+```bash
+cd frontend
+
+# Run all tests once
+npm test
+```
+
+### Test Suite
+
+#### Components — `src/__tests__/components/`
+
+| File | Suite | Tests |
+|---|---|---|
+| `Chatbot.test.tsx` | `Chatbot Component` | Renders floating button; opens chat window on click; handles quick replies with bot response; hides for admin users |
+| `Navbar.test.tsx` | `Navbar Component` | Renders brand name for unauthenticated users; shows cart count badge; shows user name & logout when authenticated |
+| `MobileMenu.test.tsx` | `MobileMenu Component` | Renders nothing when closed; shows nav links when open; shows user-specific items when authenticated; calls `onClose` on backdrop click |
+
+#### Utilities — `src/__tests__/lib/`
+
+| File | Suite | Tests |
+|---|---|---|
+| `utils.test.ts` | `utils module` | `cn` merges Tailwind classes and handles conditional classes; `debounce` delays execution; `throttle` rate-limits calls |
+
+### Stack
+
+| Tool | Role |
+|---|---|
+| [Vitest](https://vitest.dev/) | Test runner & assertion library |
+| [@testing-library/react](https://testing-library.com/react) | Component rendering & queries |
+| [@testing-library/user-event](https://testing-library.com/user-event) | Realistic user interaction simulation |
+| [@testing-library/jest-dom](https://testing-library.com/jest-dom) | Custom DOM matchers (`toBeInTheDocument`, etc.) |
+| [jsdom](https://github.com/jsdom/jsdom) | Browser-like DOM environment |
+
+---
 
 ## Architecture
 
