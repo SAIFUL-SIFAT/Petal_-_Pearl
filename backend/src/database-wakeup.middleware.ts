@@ -7,8 +7,14 @@ export class DatabaseWakeupMiddleware implements NestMiddleware {
     constructor(private readonly dataSource: DataSource) { }
 
     async use(req: Request, res: Response, next: NextFunction) {
+        // Make /health non-blocking so cron jobs don't timeout
+        if (req.path === '/health') {
+            this.dataSource.query('SELECT 1').catch(err => console.error('Background DB wakeup error:', err.message));
+            return next();
+        }
+
         // Only target API routes to prevent overhead on static files
-        if (req.path.startsWith('/api') || req.path === '/health') {
+        if (req.path.startsWith('/api')) {
             try {
                 // Quick connectivity check
                 await this.dataSource.query('SELECT 1');
